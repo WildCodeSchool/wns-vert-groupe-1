@@ -1,5 +1,12 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+} from "typeorm";
 import { Field } from "type-graphql";
+import { City } from "./city";
 
 @Entity()
 export class Poi extends BaseEntity {
@@ -22,4 +29,7 @@ export class Poi extends BaseEntity {
   @Field(() => [String])
   @Column("text", { array: true, default: [] })
   images: string[];
+
+  @ManyToOne(() => City, (city) => city.pois, { nullable: true })
+  city: City;
 }
