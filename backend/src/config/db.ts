@@ -9,7 +9,7 @@ const dataSource = new DataSource({
   database: "postgres",
   entities: ["src/entities/*.ts"],
   synchronize: true,
-  logging: ["query", "error"],
+  logging: ["error", "query"],
 });
 
 export default dataSource;
