@@ -1,31 +1,25 @@
-
-import {
-    BaseEntity,
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-} from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { Field } from "type-graphql";
 
 @Entity()
-export class poi extends BaseEntity {
-@Field()
-@PrimaryGeneratedColumn()
-id: number;
+export class Poi extends BaseEntity {
+  @Field()
+  @PrimaryGeneratedColumn()
+  id: number;
 
-@Field()
-@Column()
-name: string;
+  @Field()
+  @Column()
+  name: string;
 
-@Field()
+  @Field()
   @Column()
   address: string;
 
-@Field()
+  @Field()
   @Column()
   description: string;
 
-@Field(() => [String])
-@Column("text", { array: true, default: [] })
-images: string[];
+  @Field(() => [String])
+  @Column("text", { array: true, default: [] })
+  images: string[];
 }
