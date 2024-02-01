@@ -1,15 +1,14 @@
-FROM node:20-alpine AS base
+FROM node:lts-alpine
+
 WORKDIR /app
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
 
-# Install dependencies only when needed
-FROM base AS deps
-COPY package.json ./
-RUN npm i
+COPY package.json package.json
+RUN npm install
 
-FROM deps AS dev
-COPY . .
-CMD ["npm", "run", "dev"]
+COPY public public
+COPY .eslintrc.json .eslintrc.json
+COPY tsconfig.json tsconfig.json
 
-# [TODO] Add production stage
+COPY src src
+
+CMD npm run dev
