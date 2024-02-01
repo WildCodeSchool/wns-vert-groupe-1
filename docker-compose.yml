@@ -15,6 +15,11 @@ services:
         condition: service_healthy
   frontend:
     build: ./frontend
+    restart: always
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     ports:
       - 3000:3000
     volumes:
