@@ -5,9 +5,10 @@ import {
   Column,
   ManyToOne,
 } from "typeorm";
-import { Field } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import { City } from "./city";
 
+@ObjectType()
 @Entity()
 export class Poi extends BaseEntity {
   @Field()
