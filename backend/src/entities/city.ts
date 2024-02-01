@@ -1,6 +1,13 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { ObjectType, Field } from "type-graphql";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { ObjectType, Field, Float } from "type-graphql";
 import { Length } from "class-validator";
+import { Poi } from "./poi";
 
 @ObjectType()
 @Entity()
@@ -14,15 +21,18 @@ export class City extends BaseEntity {
   @Length(1, 255)
   name: string;
 
-  @Field()
-  @Column()
+  @Field(() => Float)
+  @Column("float")
   lat: number;
 
-  @Field()
-  @Column()
+  @Field(() => Float)
+  @Column("float")
   lon: number;
 
   @Field()
   @Column()
   description: string;
+
+  @OneToMany(() => Poi, (poi) => poi.city)
+  pois: Poi[];
 }
