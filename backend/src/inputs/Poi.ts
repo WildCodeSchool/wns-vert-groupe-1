@@ -1,0 +1,17 @@
+import { Field, InputType } from "type-graphql";
+
+@InputType()
+export class PoiInput {
+  @Field()
+  name: string;
+
+  @Field()
+  address: string;
+
+  @Field()
+  description: string;
+
+  @Field(() => [String])
+  images: string[];
+
+}
