@@ -1,5 +1,6 @@
+import { CityInput } from "../inputs/City";
 import { City } from "../entities/city";
-import { Arg, Query, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver()
 export class CityResolver {
@@ -30,5 +31,11 @@ export class CityResolver {
       console.error("Error", err);
       throw new Error("An error occurred while reading one poi");
     }
+  }
+
+  @Mutation(() => City)
+  async createNewCity(@Arg("cityData") cityData: CityInput) {
+    const city = await City.save({ ...cityData });
+    return city;
   }
 }
