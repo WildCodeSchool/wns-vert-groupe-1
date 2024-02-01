@@ -8,6 +8,7 @@ import {
 import { ObjectType, Field } from "type-graphql";
 import { Length } from "class-validator";
 import { Poi } from "./poi";
+import { User } from "./user";
 
 @ObjectType()
 @Entity()
@@ -35,4 +36,8 @@ export class City extends BaseEntity {
 
   @OneToMany(() => Poi, (poi) => poi.city)
   pois: Poi[];
+
+   // a category can contain multiple ads
+   @OneToMany(() => User, (User) => User.city)
+   users: User[];
 }

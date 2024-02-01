@@ -20,11 +20,9 @@ export class User extends BaseEntity {
   @Column()
   hashedPassword: string;
 
-
 // Many to One relationship (many users one city)
   @Field(() => City)
   @ManyToOne(() => City, (city) => city.users, {
-    onDelete: "CASCADE",
   })
   city: City;
 }
