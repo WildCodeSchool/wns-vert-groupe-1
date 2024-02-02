@@ -15,3 +15,12 @@ export const GET_ALL_CITIES = gql`
 		}
 	}
 `;
+
+export const GET_ALL_CATEGORIES = gql`
+	query getAllCategories {
+		getAllCategories {
+			name
+			id
+		}
+	}
+`;
