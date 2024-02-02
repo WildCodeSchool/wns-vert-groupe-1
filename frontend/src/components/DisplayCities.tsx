@@ -1,7 +1,8 @@
 import CityCard, { CityCardProps } from "./CityCard";
+import CityMap, {CityMapProps} from "./CityMap"
 
 type DisplayCitiesType = {
-	cities: CityCardProps[];
+	cities: (CityCardProps & CityMapProps)[];
 	title: string;
 	onClickDelete?: (adId: number) => void;
 	onClickEdit?: (adId: number) => void;
@@ -20,6 +21,10 @@ const DisplayCities = ({ cities, title }: DisplayCitiesType) => {
 								name={city.name}
 								description={city.description}
 								pois={city.pois}
+							/>
+							<CityMap
+							lat={city.lat}
+							lon={city.lon}
 							/>
 						</div>
 					))}

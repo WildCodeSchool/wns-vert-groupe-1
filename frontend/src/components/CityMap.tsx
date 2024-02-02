@@ -1,15 +1,14 @@
 "use client";
 
 import Map from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
 
-export type mapProps = {
+export type CityMapProps = {
 	id?: number;
 	lat: number;
 	lon: number;
 };
 
-const CityMap = ({ lat, lon }: mapProps) => {
+const CityMap = ({ lat, lon }: CityMapProps) => {
     return (
         <>
         <Map
