@@ -28,15 +28,15 @@ export class Poi extends BaseEntity {
   @Column()
   description: string;
 
- // @Field(() => [String])
+  // @Field(() => [String])
   //@Column("text", { array: true, default: [] })
   //images: string[];
 
   @Field(() => City)
-  @ManyToOne(() => City, (city) => city.pois)
+  @ManyToOne(() => City, (city) => city.pois, { nullable: true })
   city: City;
 
-  @ManyToOne(() => Category, (category) => category.pois, {
-   })
+  @Field(() => Category)
+  @ManyToOne(() => Category, (category) => category.pois)
   category: Category;
 }
