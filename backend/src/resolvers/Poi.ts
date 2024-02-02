@@ -12,7 +12,10 @@ export class PoiResolver {
 
   @Mutation(() => Poi)
   async createNewPoi(@Arg("poiData") poiData: PoiInput) {
-  const poi = await Poi.save({...poiData});
+  const poi = await Poi.save({
+    ...poiData,
+    city: { id: poiData.city },
+  });
     return poi; 
   }
 

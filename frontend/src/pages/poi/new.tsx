@@ -31,25 +31,25 @@ const NewPoi = () => {
       name: string;
     }[];
   }>(GET_ALL_CITIES);
-console.log(data)
   const [
     createNewPoi,
     { data: createdPoiData, loading: createPoiLoading, error: createPoiError },
   ] = useMutation(CREATE_NEW_POI);
 
-  const onSubmit: SubmitHandler<Inputs> = async ( data: any) => {
+  const onSubmit: SubmitHandler<Inputs> = async ( formData: any) => {
+    console.log("données du form", formData);
+
       try {
         const result = await createNewPoi({
           variables: {
             poiData: {
-              name: data.name,
-              address: data.address,
-              description: data.description,
-              city: Number.parseInt(data.city),
+              name: formData.name,
+              address: formData.address,
+              description: formData.description,
+              city: Number.parseInt(formData.city),
             },
           },
         });
-        console.log("result", result);
         reset();
 
       } catch (err: any) {
@@ -76,6 +76,8 @@ console.log(data)
             <input className="text-field" {...register("description")} />
           </label>
           <br />
+          <label>
+            Ville: <br />
           <select {...register("city")}>
             {data?.getAllCities?.map((city) => (
               <option key={city.id} value={city.id}>
@@ -83,6 +85,7 @@ console.log(data)
               </option>
             ))}
           </select>
+          </label>
           <br />
           <br />
           <input className="button" type="submit" />
