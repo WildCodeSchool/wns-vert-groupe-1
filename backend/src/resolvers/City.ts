@@ -6,7 +6,7 @@ import { Arg, Mutation, Query, Resolver } from "type-graphql";
 export class CityResolver {
   @Query(() => [City])
   async getAllCities() {
-    const result = await City.find({ relations: { pois: true } });
+    const result = await City.find({ relations: ["pois"] });
     return result;
   }
 
@@ -35,7 +35,16 @@ export class CityResolver {
 
   @Mutation(() => City)
   async createNewCity(@Arg("cityData") cityData: CityInput) {
-    const city = await City.save({ ...cityData });
-    return city;
+    if (cityData.pois) {
+      await City.save({
+        ...cityData,
+        pois: cityData.pois.map((poi) => ({ id: poi })),
+      });
+    } else {
+      await City.save({
+        ...cityData,
+        pois: [],
+      });
+    }
   }
 }

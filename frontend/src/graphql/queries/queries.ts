@@ -6,6 +6,12 @@ export const GET_ALL_CITIES = gql`
 			name
 			description
 			id
+			pois {
+				id
+				name
+				address
+				description
+			}
 		}
 	}
 `;
