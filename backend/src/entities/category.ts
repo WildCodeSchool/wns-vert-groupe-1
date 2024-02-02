@@ -1,6 +1,13 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { ObjectType, Field } from "type-graphql";
 import { Length } from "class-validator";
+import { Poi } from "./poi";
 
 @ObjectType()
 @Entity()
@@ -13,4 +20,8 @@ export class Category extends BaseEntity {
   @Column()
   @Length(1, 255)
   name: string;
+
+  @ManyToOne(() => Poi, (poi) => poi.category)
+  pois: Poi[];
+
 }
