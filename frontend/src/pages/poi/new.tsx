@@ -2,12 +2,17 @@
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+
 import { CREATE_NEW_POI } from "../../graphql/mutations/mutations";
+import { GET_ALL_CITIES } from "../../graphql/queries/queries";
+
 
 type Inputs = {
     name: string;
     address: string;
     description: string;
+    city:string
 };
 
 const NewPoi = () => {
@@ -20,6 +25,13 @@ const NewPoi = () => {
     reset,
   } = useForm<Inputs>();
 
+  const { loading, error, data } = useQuery<{
+    getAllCities: {
+      id: number;
+      name: string;
+    }[];
+  }>(GET_ALL_CITIES);
+console.log(data)
   const [
     createNewPoi,
     { data: createdPoiData, loading: createPoiLoading, error: createPoiError },
@@ -33,6 +45,7 @@ const NewPoi = () => {
               name: data.name,
               address: data.address,
               description: data.description,
+              city: Number.parseInt(data.city),
             },
           },
         });
@@ -43,6 +56,7 @@ const NewPoi = () => {
         console.error(err);
       }
     }
+    if (data) {
 
     return (
       <div>
@@ -62,6 +76,13 @@ const NewPoi = () => {
             <input className="text-field" {...register("description")} />
           </label>
           <br />
+          <select {...register("city")}>
+            {data?.getAllCities?.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.name}
+              </option>
+            ))}
+          </select>
           <br />
           <br />
           <input className="button" type="submit" />
@@ -69,5 +90,6 @@ const NewPoi = () => {
       </div>
     );
   };
+};
 
 export default NewPoi;
