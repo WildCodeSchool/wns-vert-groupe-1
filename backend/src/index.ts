@@ -5,12 +5,13 @@ import { ApolloServer } from "@apollo/server";
 import dataSource from "./config/db";
 import { CityResolver } from "./resolvers/City";
 import { PoiResolver } from "./resolvers/Poi";
+import { UserResolver } from "./resolvers/User";
 
 const start = async () => {
   await dataSource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [CityResolver, PoiResolver],
+    resolvers: [CityResolver, PoiResolver, UserResolver],
   });
   const server = new ApolloServer({
     schema,
