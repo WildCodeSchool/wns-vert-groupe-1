@@ -2,7 +2,7 @@
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { CREATE_NEW_POI } from "../../../graphql/mutations/mutations";
+import { CREATE_NEW_POI } from "../../graphql/mutations/mutations";
 
 type Inputs = {
     name: string;
