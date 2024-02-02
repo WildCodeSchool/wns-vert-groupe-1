@@ -1,4 +1,6 @@
 import { Poi } from "../entities/poi";
+import { City } from "../entities/city";
+
 import { PoiInput } from "../inputs/Poi";
 import { Query, Resolver, Mutation, Arg} from "type-graphql";
 
@@ -12,11 +14,14 @@ export class PoiResolver {
 
   @Mutation(() => Poi)
   async createNewPoi(@Arg("poiData") poiData: PoiInput) {
-  const poi = await Poi.save({
-    ...poiData,
-    city: { id: poiData.city },
-  });
-    return poi; 
+    const city = await City.findOneByOrFail({ id: poiData.city });
+
+    const poi = await Poi.save({
+      ...poiData,
+      city
+    });
+
+    return poi;
   }
 
   @Mutation(() => String)

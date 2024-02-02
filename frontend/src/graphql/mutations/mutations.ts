@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_NEW_POI = gql`
-  mutation CreateNewPoi($poiData: PoiInput!) {
-    CreateNewPoi(poiData: $poiData) {
+  mutation createNewPoi($poiData: PoiInput!) {
+    createNewPoi(poiData: $poiData) {
       id
     }
   }

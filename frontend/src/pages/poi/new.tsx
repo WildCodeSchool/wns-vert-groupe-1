@@ -7,7 +7,6 @@ import { useQuery } from "@apollo/client";
 import { CREATE_NEW_POI } from "../../graphql/mutations/mutations";
 import { GET_ALL_CITIES } from "../../graphql/queries/queries";
 
-
 type Inputs = {
     name: string;
     address: string;
@@ -31,12 +30,13 @@ const NewPoi = () => {
       name: string;
     }[];
   }>(GET_ALL_CITIES);
+
   const [
     createNewPoi,
     { data: createdPoiData, loading: createPoiLoading, error: createPoiError },
   ] = useMutation(CREATE_NEW_POI);
 
-  const onSubmit: SubmitHandler<Inputs> = async ( formData: any) => {
+  const onSubmit: SubmitHandler<Inputs> = async (formData: any) => {
     console.log("données du form", formData);
 
       try {
