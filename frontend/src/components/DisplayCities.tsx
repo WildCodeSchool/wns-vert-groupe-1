@@ -19,6 +19,7 @@ const DisplayCities = ({ cities, title }: DisplayCitiesType) => {
 								id={city.id}
 								name={city.name}
 								description={city.description}
+								pois={city.pois}
 							/>
 						</div>
 					))}

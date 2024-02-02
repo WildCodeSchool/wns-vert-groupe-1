@@ -22,6 +22,14 @@ h1 {
   margin-bottom: 10px;
 }
 
+.mt-10 {
+  margin-top: 10px;
+}
+
+.p-20 {
+  padding: 20px;
+}
+
 .mt-30 {
   margin-top: 30px;
 }

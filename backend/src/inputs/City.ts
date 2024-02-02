@@ -13,4 +13,7 @@ export class CityInput {
 
   @Field()
   description: string;
+
+  @Field(() => [Number])
+  pois: [number];
 }
