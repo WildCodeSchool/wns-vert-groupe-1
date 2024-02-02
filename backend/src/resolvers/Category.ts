@@ -1,3 +1,4 @@
+import { CategoryInput } from "../inputs/Category";
 import { Category } from "../entities/category";
 import { Arg, Query, Resolver, Mutation } from "type-graphql";
 
@@ -7,6 +8,12 @@ export class CategoryResolver {
     async getAllCategories() {
         const result = await Category.find();
         return result;
+    }
+
+    @Mutation(() => Category)
+    async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
+        const category = await Category.save({ ...categoryData });
+        return category;
     }
 
     @Mutation(() => String)
