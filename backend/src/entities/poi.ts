@@ -4,7 +4,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToMany,
 } from "typeorm";
 import { Field, ObjectType } from "type-graphql";
 import { City } from "./city";
@@ -36,7 +35,7 @@ export class Poi extends BaseEntity {
   @ManyToOne(() => City, (city) => city.pois, { nullable: true })
   city: City;
 
-  @OneToMany(() => Category, (category) => category.pois, {
+  @ManyToOne(() => Category, (category) => category.pois, {
    })
   category: Category;
 }

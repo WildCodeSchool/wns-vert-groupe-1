@@ -2,7 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
-  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
@@ -21,7 +21,6 @@ export class Category extends BaseEntity {
   @Length(1, 255)
   name: string;
 
-  @ManyToOne(() => Poi, (poi) => poi.category)
+  @OneToMany(() => Poi, (poi) => poi.category)
   pois: Poi[];
-
 }
