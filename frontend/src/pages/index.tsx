@@ -1,7 +1,7 @@
-import ShowCities from "../components/ShowCities";
+import Cities from "../components/Cities";
 
 const Home = () => {
-	return <ShowCities />;
+	return <Cities />;
 };
 
 export default Home;
