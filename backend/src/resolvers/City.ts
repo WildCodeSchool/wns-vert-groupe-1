@@ -21,15 +21,35 @@ export class CityResolver {
       });
 
       if (!result) {
-        throw new Error(`Poi with ID ${id} not found`);
+        throw new Error(`City with ID ${id} not found`);
       }
-
-      console.log(result);
 
       return result;
     } catch (err) {
       console.error("Error", err);
-      throw new Error("An error occurred while reading one poi");
+      throw new Error("An error occurred while reading one city");
+    }
+  }
+
+  @Query(() => City)
+  async getCityByName(@Arg("name") name: string): Promise<City> {
+    try {
+      const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
+      const result = await City.findOne({
+        where: {
+          name: capitalizedName,
+        },
+        relations: { pois: true },
+      });
+
+      if (!result) {
+        throw new Error(`City with name ${name} not found`);
+      }
+
+      return result;
+    } catch (err) {
+      console.error("Error", err);
+      throw new Error("An error occurred while searching for a city by name");
     }
   }
 

@@ -15,3 +15,18 @@ export const GET_ALL_CITIES = gql`
 		}
 	}
 `;
+
+export const GET_CITY_BY_NAME = gql`
+	query getCityByName($name: String!) {
+		getCityByName(name: $name) {
+			name
+			description
+			pois {
+				id
+				name
+				address
+				description
+			}
+		}
+	}
+`;
