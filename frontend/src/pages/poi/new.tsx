@@ -5,13 +5,14 @@ import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 
 import { CREATE_NEW_POI } from "../../graphql/mutations/mutations";
-import { GET_ALL_CITIES } from "../../graphql/queries/queries";
+import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "../../graphql/queries/queries";
 
 type Inputs = {
     name: string;
     address: string;
     description: string;
-    city:string
+    city:string;
+    category:string
 };
 
 const NewPoi = () => {
@@ -24,12 +25,19 @@ const NewPoi = () => {
     reset,
   } = useForm<Inputs>();
 
-  const { loading, error, data } = useQuery<{
+  const { loading: cityLoading, error: cityError, data: cityData } = useQuery<{
     getAllCities: {
       id: number;
       name: string;
     }[];
   }>(GET_ALL_CITIES);
+
+  const { loading: categoryLoading, error: categoryError, data: categoryData } = useQuery<{
+    getAllCategories: {
+      id: number;
+      name: string;
+    }[];
+  }>(GET_ALL_CATEGORIES);
 
   const [
     createNewPoi,
@@ -47,6 +55,7 @@ const NewPoi = () => {
               address: formData.address,
               description: formData.description,
               city: Number.parseInt(formData.city),
+              category: Number.parseInt(formData.category),
             },
           },
         });
@@ -56,8 +65,8 @@ const NewPoi = () => {
         console.error(err);
       }
     }
-    if (data) {
 
+    if (cityData && categoryData) {
     return (
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -79,9 +88,20 @@ const NewPoi = () => {
           <label>
             Ville: <br />
           <select {...register("city")}>
-            {data?.getAllCities?.map((city) => (
+            {cityData?.getAllCities?.map((city) => (
               <option key={city.id} value={city.id}>
                 {city.name}
+              </option>
+            ))}
+          </select>
+          </label>
+          <br />
+          <label>
+            Catégorie: <br />
+          <select {...register("category")}>
+            {categoryData?.getAllCategories?.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
               </option>
             ))}
           </select>
