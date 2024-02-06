@@ -8,15 +8,15 @@ import { CREATE_NEW_POI } from "../../graphql/mutations/mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "../../graphql/queries/queries";
 
 type Inputs = {
-    name: string;
-    address: string;
-    description: string;
-    city:string;
-    category:string
+  name: string;
+  address: string;
+  description: string;
+  city: string;
+  category: string
 };
 
 const NewPoi = () => {
- 
+
   const {
     register,
     handleSubmit,
@@ -47,26 +47,26 @@ const NewPoi = () => {
   const onSubmit: SubmitHandler<Inputs> = async (formData: any) => {
     console.log("données du form", formData);
 
-      try {
-        const result = await createNewPoi({
-          variables: {
-            poiData: {
-              name: formData.name,
-              address: formData.address,
-              description: formData.description,
-              city: Number.parseInt(formData.city),
-              category: Number.parseInt(formData.category),
-            },
+    try {
+      const result = await createNewPoi({
+        variables: {
+          poiData: {
+            name: formData.name,
+            address: formData.address,
+            description: formData.description,
+            city: Number.parseInt(formData.city),
+            category: Number.parseInt(formData.category),
           },
-        });
-        reset();
+        },
+      });
+      reset();
 
-      } catch (err: any) {
-        console.error(err);
-      }
+    } catch (err: any) {
+      console.error(err);
     }
+  }
 
-    if (cityData && categoryData) {
+  if (cityData && categoryData) {
     return (
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -76,7 +76,7 @@ const NewPoi = () => {
           </label>
           <br />
           <label>
-          Adresse: <br />
+            Adresse: <br />
             <input className="text-field" {...register("address")} />
           </label>
           <br />
@@ -87,24 +87,24 @@ const NewPoi = () => {
           <br />
           <label>
             Ville: <br />
-          <select {...register("city")}>
-            {cityData?.getAllCities?.map((city) => (
-              <option key={city.id} value={city.id}>
-                {city.name}
-              </option>
-            ))}
-          </select>
+            <select {...register("city")}>
+              {cityData?.getAllCities?.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
           </label>
           <br />
           <label>
             Catégorie: <br />
-          <select {...register("category")}>
-            {categoryData?.getAllCategories?.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+            <select {...register("category")}>
+              {categoryData?.getAllCategories?.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </label>
           <br />
           <br />
