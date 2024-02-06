@@ -63,7 +63,8 @@ const NewPoi = () => {
           },
         },
       });
-
+      setImageURLs([]);
+      setFiles([]);
       reset();
 
     } catch (err: any) {
@@ -84,7 +85,7 @@ const NewPoi = () => {
               const url = "http://localhost:8000/upload";
               selectedFiles.forEach(async (file, index) => {
                 const formData = new FormData();
-                formData.append(`file${index}`, file, file.name);
+                formData.append("file", file, file.name);
                 try {
                   const response = await axios.post(url, formData);
                   console.log(response)
