@@ -16,6 +16,15 @@ export const GET_ALL_CITIES = gql`
 	}
 `;
 
+export const GET_ALL_CATEGORIES = gql`
+	query getAllCategories {
+		getAllCategories {
+			name
+			id
+		}
+	}
+`;
+
 export const GET_CITY_BY_NAME = gql`
 	query getCityByName($name: String!) {
 		getCityByName(name: $name) {
