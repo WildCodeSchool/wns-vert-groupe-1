@@ -21,8 +21,7 @@
 	"rules": {
 		"react/react-in-jsx-scope": "off",
 		"prettier/prettier": ["error", { "endOfLine": "auto" }],
-		"no-unused-vars": "warn", 
-		"no-unused-modules": "warn"
+		"no-unused-vars": "warn"
 	},
 	"settings": {
 		"import/resolver": {
