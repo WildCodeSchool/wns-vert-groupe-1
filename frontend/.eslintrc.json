@@ -17,11 +17,21 @@
 		"sourceType": "module",
 		"jsx": "true"
 	},
-	"plugins": ["@typescript-eslint", "react", "react-hooks", "prettier"],
+	"plugins": [
+		"@typescript-eslint",
+		"react",
+		"react-hooks",
+		"prettier"
+	],
 	"rules": {
 		"react/react-in-jsx-scope": "off",
-		"prettier/prettier": ["error", { "endOfLine": "auto" }],
-		"no-unused-vars": "warn", 
+		"prettier/prettier": [
+			"error",
+			{
+				"endOfLine": "auto"
+			}
+		],
+		"no-unused-vars": "warn",
 		"no-unused-modules": "warn"
 	},
 	"settings": {
@@ -30,4 +40,3 @@
 		}
 	}
 }
-

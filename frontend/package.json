@@ -11,6 +11,7 @@
   "dependencies": {
     "@apollo/client": "^3.9.2",
     "@types/react-map-gl": "^6.1.6",
+    "axios": "^1.6.7",
     "graphql": "^16.8.1",
     "mapbox-gl": "^3.1.2",
     "next": "^13.4.19",

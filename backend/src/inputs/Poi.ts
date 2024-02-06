@@ -14,8 +14,8 @@ export class PoiInput {
   @Field()
   city: number;
 
-  // @Field(() => [String])
-  //images: string[];
+  @Field(() => [String])
+  images: string[];
 
   @Field()
   category: number;
