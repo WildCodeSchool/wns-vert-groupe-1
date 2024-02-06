@@ -1,49 +1,90 @@
-import { User } from "../entities/user";
+import { City } from "../entities/city";
+import { User, UserRole } from "../entities/user";
+// UserRole
 import { UserInput } from "../inputs/User";
 import { Query, Resolver, Mutation, Arg } from "type-graphql";
 
 @Resolver()
 export class UserResolver {
-  @Query(() => [User])
-  async getAllUsers() {
-    const result = await User.find();
-    return result;
-  }
+	@Query(() => [User])
+	async getAllUsers() {
+		try {
+			return await User.find({ relations: { city: true } });
+		} catch (e) {
+			return "Can't get all users";
+		}
+	}
 
-  @Mutation(() => User)
-  async createNewUser(@Arg("userData") userData: UserInput) {
-    const user = await User.save({ ...userData });
-    return user;
-  }
+	@Query(() => User)
+	async getUserById(@Arg("id") id: number) {
+		try {
+			const result = await User.findOne({
+				where: {
+					id: id,
+				},
+				relations: { city: true },
+			});
 
-  @Mutation(() => String)
-  async deleteUserById(@Arg("id") id: number) {
-      const userToDelete = await User.findOneByOrFail({
-          id: id,
-      });
-      userToDelete.remove();
-      return "L'utilisateur à été supprimé";
-  }
+			if (!result) {
+				throw new Error(`User with ID ${id} not found`);
+			}
+			return result;
+		} catch (err) {
+			console.error("Error", err);
+			throw new Error(`An error occurred while reading User with ID ${id}`);
+		}
+	}
 
-  @Mutation(() => String)
-  async updateUserById (
-    @Arg("id") id: number,
-    @Arg("newUserInput") newUserInput: UserInput
-    ) {
-    try {
-      const oldUser = await User.findOne({ where: { id: id } });
-  
-      if (!oldUser) {
-        throw new Error(`L'utilisateur avec l'ID : ${id} n'a pas été trouvé`);
-      }
-  
-      Object.assign(oldUser, newUserInput);
-  
-      await oldUser.save();
-      return "L'utilisateur a été mis à jour";
-    } catch (error) {
-      throw new Error(`Il y a eu une erreur avec la mise à jour de l'utilisateur: ${error.message}`);
-    }
-  } 
+	@Mutation(() => User)
+	async createNewUser(@Arg("userData") userData: UserInput) {
+		const { city, ...data } = userData;
+		const user = await User.save({ ...data });
+		if (city) {
+			const cityEntity = await City.findOneByOrFail({
+				id: city,
+			});
+			if (cityEntity) {
+				user.city = cityEntity;
+			}
+		}
+		User.save(user);
+		return user;
+	}
+
+	@Mutation(() => String)
+	async deleteUserById(@Arg("id") id: number) {
+		const userToDelete = await User.findOneByOrFail({
+			id: id,
+		});
+		userToDelete.remove();
+		return "User deleted";
+	}
+
+	@Mutation(() => String)
+	async deleteAllUsers() {
+		User.delete({});
+		return "all users deleted";
+	}
+
+	@Mutation(() => String)
+	async updateUserById(
+		@Arg("id") id: number,
+		@Arg("newUserInput") newUserInput: UserInput,
+		// @Arg("role") newUserRole?: UserRole,
+	) {
+		try {
+			const oldUser = await User.findOne({ where: { id: id } });
+
+			if (!oldUser) {
+				throw new Error(`The user with ID : ${id} not found`);
+			}
+
+			Object.assign(oldUser, newUserInput);
+
+			await oldUser.save();
+			return "User updated";
+		} catch (error) {
+			throw new Error(`Error when updating the user : ${error.message}`);
+		}
+	}
 }
-
