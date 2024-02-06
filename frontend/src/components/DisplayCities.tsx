@@ -1,5 +1,5 @@
 import CityCard, { CityCardProps } from "./CityCard";
-import CityMap, {CityMapProps} from "./CityMap"
+import CityMap, { CityMapProps } from "./CityMap"
 
 type DisplayCitiesType = {
 	cities: (CityCardProps & CityMapProps)[];

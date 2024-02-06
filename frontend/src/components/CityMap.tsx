@@ -16,7 +16,7 @@ const CityMap = ({ lat, lon }: CityMapProps) => {
           initialViewState={{
             longitude: lon,
             latitude: lat,
-            zoom: 14
+            zoom: 10
           }}
           style={{width: 600, height: 400}}
           mapStyle="mapbox://styles/mapbox/streets-v9"
