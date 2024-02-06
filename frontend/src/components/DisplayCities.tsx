@@ -2,15 +2,13 @@ import CityCard, { CityCardProps } from "./CityCard";
 
 type DisplayCitiesType = {
 	cities: CityCardProps[];
-	title: string;
 	onClickDelete?: (adId: number) => void;
 	onClickEdit?: (adId: number) => void;
 };
 
-const DisplayCities = ({ cities, title }: DisplayCitiesType) => {
+const DisplayCities = ({ cities }: DisplayCitiesType) => {
 	return (
 		<>
-			<h2>{title}</h2>
 			<section className="recent-cities">
 				{!!cities &&
 					cities.map((city) => (
