@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import SearchForm from "./SearchForm";
 
 const Header = () => {
 	return (
@@ -10,6 +11,7 @@ const Header = () => {
 						<span className="desktop-long-label">CITY GUIDE</span>
 					</Link>
 				</h1>
+				<SearchForm />
 			</div>
 		</header>
 	);
