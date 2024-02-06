@@ -21,6 +21,7 @@ const DisplayCities = ({ cities }: DisplayCitiesType) => {
 								description={city.description}
 								pois={city.pois}
 							/>
+				
 							<CityMap
 							lat={city.lat}
 							lon={city.lon}
