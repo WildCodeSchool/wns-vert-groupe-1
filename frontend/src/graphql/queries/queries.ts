@@ -36,6 +36,8 @@ export const GET_CITY_BY_NAME = gql`
 				address
 				description
 			}
+			lon
+			lat
 		}
 	}
 `;
