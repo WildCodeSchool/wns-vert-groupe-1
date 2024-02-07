@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
@@ -7,46 +8,35 @@ import { useQuery } from "@apollo/client";
 import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
+import axios from "axios";
 
-const NewPOI = () => {
+const NewPoi = () => {
+	const [imageURLs, setImageURLs] = useState<string[]>([]);
+
 	const {
 		register,
 		handleSubmit,
-		watch,
 		formState: { errors },
 		reset,
 	} = useForm<POIInput>();
 
-	const {
-		loading: cityLoading,
-		error: cityError,
-		data: cityData,
-	} = useQuery<{
+	const { data: cityData } = useQuery<{
 		getAllCities: {
 			id: number;
 			name: string;
 		}[];
 	}>(GET_ALL_CITIES);
 
-	const {
-		loading: categoryLoading,
-		error: categoryError,
-		data: categoryData,
-	} = useQuery<{
+	const { data: categoryData } = useQuery<{
 		getAllCategories: {
 			id: number;
 			name: string;
 		}[];
 	}>(GET_ALL_CATEGORIES);
 
-	const [
-		createNewPoi,
-		{ data: createdPoiData, loading: createPoiLoading, error: createPoiError },
-	] = useMutation(CREATE_NEW_POI);
+	const [createNewPoi] = useMutation(CREATE_NEW_POI);
 
-	const onSubmit: SubmitHandler<POIInput> = async (formData: any) => {
-		console.log("données du form", formData);
-
+	const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
 		try {
 			const result = await createNewPoi({
 				variables: {
@@ -54,11 +44,13 @@ const NewPOI = () => {
 						name: formData.name,
 						address: formData.address,
 						description: formData.description,
+						images: imageURLs.map((image) => "http://localhost:8000" + image),
 						city: Number.parseInt(formData.city),
 						category: Number.parseInt(formData.category),
 					},
 				},
 			});
+			setImageURLs([]);
 			reset();
 		} catch (err: any) {
 			console.error(err);
@@ -68,6 +60,8 @@ const NewPOI = () => {
 	if (cityData && categoryData) {
 		return (
 			<div>
+				<h2>Ajouter un POI</h2>
+
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<label>
 						Nom: <br />
@@ -107,11 +101,49 @@ const NewPOI = () => {
 					</label>
 					<br />
 					<br />
+					<input
+						type="file"
+						onChange={async (e) => {
+							if (e.target.files) {
+								const selectedFiles = Array.from(e.target.files);
+								const url = "http://localhost:8000/upload";
+								selectedFiles.forEach(async (file) => {
+									const formData = new FormData();
+									formData.append("file", file, file.name);
+									try {
+										const response = await axios.post(url, formData);
+										console.log(response);
+										setImageURLs((prevImageURLs) => [
+											...prevImageURLs,
+											response.data.filename,
+										]);
+									} catch (err) {
+										console.log("error", err);
+									}
+								});
+							}
+						}}
+						multiple
+					/>
+					<br />
+					<br />
 					<input className="button" type="submit" />
 				</form>
+
+				{imageURLs.map((url, index) => (
+					<div key={index}>
+						<br />
+						<img
+							width={"500"}
+							alt={`uploadedImg${index}`}
+							src={"http://localhost:8000" + url}
+						/>
+						<br />
+					</div>
+				))}
 			</div>
 		);
 	}
 };
 
-export default NewPOI;
+export default NewPoi;

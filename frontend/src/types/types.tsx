@@ -10,12 +10,13 @@ export type CityCardProps = {
 	name: string;
 	description: string;
 	pois?: POIType[];
+	lat?: number;
+	lon?: number;
 };
 
 export type CityMapProps = {
-	id?: number;
-	lat: number;
-	lon: number;
+	lat?: number;
+	lon?: number;
 };
 
 export type DisplayCitiesType = {
@@ -30,4 +31,5 @@ export type POIInput = {
 	description: string;
 	city: string;
 	category: string;
+	images: string[];
 };

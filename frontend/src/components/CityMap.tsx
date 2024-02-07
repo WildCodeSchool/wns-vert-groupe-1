@@ -4,9 +4,11 @@ import Map from "react-map-gl";
 import { CityMapProps } from "@types";
 
 export const CityMap = ({ lat, lon }: CityMapProps) => {
+	const key = `${lat}-${lon}`;
 	return (
 		<>
 			<Map
+				key={key}
 				mapboxAccessToken="pk.eyJ1IjoibWVpamU4IiwiYSI6ImNsczF1ZXlqczBjeW4yanBjZzNsbXFuZncifQ.7Z0qk6v18gniDPLKIctVQA"
 				initialViewState={{
 					longitude: lon,

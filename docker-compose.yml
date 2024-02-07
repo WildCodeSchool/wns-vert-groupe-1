@@ -39,6 +39,13 @@ services:
       retries: 20
     volumes:
       - pgdata:/var/lib/postgresql/data
+  imagesupload:
+    build: ./imagesupload
+    volumes:
+      - ./imagesupload/src:/app/src
+      - ./imagesupload/uploads:/app/uploads
+    ports:
+      - 8000:8000
   adminer:
     image: adminer
     ports:

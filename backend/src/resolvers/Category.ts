@@ -1,27 +1,27 @@
-import { CategoryInput } from "../inputs/Category";
-import { Category } from "../entities/category";
+import { CategoryInput } from "@inputs";
+import { Category } from "@entities";
 import { Arg, Query, Resolver, Mutation } from "type-graphql";
 
 @Resolver()
 export class CategoryResolver {
-    @Query(() => [Category])
-    async getAllCategories() {
-        const result = await Category.find();
-        return result;
-    }
+	@Query(() => [Category])
+	async getAllCategories() {
+		const result = await Category.find();
+		return result;
+	}
 
-    @Mutation(() => Category)
-    async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
-        const category = await Category.save({ ...categoryData });
-        return category;
-    }
+	@Mutation(() => Category)
+	async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
+		const category = await Category.save({ ...categoryData });
+		return category;
+	}
 
-    @Mutation(() => String)
-    async deleteCategoryById(@Arg("id") id: number) {
-        const categoryToDelete = await Category.findOneByOrFail({
-            id: id,
-        });
-        categoryToDelete.remove();
-        return "The Category has been deleted";
-    }
+	@Mutation(() => String)
+	async deleteCategoryById(@Arg("id") id: number) {
+		const categoryToDelete = await Category.findOneByOrFail({
+			id: id,
+		});
+		categoryToDelete.remove();
+		return "The Category has been deleted";
+	}
 }

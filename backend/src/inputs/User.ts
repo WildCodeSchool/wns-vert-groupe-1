@@ -1,4 +1,4 @@
-import { UserRole } from "../entities/user";
+import { UserRole } from "@entities";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
