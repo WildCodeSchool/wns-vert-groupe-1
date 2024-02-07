@@ -2,7 +2,8 @@ import { GET_CITY_BY_NAME } from "@queries";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { CityCard, CityCardProps } from "@components";
+import { CityCard } from "@components";
+import { CityCardProps } from "@types";
 
 const SearchResults = () => {
 	const router = useRouter();

@@ -1,12 +1,7 @@
 "use client";
 
 import Map from "react-map-gl";
-
-export type CityMapProps = {
-	id?: number;
-	lat: number;
-	lon: number;
-};
+import { CityMapProps } from "@types";
 
 export const CityMap = ({ lat, lon }: CityMapProps) => {
 	return (

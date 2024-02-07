@@ -1,16 +1,4 @@
-export type PoiType = {
-	id: number;
-	name: string;
-	address: string;
-	description: string;
-};
-
-export type CityCardProps = {
-	id?: number;
-	name: string;
-	description: string;
-	pois?: PoiType[];
-};
+import { CityCardProps } from "@types";
 
 export const CityCard = ({ name, description, pois }: CityCardProps) => {
 	return (

@@ -6,23 +6,16 @@ import { useQuery } from "@apollo/client";
 
 import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
+import { POIInput } from "@types";
 
-type Inputs = {
-	name: string;
-	address: string;
-	description: string;
-	city: string;
-	category: string;
-};
-
-const NewPoi = () => {
+const NewPOI = () => {
 	const {
 		register,
 		handleSubmit,
 		watch,
 		formState: { errors },
 		reset,
-	} = useForm<Inputs>();
+	} = useForm<POIInput>();
 
 	const {
 		loading: cityLoading,
@@ -51,7 +44,7 @@ const NewPoi = () => {
 		{ data: createdPoiData, loading: createPoiLoading, error: createPoiError },
 	] = useMutation(CREATE_NEW_POI);
 
-	const onSubmit: SubmitHandler<Inputs> = async (formData: any) => {
+	const onSubmit: SubmitHandler<POIInput> = async (formData: any) => {
 		console.log("données du form", formData);
 
 		try {
@@ -121,4 +114,4 @@ const NewPoi = () => {
 	}
 };
 
-export default NewPoi;
+export default NewPOI;

@@ -1,5 +1,6 @@
-import { CityCard, CityCardProps } from "./CityCard";
-import { CityMap, CityMapProps } from "./CityMap";
+import { CityCard } from "./CityCard";
+import { CityMap } from "./CityMap";
+import { CityCardProps, CityMapProps } from "@types";
 
 type DisplayCitiesType = {
 	cities: (CityCardProps & CityMapProps)[];
