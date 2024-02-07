@@ -1,32 +1,38 @@
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const SearchForm = () => {
 	const router = useRouter();
+	const [errorMessage, setErrorMessage] = useState("");
+	const [keyword, setKeyword] = useState("");
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setKeyword(e.target.value);
+		setErrorMessage("");
+	};
+
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		if (keyword.trim() === "") {
+			setErrorMessage("Veuillez d'abord saisir une ville s'il vous plait");
+		} else {
+			router.push(`/city/search/${keyword}`);
+		}
+	};
 
 	return (
-		<form
-			onSubmit={(e) => {
-				e.preventDefault();
-				const form = e.target;
-				const formData = new FormData(form as HTMLFormElement);
-				console.log("formData", formData);
-
-				const keyword = formData.get("keyword")?.toString() || "";
-
-				if (keyword !== "") {
-					router.push(`/city/search/${keyword}`);
-				} else {
-					router.push("/");
-				}
-			}}
-			className="text-field-with-button"
-		>
+		<form onSubmit={handleSubmit} className="text-field-with-button">
 			<input
-				className="text-field main-search-field"
+				className={` main-search-field ${errorMessage ? "warning-text-field" : "text-field"}`}
 				type="search"
 				name="keyword"
+				placeholder={errorMessage || "Saisie une ville"}
+				onChange={handleChange}
 			/>
-			<button className="button button-primary">
+			<button
+				className={` button  ${errorMessage ? "button-warning" : "button-primary"}`}
+			>
 				<svg
 					aria-hidden="true"
 					width="16"

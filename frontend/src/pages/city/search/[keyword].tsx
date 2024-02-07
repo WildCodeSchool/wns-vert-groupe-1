@@ -3,13 +3,19 @@ import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CityCard, { CityCardProps } from "../../../components/CityCard";
+import SearchForm from "../../../components/SearchForm";
+import CityMap from "../../../components/CityMap";
 
 const SearchResults = () => {
+	const latFrance = 46.603354;
+	const lonFrance = 1.888334;
 	const router = useRouter();
 	const [searchedCity, setSearchedCity] = useState<CityCardProps>({
 		name: "",
 		description: "",
 		pois: [],
+		lat: undefined,
+		lon: undefined,
 	});
 
 	const { loading, error, data } = useQuery(GET_CITY_BY_NAME, {
@@ -20,9 +26,11 @@ const SearchResults = () => {
 		if (error) {
 			console.error("Error fetching city:", error.message);
 			setSearchedCity({
-				name: "", // Set name to null to trigger the "No city found" message
+				name: "",
 				description: "",
 				pois: [],
+				lat: latFrance,
+				lon: lonFrance,
 			});
 		}
 
@@ -32,25 +40,34 @@ const SearchResults = () => {
 				name: data.getCityByName.name,
 				description: data.getCityByName.description,
 				pois: data.getCityByName.pois || [],
+				lon: data.getCityByName.lon,
+				lat: data.getCityByName.lat,
 			});
 		}
-	}, [loading, error, data, router.query.keyword]);
+	}, [data, error, router.query.keyword]);
 
-	console.log("seéarch", searchedCity);
+	if (loading) return <p>Loading...</p>;
 
 	return (
 		<>
+			<SearchForm />
 			{searchedCity.name !== "" ? (
-				<CityCard
-					name={searchedCity.name}
-					description={searchedCity.description}
-					pois={searchedCity.pois}
-				/>
+				<div>
+					<CityCard
+						name={searchedCity.name}
+						description={searchedCity.description}
+						pois={searchedCity.pois}
+					/>
+					<CityMap lat={searchedCity.lat} lon={searchedCity.lon} />
+				</div>
 			) : (
-				<p>
-					Aucune ville trouvée pour le terme de recherche :{" "}
-					{router.query.keyword}
-				</p>
+				<div>
+					<p className="warning">
+						Aucune ville trouvée pour le terme de recherche :{" "}
+						{router.query.keyword}
+					</p>
+					<CityMap lat={latFrance} lon={lonFrance} />
+				</div>
 			)}
 		</>
 	);
