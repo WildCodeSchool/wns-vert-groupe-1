@@ -1,4 +1,4 @@
-import Cities from "../components/Cities";
+import { Cities } from "@components";
 
 const Home = () => {
 	return <Cities />;

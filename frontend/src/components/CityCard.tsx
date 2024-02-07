@@ -12,7 +12,7 @@ export type CityCardProps = {
 	pois?: PoiType[];
 };
 
-const CityCard = ({ name, description, pois }: CityCardProps) => {
+export const CityCard = ({ name, description, pois }: CityCardProps) => {
 	return (
 		<div className="mt-30">
 			<div className={`container p-20`}>
@@ -41,5 +41,3 @@ const CityCard = ({ name, description, pois }: CityCardProps) => {
 		</div>
 	);
 };
-
-export default CityCard;

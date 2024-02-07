@@ -1,8 +1,8 @@
-import { GET_CITY_BY_NAME } from "../../../graphql/queries/queries";
+import { GET_CITY_BY_NAME } from "@queries";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import CityCard, { CityCardProps } from "../../../components/CityCard";
+import { CityCard, CityCardProps } from "@components";
 
 const SearchResults = () => {
 	const router = useRouter();

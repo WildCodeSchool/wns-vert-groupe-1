@@ -1,8 +1,8 @@
 import { useQuery } from "@apollo/client";
-import DisplayCities from "./DisplayCities";
-import { GET_ALL_CITIES } from "../graphql/queries/queries";
+import { DisplayCities } from "./DisplayCities";
+import { GET_ALL_CITIES } from "@queries";
 
-const Cities = () => {
+export const Cities = () => {
 	const { loading, error, data } = useQuery(GET_ALL_CITIES);
 
 	if (loading) return <p>Loading...</p>;
@@ -10,5 +10,3 @@ const Cities = () => {
 
 	return <DisplayCities cities={data.getAllCities} />;
 };
-
-export default Cities;

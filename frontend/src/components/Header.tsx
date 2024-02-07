@@ -1,8 +1,8 @@
 import Link from "next/link";
 import React from "react";
-import SearchForm from "./SearchForm";
+import { SearchForm } from "./SearchForm";
 
-const Header = () => {
+export const Header = () => {
 	return (
 		<header className="header">
 			<div className="main-menu">
@@ -16,5 +16,3 @@ const Header = () => {
 		</header>
 	);
 };
-
-export default Header;

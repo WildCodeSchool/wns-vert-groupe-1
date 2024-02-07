@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-const SearchForm = () => {
+export const SearchForm = () => {
 	const router = useRouter();
 
 	return (
@@ -44,5 +44,3 @@ const SearchForm = () => {
 		</form>
 	);
 };
-
-export default SearchForm;
