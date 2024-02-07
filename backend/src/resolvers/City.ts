@@ -1,6 +1,7 @@
 import { CityInput } from "../inputs/City";
 import { City } from "../entities/city";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { CityUpdateInput } from "../inputs/CityUpdate";
 
 @Resolver()
 export class CityResolver {
@@ -55,16 +56,44 @@ export class CityResolver {
 
   @Mutation(() => City)
   async createNewCity(@Arg("cityData") cityData: CityInput) {
-    if (cityData.pois) {
-      await City.save({
-        ...cityData,
-        pois: cityData.pois.map((poi) => ({ id: poi })),
-      });
-    } else {
-      await City.save({
-        ...cityData,
-        pois: [],
-      });
+    const pois = cityData.pois ? cityData.pois.map((poi) => ({ id: poi })) : [];
+
+    const city = await City.create({
+      ...cityData,
+      pois: pois,
+    }).save();
+
+    return city;
+  }
+
+  @Mutation(() => String)
+  async deleteCityById(@Arg("id") id: number) {
+    const cityToDelete = await City.findOneByOrFail({
+      id: id,
+    });
+    cityToDelete.remove();
+
+    return "The city has been deleted";
+  }
+
+  @Mutation(() => City)
+  async updateCity(
+    @Arg("id") id: number,
+    @Arg("cityData") cityData: CityUpdateInput
+  ) {
+    const existingCity = await City.findOneOrFail({
+      where: { id },
+    });
+
+    if (!existingCity) {
+      throw new Error(`City with ID ${id} not found`);
     }
+
+    const updatedCity = await City.save({
+      ...existingCity,
+      ...cityData,
+    });
+
+    return updatedCity;
   }
 }
