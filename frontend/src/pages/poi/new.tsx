@@ -17,39 +17,32 @@ type Inputs = {
 };
 
 const NewPoi = () => {
-  const [files, setFiles] = useState<File[]>([]);
   const [imageURLs, setImageURLs] = useState<string[]>([]);
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
     reset,
   } = useForm<Inputs>();
 
-  const { loading: cityLoading, error: cityError, data: cityData } = useQuery<{
+  const { data: cityData } = useQuery<{
     getAllCities: {
       id: number;
       name: string;
     }[];
   }>(GET_ALL_CITIES);
 
-  const { loading: categoryLoading, error: categoryError, data: categoryData } = useQuery<{
+  const {  data: categoryData } = useQuery<{
     getAllCategories: {
       id: number;
       name: string;
     }[];
   }>(GET_ALL_CATEGORIES);
 
-  const [
-    createNewPoi,
-    { data: createdPoiData, loading: createPoiLoading, error: createPoiError },
-  ] = useMutation(CREATE_NEW_POI);
+  const [createNewPoi] = useMutation(CREATE_NEW_POI);
 
   const onSubmit: SubmitHandler<Inputs> = async (formData: Inputs) => {
-    console.log("données du form", formData);
-
     try {
       const result = await createNewPoi({
         variables: {
@@ -64,52 +57,17 @@ const NewPoi = () => {
         },
       });
       setImageURLs([]);
-      setFiles([]);
       reset();
-
     } catch (err: any) {
       console.error(err);
     }
   };
 
-
   if (cityData && categoryData) {
     return (
       <div>
-        <input
-          type="file"
-          onChange={async (e) => {
-            if (e.target.files) {
-              const selectedFiles = Array.from(e.target.files);
-              setFiles(selectedFiles);
-              const url = "http://localhost:8000/upload";
-              selectedFiles.forEach(async (file, index) => {
-                const formData = new FormData();
-                formData.append("file", file, file.name);
-                try {
-                  const response = await axios.post(url, formData);
-                  console.log(response)
-                  setImageURLs(prevImageURLs => [...prevImageURLs, response.data.filename]);
-                } catch (err) {
-                  console.log("error", err);
-                }
-              });
-            }
-          }}
-          multiple
-        />
-
-        {imageURLs.map((url, index) => (
-          <div key={index}>
-            <br />
-            <img
-              width={"500"}
-              alt={`uploadedImg${index}`}
-              src={"http://localhost:8000" + url}
-            />
-            <br />
-          </div>
-        ))}
+        <h2>Ajouter un POI</h2>
+        
         <form onSubmit={handleSubmit(onSubmit)}>
           <label>
             Nom: <br />
@@ -149,8 +107,43 @@ const NewPoi = () => {
           </label>
           <br />
           <br />
+          <input
+            type="file"
+            onChange={async (e) => {
+              if (e.target.files) {
+                const selectedFiles = Array.from(e.target.files);
+                const url = "http://localhost:8000/upload";
+                selectedFiles.forEach(async (file) => {
+                  const formData = new FormData();
+                  formData.append("file", file, file.name);
+                  try {
+                    const response = await axios.post(url, formData);
+                    console.log(response)
+                    setImageURLs(prevImageURLs => [...prevImageURLs, response.data.filename]);
+                  } catch (err) {
+                    console.log("error", err);
+                  }
+                });
+              }
+            }}
+            multiple
+          />
+          <br />
+          <br />
           <input className="button" type="submit" />
         </form>
+
+        {imageURLs.map((url, index) => (
+          <div key={index}>
+            <br />
+            <img
+              width={"500"}
+              alt={`uploadedImg${index}`}
+              src={"http://localhost:8000" + url}
+            />
+            <br />
+          </div>
+        ))}
       </div>
     );
   }

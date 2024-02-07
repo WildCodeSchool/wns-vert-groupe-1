@@ -31,9 +31,8 @@
 				"endOfLine": "auto"
 			}
 		],
-		"no-unused-vars": "warn",
-		"no-unused-modules": "warn"
-	},
+		"no-unused-vars": "warn"
+		},
 	"settings": {
 		"import/resolver": {
 			"typescript": {}
