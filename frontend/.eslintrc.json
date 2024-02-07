@@ -25,8 +25,8 @@
 	],
 	"rules": {
 		"react/react-in-jsx-scope": "off",
-		"prettier/prettier": ["error", { "endOfLine": "auto" }],
-		"no-unused-vars": "warn"
+		"prettier/prettier": [2, { "endOfLine": "auto" }],
+		"import/no-unused-modules": [2, { "unusedExports": true }]
 	},
 	"settings": {
 		"import/resolver": {

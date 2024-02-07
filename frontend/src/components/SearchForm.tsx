@@ -14,7 +14,9 @@ const SearchForm = () => {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (keyword.trim() === "") {
+		console.log("value", keyword);
+
+		if (keyword === "") {
 			setErrorMessage("Veuillez d'abord saisir une ville s'il vous plait");
 		} else {
 			router.push(`/city/search/${keyword}`);
@@ -27,7 +29,7 @@ const SearchForm = () => {
 				className={` main-search-field ${errorMessage ? "warning-text-field" : "text-field"}`}
 				type="search"
 				name="keyword"
-				placeholder={errorMessage || "Saisie une ville"}
+				placeholder={errorMessage || "Saisir une ville"}
 				onChange={handleChange}
 			/>
 			<button
