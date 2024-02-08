@@ -41,3 +41,21 @@ export const GET_CITY_BY_NAME = gql`
 		}
 	}
 `;
+
+export const GET_POI_BY_ID = gql`
+	query getPoiById($id: number!) {
+		getPoiById(id: $id) {
+			id
+			description
+			address
+			name
+			city {
+				name
+			}
+			category {
+				name
+			}
+			images
+		}
+	}
+`;

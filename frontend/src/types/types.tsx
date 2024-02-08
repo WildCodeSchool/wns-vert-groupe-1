@@ -1,8 +1,11 @@
 export type POIType = {
-	id: number;
+	id?: number;
 	name: string;
 	address: string;
 	description: string;
+	images: string[];
+	city: string;
+	category:string;
 };
 
 export type CityCardProps = {
