@@ -1,5 +1,5 @@
-import { Rating } from "src/entities/rating";
-import { RatingInput } from "src/inputs/Rating";
+import { Rating } from "@entities";
+import { RatingInput } from "@inputs";
 import { Arg, Query, Resolver, Mutation } from "type-graphql";
 
 @Resolver()
