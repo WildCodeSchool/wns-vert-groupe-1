@@ -1,5 +1,4 @@
-import SearchForm from "@/components/SearchForm";
-import SearchResults from "@/pages/city/search/[keyword]";
+import { SearchForm } from "@components";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { NextRouter } from "next/router";
