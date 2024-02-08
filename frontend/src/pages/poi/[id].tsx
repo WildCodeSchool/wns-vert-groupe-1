@@ -3,11 +3,11 @@ import { useQuery } from "@apollo/client";
 
 import { useEffect, useState } from "react";
 import { GET_POI_BY_ID } from "@queries";
-import { POIType } from "@types";
+import { POIInput } from "@types";
 
 const POIDetails = () => {
     const router = useRouter();
-    const [POIDetails, setPOIDetails] = useState<POIType>({
+    const [POIDetails, setPOIDetails] = useState<POIInput>({
         name: "",
         address: "",
         description: "",
@@ -17,13 +17,12 @@ const POIDetails = () => {
     });
 
     const { loading, error, data } = useQuery(GET_POI_BY_ID, {
-        variables: { id: router.query.id },
-    });
-
-    useEffect(() => {
+        variables: { id: parseInt(router.query.id as string) },
+});
+console.log(data) 
+   useEffect(() => {
         if (!loading && data && data.getPoiById) {
             setPOIDetails({
-                id: data.getPoiById.id,
                 name: data.getPoiById.name,
                 address: data.getPoiById.address,
                 description: data.getPoiById.description,

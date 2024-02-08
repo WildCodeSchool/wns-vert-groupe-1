@@ -10,12 +10,13 @@ export class PoiResolver {
 	}
 
 	@Query(() => Poi)
-	async getPoiById(@Arg("id") id: number): Promise<Poi> {
+	async getPoiById(@Arg("id") id: number) {
 		try {
 			const result = await Poi.findOne({
 				where: {
 					id: id,
 				},
+				relations: { city : true, category : true}
 			});
 
 			if (!result) {
