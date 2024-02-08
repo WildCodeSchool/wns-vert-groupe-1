@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client";
 import Carousel from 'react-material-ui-carousel'
-
-import { ImageList, ImageListItem, Typography, Grid, Paper } from '@mui/material';
-import { Breadcrumbs } from '@mui/material';
+import { Breadcrumbs, ImageList, ImageListItem, Typography, Grid, Paper, Divider } from '@mui/material';
 import { GET_POI_BY_ID } from "@queries";
 import { POIInput } from "@types";
 
@@ -19,7 +17,6 @@ const POIDetails = () => {
         category: "",
     });
 
-    // State pour suivre l'index de l'image sélectionnée dans la liste
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
     const { loading, error, data } = useQuery(GET_POI_BY_ID, {
@@ -51,19 +48,19 @@ const POIDetails = () => {
         setSelectedImageIndex(index);
         console.log(selectedImageIndex)
     };
-console.log(POI.images)
+
     return (
         <div>
             <Breadcrumbs aria-label="breadcrumb">
                 <Typography color="textPrimary">{POI.city}</Typography>
                 <Typography color="textPrimary">{POI.category}</Typography>
             </Breadcrumbs>
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
+            <Grid container spacing={6}>
+                <Grid item xs={8}>
                     <Carousel autoPlay={false} index={selectedImageIndex !== null ? selectedImageIndex : undefined}>
                         {POI.images.map((imageUrl, i) => <Item key={i} item={imageUrl} index={i} />)}
                     </Carousel>
-                    <ImageList sx={{ width: 400, height: 100 }} cols={3} rowHeight={100}>
+                    <ImageList sx={{ width: 400, height: 100 }} cols={3}>
                         {POI.images.map((imageUrl, i) => (
                             <ImageListItem key={i} onClick={() => handleImageClick(i)}>
                                 <img src={imageUrl} loading="lazy" />
@@ -71,10 +68,14 @@ console.log(POI.images)
                         ))}
                     </ImageList>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <Typography variant="h4">{POI.name}</Typography>
-                    <Typography>Adresse: {POI.address}</Typography>
-                    <Typography>Description: {POI.description}</Typography>
+                    <Typography variant="h6">Adresse: {POI.address}</Typography>
+                    <Divider variant="middle" style={{ marginBottom: '1rem', marginTop: '8rem' }} /> {/* Ajoute un espace avec un Divider */}
+
+                    <Typography variant="h5">Description</Typography>
+                    <Typography>{POI.description}</Typography>
+
                 </Grid>
             </Grid>
         </div>
