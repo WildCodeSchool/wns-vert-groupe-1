@@ -1,13 +1,13 @@
-import CityCard, { CityCardProps } from "./CityCard";
-import CityMap, { CityMapProps } from "./CityMap";
+import { CityCard } from "./CityCard";
+import { CityCardProps } from "@types";
 
 type DisplayCitiesType = {
-	cities: (CityCardProps & CityMapProps)[];
+	cities: CityCardProps[];
 	onClickDelete?: (adId: number) => void;
 	onClickEdit?: (adId: number) => void;
 };
 
-const DisplayCities = ({ cities }: DisplayCitiesType) => {
+export const DisplayCities = ({ cities }: DisplayCitiesType) => {
 	return (
 		<>
 			<section className="recent-cities">
@@ -20,13 +20,9 @@ const DisplayCities = ({ cities }: DisplayCitiesType) => {
 								description={city.description}
 								pois={city.pois}
 							/>
-
-							<CityMap lat={city.lat} lon={city.lon} />
 						</div>
 					))}
 			</section>
 		</>
 	);
 };
-
-export default DisplayCities;

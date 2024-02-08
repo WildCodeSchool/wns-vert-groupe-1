@@ -14,6 +14,6 @@ export class CityInput {
   @Field()
   description: string;
 
-  @Field(() => [Number])
-  pois: [number];
+  @Field(() => [Number], { nullable: true })
+  pois?: [number];
 }
