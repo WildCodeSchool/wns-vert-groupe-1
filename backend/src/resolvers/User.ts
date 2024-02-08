@@ -1,7 +1,5 @@
-import { City } from "../entities/city";
-import { User } from "../entities/user";
-// UserRole
-import { UserInput } from "../inputs/User";
+import { City, User } from "@entities";
+import { UserInput } from "@inputs";
 import { Query, Resolver, Mutation, Arg } from "type-graphql";
 
 @Resolver()
@@ -69,7 +67,7 @@ export class UserResolver {
 	@Mutation(() => String)
 	async updateUserById(
 		@Arg("id") id: number,
-		@Arg("newUserInput") newUserInput: UserInput,
+		@Arg("newUserInput") newUserInput: UserInput
 		// @Arg("role") newUserRole?: UserRole,
 	) {
 		try {

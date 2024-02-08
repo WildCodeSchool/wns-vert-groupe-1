@@ -1,10 +1,9 @@
-import { GET_CITY_BY_NAME } from "../../../graphql/queries/queries";
+import { GET_CITY_BY_NAME } from "@queries";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import CityCard, { CityCardProps } from "../../../components/CityCard";
-import SearchForm from "../../../components/SearchForm";
-import CityMap from "../../../components/CityMap";
+import { CityCard, SearchForm, CityMap } from "@components";
+import { CityCardProps } from "@types";
 
 const SearchResults = () => {
 	const latFrance = 46.603354;

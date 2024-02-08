@@ -1,13 +1,9 @@
 "use client";
 
 import Map from "react-map-gl";
+import { CityMapProps } from "@types";
 
-export type CityMapProps = {
-	lat?: number;
-	lon?: number;
-};
-
-const CityMap = ({ lat, lon }: CityMapProps) => {
+export const CityMap = ({ lat, lon }: CityMapProps) => {
 	const key = `${lat}-${lon}`;
 	return (
 		<>
@@ -25,5 +21,3 @@ const CityMap = ({ lat, lon }: CityMapProps) => {
 		</>
 	);
 };
-
-export default CityMap;

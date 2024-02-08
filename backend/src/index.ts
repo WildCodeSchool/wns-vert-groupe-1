@@ -1,13 +1,16 @@
 import "reflect-metadata";
+import "module-alias/register";
 import { buildSchema } from "type-graphql";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { ApolloServer } from "@apollo/server";
 import dataSource from "./config/db";
-import { CityResolver } from "./resolvers/City";
-import { PoiResolver } from "./resolvers/Poi";
-import { UserResolver } from "./resolvers/User";
-import { CategoryResolver } from "./resolvers/Category";
-import { User, UserRole } from "./entities/user";
+import {
+	CityResolver,
+	PoiResolver,
+	UserResolver,
+	CategoryResolver,
+} from "@resolvers";
+import { User, UserRole } from "@entities";
 
 const start = async () => {
 	await dataSource.initialize();

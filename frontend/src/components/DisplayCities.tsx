@@ -1,4 +1,5 @@
-import CityCard, { CityCardProps } from "./CityCard";
+import { CityCard } from "./CityCard";
+import { CityCardProps } from "@types";
 
 type DisplayCitiesType = {
 	cities: CityCardProps[];
@@ -6,7 +7,7 @@ type DisplayCitiesType = {
 	onClickEdit?: (adId: number) => void;
 };
 
-const DisplayCities = ({ cities }: DisplayCitiesType) => {
+export const DisplayCities = ({ cities }: DisplayCitiesType) => {
 	return (
 		<>
 			<section className="recent-cities">
@@ -25,5 +26,3 @@ const DisplayCities = ({ cities }: DisplayCitiesType) => {
 		</>
 	);
 };
-
-export default DisplayCities;
