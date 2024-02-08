@@ -7,7 +7,9 @@ import { CityResolver } from "./resolvers/City";
 import { PoiResolver } from "./resolvers/Poi";
 import { UserResolver } from "./resolvers/User";
 import { CategoryResolver } from "./resolvers/Category";
+import { RatingResolver } from "./resolvers/Rating";
 import { User, UserRole } from "./entities/user";
+
 
 const start = async () => {
 	await dataSource.initialize();
@@ -52,7 +54,7 @@ const start = async () => {
 	}
 
 	const schema = await buildSchema({
-		resolvers: [CityResolver, PoiResolver, UserResolver, CategoryResolver],
+		resolvers: [CityResolver, PoiResolver, UserResolver, CategoryResolver, RatingResolver],
 	});
 	const server = new ApolloServer({
 		schema,
