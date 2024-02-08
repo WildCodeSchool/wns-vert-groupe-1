@@ -1,15 +1,14 @@
+import { useState, useEffect } from 'react';
 import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client";
 import Carousel from 'react-material-ui-carousel'
 
-import { Breadcrumbs, Typography, Grid, Card, CardMedia, CardContent, Paper } from '@mui/material';
-
-import { useEffect, useState } from "react";
+import { ImageList, ImageListItem, Typography, Grid, Paper } from '@mui/material';
+import { Breadcrumbs } from '@mui/material';
 import { GET_POI_BY_ID } from "@queries";
 import { POIInput } from "@types";
 
 const POIDetails = () => {
-    
     const router = useRouter();
     const [POI, setPOI] = useState<POIInput>({
         name: "",
@@ -20,11 +19,14 @@ const POIDetails = () => {
         category: "",
     });
 
+    // State pour suivre l'index de l'image sélectionnée dans la liste
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
     const { loading, error, data } = useQuery(GET_POI_BY_ID, {
         variables: { id: parseInt(router.query.id as string) },
-});
-console.log(data) 
-   useEffect(() => {
+    });
+
+    useEffect(() => {
         if (!loading && data && data.getPoiById) {
             setPOI({
                 name: data.getPoiById.name,
@@ -36,8 +38,7 @@ console.log(data)
             });
         }
     }, [data, error, router.query.id]);
-    console.log(POIDetails)
-    
+
     function Item(props: any) {
         return (
             <Paper>
@@ -45,30 +46,39 @@ console.log(data)
             </Paper>
         )
     }
-return (
-    <div>
-        <Breadcrumbs aria-label="breadcrumb">
-            <Typography color="textPrimary">{POI.city}</Typography>
-            <Typography color="textPrimary">{POI.category}</Typography>
-        </Breadcrumbs>
-        <Grid container spacing={2}>
-                <Carousel>
-                    {
-                    POI.images.map((imageUrl, i) => <Item key={i} item={imageUrl} index={i} />)
-                    }
-                </Carousel>
-             
-            <Grid item xs={6}>
-                <Typography variant="h4">{POI.name}</Typography>
-                Adresse :
-                <Typography>{POI.address}</Typography>
-                Description : 
-                <Typography>{POI.description}</Typography>
-            </Grid>
-        </Grid>
-    </div>
-);
-}
 
+    const handleImageClick = (index: number) => {
+        setSelectedImageIndex(index);
+        console.log(selectedImageIndex)
+    };
+console.log(POI.images)
+    return (
+        <div>
+            <Breadcrumbs aria-label="breadcrumb">
+                <Typography color="textPrimary">{POI.city}</Typography>
+                <Typography color="textPrimary">{POI.category}</Typography>
+            </Breadcrumbs>
+            <Grid container spacing={2}>
+                <Grid item xs={6}>
+                    <Carousel autoPlay={false} index={selectedImageIndex !== null ? selectedImageIndex : undefined}>
+                        {POI.images.map((imageUrl, i) => <Item key={i} item={imageUrl} index={i} />)}
+                    </Carousel>
+                    <ImageList sx={{ width: 400, height: 100 }} cols={3} rowHeight={100}>
+                        {POI.images.map((imageUrl, i) => (
+                            <ImageListItem key={i} onClick={() => handleImageClick(i)}>
+                                <img src={imageUrl} loading="lazy" />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant="h4">{POI.name}</Typography>
+                    <Typography>Adresse: {POI.address}</Typography>
+                    <Typography>Description: {POI.description}</Typography>
+                </Grid>
+            </Grid>
+        </div>
+    );
+}
 
 export default POIDetails;
