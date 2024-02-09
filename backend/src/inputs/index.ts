@@ -3,3 +3,4 @@ export * from "./City";
 export * from "./Poi";
 export * from "./User";
 export * from "./CityUpdate";
+export * from "./UserLogin";
