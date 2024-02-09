@@ -55,6 +55,12 @@ h1 {
   gap: 10px;
   color: #0e3246;
 }
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
  
 .categories-navigation {
   font-size: 12px;

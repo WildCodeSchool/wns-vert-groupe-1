@@ -12,7 +12,7 @@ export const Cities = () => {
 	return (
 		<>
 			<SearchForm />
-			<DisplayCities cities={data.getAllCities} />;
+			<DisplayCities cities={data.getAllCities} />
 		</>
 	);
 };
