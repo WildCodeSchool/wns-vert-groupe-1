@@ -1,6 +1,6 @@
-import { CityCardProps } from "@types";
+import { CityType } from "@types";
 
-export const CityCard = ({ name, description, pois }: CityCardProps) => {
+export const CityCard = ({ name, description, pois }: CityType) => {
 	return (
 		<div className={`mt-30 mb-30`}>
 			<div className={`container p-20`}>
