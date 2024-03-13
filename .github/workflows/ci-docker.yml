@@ -28,7 +28,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/backend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
 
       - name: Build and push frontend
         if: startsWith(github.head_ref, 'frontend/')
@@ -37,4 +37,4 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
