@@ -1,10 +1,12 @@
-name: docker-ci
+name: ci-docker
 
-on: push
+on:
+  pull_request:
+    types: [closed]
 
 jobs:
   docker:
-    if: github.ref == 'refs/heads/dev'
+    if: github.event.pull_request.merged == true && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
@@ -19,18 +21,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v5
+      - name: Build and push backend
         if: startsWith(github.head_ref, 'backend/')
-        name: Build and push
+        uses: docker/build-push-action@v5
         with:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/backend:latest
 
-      - uses: docker/build-push-action@v5
+      - name: Build and push frontend
         if: startsWith(github.head_ref, 'frontend/')
-        name: Build and push
+        uses: docker/build-push-action@v5
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
