@@ -9,10 +9,12 @@ import {
   PoiResolver,
   UserResolver,
   CategoryResolver,
+  RatingResolver,
 } from "@resolvers";
 import { User, UserRole } from "@entities";
 import * as jwt from "jsonwebtoken";
 import * as argon2 from "argon2";
+
 
 const start = async () => {
   await dataSource.initialize();
@@ -57,7 +59,7 @@ const start = async () => {
   }
 
   const schema = await buildSchema({
-    resolvers: [CityResolver, PoiResolver, UserResolver, CategoryResolver],
+    resolvers: [CityResolver, PoiResolver, UserResolver, CategoryResolver, RatingResolver],
     authChecker: ({ context }) => {
       if (context.email) {
         return true;
