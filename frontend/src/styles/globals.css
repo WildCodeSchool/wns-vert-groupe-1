@@ -254,3 +254,11 @@ h1 {
 .title {
   font-weight: bold;
 }
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+  display: none;
+}
+
+.mapboxgl-marker{
+  z-index: 9999;
+}

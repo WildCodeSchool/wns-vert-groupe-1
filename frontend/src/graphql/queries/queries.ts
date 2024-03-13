@@ -35,9 +35,22 @@ export const GET_CITY_BY_NAME = gql`
 				name
 				address
 				description
+				latitude
+	  			longitude
 			}
 			lon
 			lat
 		}
 	}
+`;
+
+export const GET_POI_BY_CITY = gql`
+  query getPOIByCity($city: String!) {
+    getPOIByCity(city: $city) {
+      id
+      name
+      latitude
+	  longitude
+    }
+  }
 `;

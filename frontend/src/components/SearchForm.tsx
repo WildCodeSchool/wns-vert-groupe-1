@@ -27,7 +27,7 @@ const SearchForm = () => {
 				className={` main-search-field ${errorMessage ? "warning-text-field" : "text-field"}`}
 				type="search"
 				name="keyword"
-				placeholder={errorMessage || "Saisie une ville"}
+				placeholder={errorMessage || "Saisir une ville"}
 				onChange={handleChange}
 			/>
 			<button

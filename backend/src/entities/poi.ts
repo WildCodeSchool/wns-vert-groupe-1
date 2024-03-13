@@ -25,6 +25,18 @@ export class Poi extends BaseEntity {
   address: string;
 
   @Field()
+  @Column({ nullable: true })
+  postalCode: string;
+
+  @Field()
+  @Column({ type: "float", nullable: true })
+  latitude: number;
+  
+  @Field()
+  @Column({ type: "float", nullable: true })
+  longitude: number;
+
+  @Field()
   @Column()
   description: string;
 
@@ -40,3 +52,4 @@ export class Poi extends BaseEntity {
   @ManyToOne(() => Category, (category) => category.pois)
   category: Category;
 }
+

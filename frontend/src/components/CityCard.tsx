@@ -2,7 +2,10 @@ export type PoiType = {
 	id: number;
 	name: string;
 	address: string;
+	postalCode: string;
 	description: string;
+	latitude: number;
+	longitude:number;
 };
 
 export type CityCardProps = {
@@ -26,7 +29,7 @@ const CityCard = ({ name, description, pois }: CityCardProps) => {
 				</div>
 				{!!pois?.length && (
 					<div>
-						<strong className="primary">Points d&apos;Interets:</strong>
+						<strong className="primary">Points d&apos;interets:</strong>
 						<ul>
 							{pois.map((poi) => (
 								<li key={poi.id}>

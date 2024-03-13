@@ -4,6 +4,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 
+import { GeoCodingService } from '../../service/GeoCodingService';
+
 import { CREATE_NEW_POI } from "../../graphql/mutations/mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "../../graphql/queries/queries";
 
@@ -12,7 +14,10 @@ type Inputs = {
     address: string;
     description: string;
     city:string;
-    category:string
+    category:string;
+    postalCode:string;
+    latitude: number;
+    longitude: number;
 };
 
 const NewPoi = () => {
@@ -44,27 +49,35 @@ const NewPoi = () => {
     { data: createdPoiData, loading: createPoiLoading, error: createPoiError },
   ] = useMutation(CREATE_NEW_POI);
 
-  const onSubmit: SubmitHandler<Inputs> = async (formData: any) => {
-    console.log("données du form", formData);
-
-      try {
-        const result = await createNewPoi({
-          variables: {
-            poiData: {
-              name: formData.name,
-              address: formData.address,
-              description: formData.description,
-              city: Number.parseInt(formData.city),
-              category: Number.parseInt(formData.category),
-            },
-          },
-        });
-        reset();
-
-      } catch (err: any) {
-        console.error(err);
+  const onSubmit: SubmitHandler<Inputs> = async (formData: Inputs) => {
+    try {
+      const coordinates = await GeoCodingService.getCoordinates(formData.address);
+  
+      if (coordinates) {
+        formData.latitude = coordinates.latitude;
+        formData.longitude = coordinates.longitude;
       }
+  
+      const result = await createNewPoi({
+        variables: {
+          poiData: {
+            name: formData.name,
+            address: formData.address,
+            postalCode: formData.postalCode,
+            description: formData.description,
+            city: Number.parseInt(formData.city),
+            category: Number.parseInt(formData.category),
+            latitude: formData.latitude, 
+            longitude: formData.longitude, 
+          },
+        },
+      });
+
+      reset();
+    } catch (err: any) {
+      console.error(err);
     }
+  }
 
     if (cityData && categoryData) {
     return (
@@ -78,6 +91,11 @@ const NewPoi = () => {
           <label>
           Adresse: <br />
             <input className="text-field" {...register("address")} />
+          </label>
+          <br />
+          <label>
+          Code Postal: <br />
+            <input className="text-field" {...register("postalCode")} />
           </label>
           <br />
           <label>

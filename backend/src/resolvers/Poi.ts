@@ -13,6 +13,19 @@ export class PoiResolver {
     return result;
   }
 
+  @Query(() => [Poi])
+  async getPOIByCity(@Arg("city") city: string) {
+    const foundCity = await City.findOne({ where: { name: city } });
+
+    if (!foundCity) {
+      throw new Error(`La ville ${city} n'a pas été trouvée`);
+    }
+
+    const pois = await Poi.find({ where: { city: foundCity } });
+
+    return pois;
+  }
+
   @Mutation(() => Poi)
   async createNewPoi(@Arg("poiData") poiData: PoiInput) {
     const city = await City.findOneByOrFail({ id: poiData.city });
