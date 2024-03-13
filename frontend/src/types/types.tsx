@@ -5,10 +5,10 @@ export type POIType = {
 	description: string;
 };
 
-export type CityCardProps = {
+export type CityType = {
 	id?: number;
 	name: string;
-	description: string;
+	description?: string;
 	pois?: POIType[];
 	lat?: number;
 	lon?: number;
@@ -20,7 +20,7 @@ export type CityMapProps = {
 };
 
 export type DisplayCitiesType = {
-	cities: (CityCardProps & CityMapProps)[];
+	cities: (CityType & CityMapProps)[];
 	onClickDelete?: (adId: number) => void;
 	onClickEdit?: (adId: number) => void;
 };

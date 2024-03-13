@@ -1,8 +1,8 @@
 import { CityCard } from "./CityCard";
-import { CityCardProps } from "@types";
+import { CityType } from "@types";
 
 type DisplayCitiesType = {
-	cities: CityCardProps[];
+	cities: CityType[];
 	onClickDelete?: (adId: number) => void;
 	onClickEdit?: (adId: number) => void;
 };

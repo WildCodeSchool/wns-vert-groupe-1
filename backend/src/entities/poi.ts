@@ -4,10 +4,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany
 } from "typeorm";
 import { Field, ObjectType } from "type-graphql";
 import { City } from "./city";
 import { Category } from "./category";
+import { Rating } from "./rating";
 
 @ObjectType()
 @Entity()
@@ -39,4 +41,8 @@ export class Poi extends BaseEntity {
   @Field(() => Category)
   @ManyToOne(() => Category, (category) => category.pois)
   category: Category;
+
+  @OneToMany(() => Rating, (Rating) => Rating.pois)
+  ratings: Rating;
+
 }

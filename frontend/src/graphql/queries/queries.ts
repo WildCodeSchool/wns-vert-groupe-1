@@ -60,3 +60,19 @@ export const GET_POI_BY_ID = gql`
 		}
 	}
 `;
+
+export const LOGIN = gql`
+	query Login($userData: UserLoginInput!) {
+		login(userData: $userData)
+	}
+`;
+
+export const GET_AUTH_INFO = gql`
+	query WhoAmI {
+		whoAmI {
+			isLoggedIn
+			email
+			role
+		}
+	}
+`;
