@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import Layout from "../components/Layout";
+import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/globals.css";
 
 const client = new ApolloClient({
