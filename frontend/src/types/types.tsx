@@ -26,6 +26,7 @@ export type DisplayCitiesType = {
 };
 
 export type POIInput = {
+	id?: number;
 	name: string;
 	address: string;
 	description: string;

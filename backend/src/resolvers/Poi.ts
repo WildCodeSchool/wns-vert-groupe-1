@@ -9,6 +9,27 @@ export class PoiResolver {
 		return result;
 	}
 
+	@Query(() => Poi)
+	async getPoiById(@Arg("id") id: number) {
+		try {
+			const result = await Poi.findOne({
+				where: {
+					id: id,
+				},
+				relations: { city : true, category : true}
+			});
+
+			if (!result) {
+				throw new Error(`POI with ID ${id} not found`);
+			}
+
+			return result;
+		} catch (err) {
+			console.error("Error", err);
+			throw new Error("An error occurred while reading one POI");
+		}
+	}
+
 	@Mutation(() => Poi)
 	async createNewPoi(@Arg("poiData") poiData: PoiInput) {
 		const city = await City.findOneByOrFail({ id: poiData.city });

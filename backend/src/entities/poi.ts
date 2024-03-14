@@ -35,7 +35,7 @@ export class Poi extends BaseEntity {
   images: string[];
 
   @Field(() => City)
-  @ManyToOne(() => City, (city) => city.pois, { nullable: true })
+  @ManyToOne(() => City, (city) => city.pois)
   city: City;
 
   @Field(() => Category)

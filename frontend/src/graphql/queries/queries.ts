@@ -42,6 +42,25 @@ export const GET_CITY_BY_NAME = gql`
 	}
 `;
 
+export const GET_POI_BY_ID = gql`
+	query getPoiById($id: Float!) {
+		getPoiById(id: $id) {
+			description
+			address
+			name
+			city {
+				id
+				name
+			}
+			category {
+				id
+				name
+			}
+			images
+		}
+	}
+`;
+
 export const LOGIN = gql`
 	query Login($userData: UserLoginInput!) {
 		login(userData: $userData)
