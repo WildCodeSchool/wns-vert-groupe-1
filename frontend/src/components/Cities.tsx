@@ -1,9 +1,9 @@
 import { useQuery } from "@apollo/client";
-import DisplayCities from "./DisplayCities";
+import { DisplayCities } from "./DisplayCities";
 import { GET_ALL_CITIES } from "../graphql/queries/queries";
 import SearchForm from "./SearchForm";
 
-const Cities = () => {
+export const Cities = () => {
 	const { loading, error, data } = useQuery(GET_ALL_CITIES);
 
 	if (loading) return <p>Loading...</p>;
@@ -12,9 +12,7 @@ const Cities = () => {
 	return (
 		<>
 			<SearchForm />
-			<DisplayCities cities={data.getAllCities} />;
+			<DisplayCities cities={data.getAllCities} />
 		</>
 	);
 };
-
-export default Cities;

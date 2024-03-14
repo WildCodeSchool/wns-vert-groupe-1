@@ -11,7 +11,7 @@ export type PoiType = {
 export type CityCardProps = {
 	id?: number;
 	name: string;
-	description: string;
+	description?: string;
 	pois?: PoiType[];
 	lat?: number;
 	lon?: number;

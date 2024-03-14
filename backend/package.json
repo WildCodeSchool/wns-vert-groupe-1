@@ -1,41 +1,44 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node-dev ./src/index.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/WildCodeSchool/2023-09-wns-vert-groupe1.git"
-  },
-  "author": "WCS-groupe-1",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/WildCodeSchool/2023-09-wns-vert-groupe1/issues"
-  },
-  "homepage": "https://github.com/WildCodeSchool/2023-09-wns-vert-groupe1#readme",
-  "dependencies": {
-    "@apollo/server": "^4.9.5",
-    "argon2": "^0.31.2",
-    "axios": "^1.6.7",
-    "class-validator": "^0.14.0",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "graphql": "^16.8.1",
-    "graphql-scalars": "^1.22.4",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.11.3",
-    "reflect-metadata": "^0.1.13",
-    "ts-node-dev": "^2.0.0",
-    "type-graphql": "^2.0.0-beta.3",
-    "typeorm": "^0.3.17"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.14",
-    "@types/express": "^4.17.17",
-    "@types/jsonwebtoken": "^9.0.5"
-  }
+	"name": "backend",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "ts-node-dev ./src/index.ts"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/WildCodeSchool/2023-09-wns-vert-groupe1.git"
+	},
+	"author": "WCS-groupe-1",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/WildCodeSchool/2023-09-wns-vert-groupe1/issues"
+	},
+	"homepage": "https://github.com/WildCodeSchool/2023-09-wns-vert-groupe1#readme",
+	"dependencies": {
+		"@apollo/server": "^4.9.5",
+		"argon2": "^0.31.2",
+		"class-validator": "^0.14.0",
+		"cors": "^2.8.5",
+		"graphql": "^16.8.1",
+		"graphql-scalars": "^1.22.4",
+		"jsonwebtoken": "^9.0.2",
+		"module-alias": "^2.2.3",
+		"pg": "^8.11.3",
+		"reflect-metadata": "^0.1.13",
+		"ts-node-dev": "^2.0.0",
+		"type-graphql": "^2.0.0-beta.3",
+		"typeorm": "^0.3.17"
+	},
+	"devDependencies": {
+		"@types/cors": "^2.8.14",
+		"@types/jsonwebtoken": "^9.0.5"
+	},
+	"_moduleAliases": {
+		"@entities": "src/entities",
+		"@inputs": "src/inputs",
+		"@resolvers": "src/resolvers"
+	}
 }

@@ -14,11 +14,7 @@ export type CityMapProps = {
 	}[];
 };
 
-const CityMap = ({ lat, lon, pois }: CityMapProps) => {
-	console.log("lat:", lat);
-	console.log("lon:", lon);
-	console.log("POI data:", pois);
-
+export const CityMap = ({ lat, lon, pois }: CityMapProps) => {
 	const key = `${lat}-${lon}`;
 
 	return (

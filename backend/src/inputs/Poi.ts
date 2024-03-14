@@ -23,8 +23,8 @@ export class PoiInput {
   @Field(() => Float, { nullable: true })
   longitude?: number;
 
-  // @Field(() => [String])
-  //images: string[];
+  @Field(() => [String])
+  images: string[];
 
   @Field()
   category: number;

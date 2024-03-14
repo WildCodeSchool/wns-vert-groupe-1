@@ -4,10 +4,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany
 } from "typeorm";
 import { Field, ObjectType } from "type-graphql";
 import { City } from "./city";
 import { Category } from "./category";
+import { Rating } from "./rating";
 
 @ObjectType()
 @Entity()
@@ -40,16 +42,20 @@ export class Poi extends BaseEntity {
   @Column()
   description: string;
 
-  // @Field(() => [String])
-  //@Column("text", { array: true, default: [] })
-  //images: string[];
+  @Field(() => [String])
+  @Column("text", { array: true, default: [] })
+  images: string[];
 
   @Field(() => City)
-  @ManyToOne(() => City, (city) => city.pois, { nullable: true })
+  @ManyToOne(() => City, (city) => city.pois)
   city: City;
 
   @Field(() => Category)
   @ManyToOne(() => Category, (category) => category.pois)
   category: Category;
+
+  @OneToMany(() => Rating, (Rating) => Rating.pois)
+  ratings: Rating;
+
 }
 

@@ -1,7 +1,26 @@
-import { City } from "../entities/city";
-import { User } from "../entities/user";
-import { UserInput } from "../inputs/User";
-import { Query, Resolver, Mutation, Arg } from "type-graphql";
+import { City, User, UserRole } from "@entities";
+import { UserInput, UserLoginInput } from "@inputs";
+import {
+  Query,
+  Resolver,
+  Mutation,
+  Arg,
+  ObjectType,
+  Field,
+  Ctx,
+} from "type-graphql";
+import * as argon2 from "argon2";
+import * as jwt from "jsonwebtoken";
+
+@ObjectType()
+class UserInfo {
+  @Field()
+  isLoggedIn: boolean;
+  @Field({ nullable: true })
+  email: string;
+  @Field({ nullable: true })
+  role: string;
+}
 
 @Resolver()
 export class UserResolver {
@@ -32,22 +51,6 @@ export class UserResolver {
       console.error("Error", err);
       throw new Error(`An error occurred while reading User with ID ${id}`);
     }
-  }
-
-  @Mutation(() => User)
-  async createNewUser(@Arg("userData") userData: UserInput) {
-    const { city, ...data } = userData;
-    const user = await User.save({ ...data });
-    if (city) {
-      const cityEntity = await City.findOneByOrFail({
-        id: city,
-      });
-      if (cityEntity) {
-        user.city = cityEntity;
-      }
-    }
-    User.save(user);
-    return user;
   }
 
   @Mutation(() => String)
@@ -84,6 +87,66 @@ export class UserResolver {
       return "User updated";
     } catch (error) {
       throw new Error(`Error when updating the user : ${error.message}`);
+    }
+  }
+
+  @Mutation(() => String)
+  async register(@Arg("newUserData") newUserData: UserInput) {
+    try {
+      const { firstName, lastName, email, password, city } = newUserData;
+
+      const newUser = new User();
+      newUser.firstName = firstName;
+      newUser.lastName = lastName;
+      newUser.email = email;
+
+      if (city) {
+        const cityEntity = await City.findOneByOrFail({ id: city });
+        if (cityEntity) {
+          newUser.city = cityEntity;
+        }
+      }
+
+      // Hash the password using Argon2
+      const hashedPassword = await argon2.hash(password);
+
+      // Save the user to the database
+      newUser.hashedPassword = hashedPassword;
+      await newUser.save();
+
+      return "User has been successfully registered";
+    } catch (err) {
+      console.log("Error registering user:", err);
+      return "Error creating user";
+    }
+  }
+
+  @Query(() => String)
+  async login(@Arg("userData") { email, password }: UserLoginInput) {
+    let payload: { email: string; role: UserRole };
+    try {
+      const user = await User.findOneByOrFail({ email });
+
+      if (await argon2.verify(user.hashedPassword, password)) {
+        payload = { email: user.email, role: user.role };
+        const token = jwt.sign(payload, "mysupersecretkey");
+
+        return token;
+      } else {
+        throw new Error("Invalid password");
+      }
+    } catch (err) {
+      console.log("Error authenticating user:", err);
+      return "Invalid credentials";
+    }
+  }
+
+  @Query(() => UserInfo)
+  async whoAmI(@Ctx() ctx: { email: string; role: string }) {
+    if (ctx.email !== undefined) {
+      return { ...ctx, isLoggedIn: true };
+    } else {
+      return { isLoggedIn: false };
     }
   }
 }
