@@ -1,8 +1,10 @@
-import { SearchForm } from "../components";
+import SearchForm from "../components/SearchForm";
 import "@testing-library/jest-dom";
+import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render, screen } from "@testing-library/react";
 import { NextRouter } from "next/router";
 import { TextEncoder, TextDecoder } from "util";
+
 Object.assign(global, { TextDecoder, TextEncoder });
 
 const mockRouter: Partial<NextRouter> = {
