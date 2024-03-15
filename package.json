@@ -8,6 +8,8 @@
     "react-mapbox-gl": "^5.1.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.1",
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
     "react": "^18.2.0",

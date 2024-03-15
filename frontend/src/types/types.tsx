@@ -36,7 +36,7 @@ export type POIInput = {
 	city: string;
 	category: string;
 	images: string[];
-	postalCode:string;
-    latitude: number;
-    longitude: number;
+	postalCode?:string;
+    latitude?: number;
+    longitude?: number;
 };
