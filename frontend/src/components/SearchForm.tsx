@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-const SearchForm = () => {
+export const SearchForm = () => {
 	const router = useRouter();
 	const [errorMessage, setErrorMessage] = useState("");
 	const [keyword, setKeyword] = useState("");
@@ -50,5 +50,3 @@ const SearchForm = () => {
 		</form>
 	);
 };
-
-export default SearchForm;

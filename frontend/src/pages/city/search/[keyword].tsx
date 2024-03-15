@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import CityCard, { CityCardProps } from "../../../components/CityCard";
-import SearchForm from "../../../components/SearchForm";
-import CityMap from "../../../components/CityMap";
-import { GET_CITY_BY_NAME } from "../../../graphql/queries/queries";
+import { GET_CITY_BY_NAME } from "@queries";
+import { CityCard, SearchForm, CityMap } from "@components";
+import { CityType } from "@types";
 
 const SearchResults = () => {
     const latFrance = 46.603354;
     const lonFrance = 1.888334;
     const router = useRouter();
-    const [searchedCity, setSearchedCity] = useState<CityCardProps>({
+    const [searchedCity, setSearchedCity] = useState<CityType>({
         name: "",
         description: "",
         pois: [],

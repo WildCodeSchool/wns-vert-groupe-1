@@ -20,7 +20,16 @@ export type CityType = {
 export type CityMapProps = {
 	lat?: number;
 	lon?: number;
+	pois?: {
+		id: number;
+		name: string;
+		address: string;
+		description: string;
+		latitude: number;
+		longitude: number;
+	}[];
 };
+
 
 export type DisplayCitiesType = {
 	cities: (CityType & CityMapProps)[];
@@ -39,4 +48,12 @@ export type POIInput = {
 	postalCode?:string;
     latitude?: number;
     longitude?: number;
+};
+
+export type UserInput = {
+	firstName: string;
+	lastName: number;
+	email: string;
+	password: string;
+	city?: number;
 };

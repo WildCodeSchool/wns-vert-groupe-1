@@ -1,18 +1,10 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { REGISTER } from "@mutations";
 import { GET_ALL_CITIES } from "@queries";
-import { CityType } from "@types";
+import { CityType, UserInput } from "@types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-
-type Inputs = {
-	firstName: string;
-	lastName: number;
-	email: string;
-	password: string;
-	city?: number;
-};
 
 const Register = () => {
 	const router = useRouter();
@@ -23,13 +15,13 @@ const Register = () => {
 		handleSubmit,
 		reset,
 		formState: { errors },
-	} = useForm<Inputs>();
+	} = useForm<UserInput>();
 
 	const [cities, setCities] = useState<CityType[]>([]);
 
 	const [register] = useMutation(REGISTER);
 
-	const onSubmit: SubmitHandler<Inputs> = async (data) => {
+	const onSubmit: SubmitHandler<UserInput> = async (data) => {
 		console.log("form data", data);
 		try {
 			data.city = Number(data.city);

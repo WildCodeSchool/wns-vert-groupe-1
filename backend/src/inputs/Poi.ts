@@ -17,10 +17,10 @@ export class PoiInput {
   @Field()
   city: number;
 
-  @Field(() => Float, { nullable: true })
+  @Field(() => Float)
   latitude?: number;
 
-  @Field(() => Float, { nullable: true })
+  @Field(() => Float)
   longitude?: number;
 
   @Field(() => [String])
