@@ -1,4 +1,4 @@
-import { Field, InputType } from "type-graphql";
+import { Field, Float, InputType } from "type-graphql";
 
 @InputType()
 export class PoiInput {
@@ -9,10 +9,19 @@ export class PoiInput {
   address: string;
 
   @Field()
+  postalCode: string;
+
+  @Field()
   description: string;
 
   @Field()
   city: number;
+
+  @Field(() => Float, { nullable: true })
+  latitude?: number;
+
+  @Field(() => Float, { nullable: true })
+  longitude?: number;
 
   @Field(() => [String])
   images: string[];

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export const SearchForm = () => {
+const SearchForm = () => {
 	const router = useRouter();
 	const [errorMessage, setErrorMessage] = useState("");
 	const [keyword, setKeyword] = useState("");
@@ -14,9 +14,7 @@ export const SearchForm = () => {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		console.log("value", keyword);
-
-		if (keyword === "") {
+		if (keyword.trim() === "") {
 			setErrorMessage("Veuillez d'abord saisir une ville s'il vous plait");
 		} else {
 			router.push(`/city/search/${keyword}`);
@@ -52,3 +50,5 @@ export const SearchForm = () => {
 		</form>
 	);
 };
+
+export default SearchForm;

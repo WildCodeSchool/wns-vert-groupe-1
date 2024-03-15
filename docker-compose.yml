@@ -24,9 +24,9 @@ services:
       - 3000:3000
     volumes:
       - ./frontend/src:/app/src
-    depends_on:
-      backend:
-        condition: service_healthy
+    # depends_on:
+    #   backend:
+    #     condition: service_healthy
   db:
     image: postgres
     restart: always

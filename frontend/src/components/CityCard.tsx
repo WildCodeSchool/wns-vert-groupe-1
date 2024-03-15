@@ -1,6 +1,23 @@
-import { CityType } from "@types";
+export type PoiType = {
+	id: number;
+	name: string;
+	address: string;
+	postalCode: string;
+	description: string;
+	latitude: number;
+	longitude:number;
+};
 
-export const CityCard = ({ name, description, pois }: CityType) => {
+export type CityCardProps = {
+	id?: number;
+	name: string;
+	description?: string;
+	pois?: PoiType[];
+	lat?: number;
+	lon?: number;
+};
+
+const CityCard = ({ name, description, pois }: CityCardProps) => {
 	return (
 		<div className={`mt-30 mb-30`}>
 			<div className={`container p-20`}>
@@ -12,7 +29,7 @@ export const CityCard = ({ name, description, pois }: CityType) => {
 				</div>
 				{!!pois?.length && (
 					<div>
-						<strong className="primary">Points d&apos;Interets:</strong>
+						<strong className="primary">Points d&apos;interets:</strong>
 						<ul>
 							{pois.map((poi) => (
 								<li key={poi.id}>
@@ -29,3 +46,5 @@ export const CityCard = ({ name, description, pois }: CityType) => {
 		</div>
 	);
 };
+
+export default CityCard;

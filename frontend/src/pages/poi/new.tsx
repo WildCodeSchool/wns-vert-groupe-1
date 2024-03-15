@@ -1,107 +1,124 @@
-"use client";
+'use client'
 
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 
-import { CREATE_NEW_POI } from "@mutations";
-import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
+import { GeoCodingService } from '../../service/GeoCodingService';
+
+import { CREATE_NEW_POI } from "../../graphql/mutations/mutations";
+import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "../../graphql/queries/queries";
 import { POIInput } from "@types";
 import axios from "axios";
 
 const NewPoi = () => {
-	const [imageURLs, setImageURLs] = useState<string[]>([]);
+  const [imageURLs, setImageURLs] = useState<string[]>([]);
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<POIInput>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<POIInput>();
 
-	const { data: cityData } = useQuery<{
+  const { data: cityData } = useQuery<{
 		getAllCities: {
 			id: number;
 			name: string;
 		}[];
 	}>(GET_ALL_CITIES);
 
-	const { data: categoryData } = useQuery<{
+  const { data: categoryData } = useQuery<{
 		getAllCategories: {
 			id: number;
 			name: string;
 		}[];
 	}>(GET_ALL_CATEGORIES);
 
-	const [createNewPoi] = useMutation(CREATE_NEW_POI);
+  const [createNewPoi] = useMutation(CREATE_NEW_POI);
 
-	const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
-		try {
-			const result = await createNewPoi({
-				variables: {
-					poiData: {
-						name: formData.name,
-						address: formData.address,
-						description: formData.description,
-						images: imageURLs.map((image) => "http://localhost:8000" + image),
-						city: Number.parseInt(formData.city),
-						category: Number.parseInt(formData.category),
-					},
-				},
-			});
-			setImageURLs([]);
-			reset();
-		} catch (err: any) {
-			console.error(err);
-		}
-	};
+  const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
 
-	if (cityData && categoryData) {
-		return (
-			<div>
-				<h2>Ajouter un POI</h2>
+    try {
+      const coordinates = await GeoCodingService.getCoordinates(formData.address);
+  
+      if (coordinates) {
+        formData.latitude = coordinates.latitude;
+        formData.longitude = coordinates.longitude;
+      }
+  
+      const result = await createNewPoi({
+        variables: {
+          poiData: {
+            name: formData.name,
+            address: formData.address,
+            postalCode: formData.postalCode,
+            description: formData.description,
+            images: imageURLs.map((image) => "http://localhost:8000" + image),
+            city: Number.parseInt(formData.city),
+            category: Number.parseInt(formData.category),
+            latitude: formData.latitude, 
+            longitude: formData.longitude, 
+          },
+        },
+      });
+      setImageURLs([]);
+      reset();
+    } catch (err: any) {
+      console.error(err);
+    }
+  }
 
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<label>
-						Nom: <br />
-						<input className="text-field" {...register("name")} />
-					</label>
-					<br />
-					<label>
-						Adresse: <br />
-						<input className="text-field" {...register("address")} />
-					</label>
-					<br />
-					<label>
-						Description: <br />
-						<input className="text-field" {...register("description")} />
-					</label>
-					<br />
-					<label>
-						Ville: <br />
-						<select {...register("city")}>
-							{cityData?.getAllCities?.map((city) => (
-								<option key={city.id} value={city.id}>
-									{city.name}
-								</option>
-							))}
-						</select>
-					</label>
-					<br />
-					<label>
-						Catégorie: <br />
-						<select {...register("category")}>
-							{categoryData?.getAllCategories?.map((category) => (
-								<option key={category.id} value={category.id}>
-									{category.name}
-								</option>
-							))}
-						</select>
-					</label>
-					<br />
-					<br />
-					<input
+    if (cityData && categoryData) {
+    return (
+      <div>
+        	<h2>Ajouter un POI</h2>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <label>
+            Nom: <br />
+            <input className="text-field" {...register("name")} />
+          </label>
+          <br />
+          <label>
+          Adresse: <br />
+            <input className="text-field" {...register("address")} />
+          </label>
+          <br />
+          <label>
+          Code Postal: <br />
+            <input className="text-field" {...register("postalCode")} />
+          </label>
+          <br />
+          <label>
+            Ville: <br />
+          <select {...register("city")}>
+            {cityData?.getAllCities?.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.name}
+              </option>
+            ))}
+          </select>
+          </label>
+        < br/>
+          <label>
+            Description: <br />
+            <input className="text-field" {...register("description")} />
+          </label>
+          <br />
+          <label>
+            Catégorie: <br />
+          <select {...register("category")}>
+            {categoryData?.getAllCategories?.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          </label>
+          <br />
+          <br />
+          <input
 						type="file"
 						onChange={async (e) => {
 							if (e.target.files) {
@@ -127,10 +144,9 @@ const NewPoi = () => {
 					/>
 					<br />
 					<br />
-					<input className="button" type="submit" />
-				</form>
-
-				{imageURLs.map((url, index) => (
+          <input className="button" type="submit" />
+        </form>
+        {imageURLs.map((url, index) => (
 					<div key={index}>
 						<br />
 						<img
@@ -141,9 +157,9 @@ const NewPoi = () => {
 						<br />
 					</div>
 				))}
-			</div>
-		);
-	}
+      </div>
+    );
+  };
 };
 
 export default NewPoi;

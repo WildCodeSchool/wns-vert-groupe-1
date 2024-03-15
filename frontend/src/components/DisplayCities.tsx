@@ -1,4 +1,4 @@
-import { CityCard } from "./CityCard";
+import CityCard from "./CityCard";
 import { CityType } from "@types";
 
 type DisplayCitiesType = {

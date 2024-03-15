@@ -1,3 +1,5 @@
+@import url('https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css');
+
 * {
   box-sizing: border-box;
 }
@@ -259,4 +261,12 @@ h1 {
  
 .title {
   font-weight: bold;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+  display: none;
+}
+
+.mapboxgl-marker{
+  z-index: 9999;
 }
