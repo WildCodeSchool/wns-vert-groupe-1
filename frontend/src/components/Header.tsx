@@ -1,7 +1,10 @@
-import Link from "next/link";
 import React, { useContext } from "react";
+import Link from "next/link";
+import { AppBar, Toolbar, Button } from "@mui/material";
 import { UserContext } from "./Layout";
 import { useRouter } from "next/router";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export const Header = () => {
 	const authInfo = useContext(UserContext);
@@ -13,45 +16,41 @@ export const Header = () => {
 		router.push("/");
 	};
 
-	console.log("isLoggedIn", authInfo);
 	return (
-		<header className="header">
-			<div className="main-menu">
-				<h1>
-					<Link href="/" className="button logo link-button">
-						<span className="desktop-long-label">CITY GUIDE</span>
-					</Link>
-				</h1>
-				<div className="auth-buttons">
-					{authInfo.isLoggedIn ? (
-						<>
-							{authInfo.role === "admin" && (
-								<Link href="/admin/users" className="button link-button">
-									<span className="desktop-long-label">Admin Panel</span>
-									<span className="mobile-short-label">Admin</span>
-								</Link>
-							)}
-							<button className="button button-primary" onClick={handleLogout}>
-								Logout
-							</button>
-						</>
-					) : (
-						<>
-							<Link href="/login" className="button link-button">
-								<span className="mobile-short-label">Login</span>
-								<span className="desktop-long-label">Login</span>
-							</Link>
-							<Link
-								href="/register"
-								className="button link-button button-primary"
-							>
-								<span className="mobile-short-label">Sign Up</span>
-								<span className="desktop-long-label">Sign Up</span>
-							</Link>
-						</>
-					)}
+		<AppBar position="static">
+			<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+				<Link href="/" passHref>
+					<Button color="inherit" variant="text">
+						CITY GUIDE
+					</Button>
+				</Link>
+				<div>
+					<img
+						src="/images/logo.png"
+						alt="logo"
+						style={{ height: 40, marginRight: 1 }}
+					/>
 				</div>
-			</div>
-		</header>
+				{!authInfo.isLoggedIn ? (
+					<div>
+						{authInfo.role === "admin" && (
+							<Link href="/admin/users" passHref>
+								<Button color="inherit" variant="text">
+									Admin Panel
+								</Button>
+							</Link>
+						)}
+						<AccountCircleIcon />
+						<LogoutIcon onClick={handleLogout} />
+					</div>
+				) : (
+					<Link href="/login" passHref>
+						<Button color="inherit" variant="text">
+							Connexion
+						</Button>
+					</Link>
+				)}
+			</Toolbar>
+		</AppBar>
 	);
 };
