@@ -27,16 +27,18 @@ export const mainTheme = createTheme({
 		},
 	},
 	typography: {
-		fontFamily: ["Manrope", "Lexend", "sans-serif"].join(","),
+		fontFamily: ["Manrope", "sans-serif"].join(","),
 		fontWeightRegular: 400,
 		fontWeightMedium: 500,
 		fontWeightBold: 700,
 		fontSize: 16,
 		h1: {
+			fontFamily: "Lexend, sans-serif",
 			fontSize: "90px",
 			fontWeight: 500,
 		},
 		h2: {
+			fontFamily: "Lexend, sans-serif",
 			fontSize: "40px",
 			fontWeight: 500,
 		},
@@ -49,11 +51,11 @@ export const mainTheme = createTheme({
 			fontWeight: 500,
 		},
 		h5: {
-			fontSize: "14px",
-			fontWeight: 400,
+			fontSize: "16px",
+			fontWeight: 300,
 		},
 		h6: {
-			fontSize: "12px",
+			fontSize: "14px",
 			fontWeight: 400,
 		},
 	},

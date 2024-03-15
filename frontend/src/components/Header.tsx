@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import Link from "next/link";
-import { AppBar, Toolbar, Button } from "@mui/material";
+import { AppBar, Toolbar, Button, Typography } from "@mui/material";
 import { UserContext } from "./Layout";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { mainTheme } from "@theme";
 
 export const Header = () => {
 	const authInfo = useContext(UserContext);
@@ -20,34 +21,41 @@ export const Header = () => {
 		<AppBar position="static">
 			<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
 				<Link href="/" passHref>
-					<Button color="inherit" variant="text">
+					<Typography color="inherit" sx={{ letterSpacing: "0.04em" }}>
 						CITY GUIDE
-					</Button>
+					</Typography>
 				</Link>
 				<div>
 					<img
 						src="/images/logo.png"
 						alt="logo"
-						style={{ height: 40, marginRight: 1 }}
+						style={{ height: 60, marginRight: 1 }}
 					/>
 				</div>
-				{!authInfo.isLoggedIn ? (
+				{authInfo.isLoggedIn ? (
 					<div>
 						{authInfo.role === "admin" && (
 							<Link href="/admin/users" passHref>
-								<Button color="inherit" variant="text">
-									Admin Panel
-								</Button>
+								<Typography color="inherit">ADMIN PANEL</Typography>
 							</Link>
 						)}
-						<AccountCircleIcon />
-						<LogoutIcon onClick={handleLogout} />
+						<AccountCircleIcon
+							sx={{
+								fontSize: mainTheme.typography.h2,
+								mr: mainTheme.spacing(3),
+							}}
+						/>
+						<LogoutIcon
+							onClick={handleLogout}
+							sx={{
+								mr: mainTheme.spacing(2),
+								fontSize: mainTheme.typography.h2,
+							}}
+						/>
 					</div>
 				) : (
 					<Link href="/login" passHref>
-						<Button color="inherit" variant="text">
-							Connexion
-						</Button>
+						<Typography color="inherit">CONNEXION</Typography>
 					</Link>
 				)}
 			</Toolbar>
