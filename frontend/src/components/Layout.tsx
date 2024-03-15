@@ -2,6 +2,8 @@ import { ReactNode, createContext } from "react";
 import { Header } from "./Header";
 import { useQuery } from "@apollo/client";
 import { GET_AUTH_INFO } from "../graphql/queries/queries";
+import { ThemeProvider, Container } from "@mui/material";
+import { mainTheme } from "@theme";
 
 export const UserContext = createContext({
 	isLoggedIn: false,
@@ -33,10 +35,26 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 					role: data.whoAmI.role,
 				}}
 			>
-				<main className="main-content">
-					<Header />
-					{children}
-				</main>
+				<ThemeProvider theme={mainTheme}>
+					<main
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							minHeight: "100vh",
+						}}
+					>
+						<Header />
+						<Container
+							sx={{
+								flex: "1",
+								pt: mainTheme.spacing(6),
+								background: mainTheme.palette.background.default,
+							}}
+						>
+							{children}
+						</Container>
+					</main>
+				</ThemeProvider>
 			</UserContext.Provider>
 		);
 	}
