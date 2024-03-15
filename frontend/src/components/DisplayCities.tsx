@@ -1,11 +1,5 @@
 import CityCard from "./CityCard";
-import { CityType } from "@types";
-
-type DisplayCitiesType = {
-	cities: CityType[];
-	onClickDelete?: (adId: number) => void;
-	onClickEdit?: (adId: number) => void;
-};
+import { DisplayCitiesType} from "@types";
 
 export const DisplayCities = ({ cities }: DisplayCitiesType) => {
 	return (
