@@ -2,8 +2,17 @@ import { ReactNode, createContext } from "react";
 import { Header } from "./Header";
 import { useQuery } from "@apollo/client";
 import { GET_AUTH_INFO } from "../graphql/queries/queries";
-import { ThemeProvider, Container } from "@mui/material";
+import {
+	ThemeProvider,
+	Container,
+	BottomNavigation,
+	BottomNavigationAction,
+	Typography,
+} from "@mui/material";
 import { mainTheme } from "@theme";
+import HomeIcon from "@mui/icons-material/Home";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Link from "next/link";
 
 export const UserContext = createContext({
 	isLoggedIn: false,
@@ -45,6 +54,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 					>
 						<Header />
 						<Container
+							maxWidth={false}
 							sx={{
 								flex: "1",
 								pt: mainTheme.spacing(6),
@@ -53,6 +63,27 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 						>
 							{children}
 						</Container>
+						<BottomNavigation
+							sx={{
+								background: mainTheme.palette.primary.light,
+								display: "flex",
+								justifyContent: "flex-end",
+								alignItems: "center",
+							}}
+						>
+							<Link href="#">
+								<Typography
+									sx={{
+										color: mainTheme.palette.primary.main,
+										mr: mainTheme.spacing(5),
+										fontSize: mainTheme.typography.h5,
+										letterSpacing: "0.04em",
+									}}
+								>
+									Mentions légales
+								</Typography>
+							</Link>
+						</BottomNavigation>
 					</main>
 				</ThemeProvider>
 			</UserContext.Provider>
