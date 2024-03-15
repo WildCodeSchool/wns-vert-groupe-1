@@ -23,6 +23,7 @@
 			"@queries": ["graphql/queries/queries"],
 			"@components": ["components"],
 			"@types": ["types"],
+			"@theme": ["theme"],
 		},
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
