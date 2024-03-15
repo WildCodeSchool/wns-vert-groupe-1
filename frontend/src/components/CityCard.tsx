@@ -1,6 +1,6 @@
 import { CityType } from "@types";
 
-const CityCard = ({ name, description, pois }: CityType) => {
+export const CityCard = ({ name, description, pois }: CityType) => {
 	return (
 		<div className={`mt-30 mb-30`}>
 			<div className={`container p-20`}>
@@ -29,5 +29,3 @@ const CityCard = ({ name, description, pois }: CityType) => {
 		</div>
 	);
 };
-
-export default CityCard;

@@ -1,4 +1,4 @@
-import CityCard from "./CityCard";
+import { CityCard } from "@components";
 import { DisplayCitiesType} from "@types";
 
 export const DisplayCities = ({ cities }: DisplayCitiesType) => {

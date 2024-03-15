@@ -5,10 +5,10 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 
-import { GeoCodingService } from '../../service/GeoCodingService';
+import { GeoCodingService } from '../../services/GeoCodingService';
 
-import { CREATE_NEW_POI } from "../../graphql/mutations/mutations";
-import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "../../graphql/queries/queries";
+import { CREATE_NEW_POI } from "@mutations";
+import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
 import axios from "axios";
 

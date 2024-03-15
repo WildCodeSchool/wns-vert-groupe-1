@@ -49,3 +49,11 @@ export type POIInput = {
     latitude?: number;
     longitude?: number;
 };
+
+export type UserInput = {
+	firstName: string;
+	lastName: number;
+	email: string;
+	password: string;
+	city?: number;
+};

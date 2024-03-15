@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { DisplayCities } from "./DisplayCities";
-import { GET_ALL_CITIES } from "../graphql/queries/queries";
-import SearchForm from "./SearchForm";
+import { GET_ALL_CITIES } from "@queries";
+import { SearchForm } from "./SearchForm";
 
 export const Cities = () => {
 	const { loading, error, data } = useQuery(GET_ALL_CITIES);

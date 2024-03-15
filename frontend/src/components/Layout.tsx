@@ -1,7 +1,7 @@
 import { ReactNode, createContext } from "react";
 import { Header } from "./Header";
 import { useQuery } from "@apollo/client";
-import { GET_AUTH_INFO } from "../graphql/queries/queries";
+import { GET_AUTH_INFO } from "@queries";
 
 export const UserContext = createContext({
 	isLoggedIn: false,
