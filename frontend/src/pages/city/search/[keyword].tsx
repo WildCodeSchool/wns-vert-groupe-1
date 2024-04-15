@@ -48,8 +48,6 @@ const SearchResults = () => {
 		}
 	}, [data, error, router.query.keyword]);
 
-	console.log("data", data);
-
 	if (loading)
 		return (
 			<div

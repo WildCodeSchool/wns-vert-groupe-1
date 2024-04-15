@@ -62,7 +62,7 @@ export class PoiResolver {
       id: id,
     });
     poiToDelete.remove();
-    return "Le point d'interet à été supprimé";
+    return `POI with id ${id} was successefully deleted`;
   }
 
   @Mutation(() => String)
@@ -74,18 +74,16 @@ export class PoiResolver {
       const oldPoi = await Poi.findOne({ where: { id: id } });
 
       if (!oldPoi) {
-        throw new Error(
-          `Le point d'interet avec l'ID : ${id} n'a pas été trouvé`
-        );
+        throw new Error(`POI with id ${id} haven't been found`);
       }
 
       Object.assign(oldPoi, newPoiInput);
 
       await oldPoi.save();
-      return "Le point d'interet a été mis à jour";
+      return `POI with id ${id} have been updated`;
     } catch (error) {
       throw new Error(
-        `Il y a eu une erreur avec la mise à jour du point d'interet: ${error.message}`
+        `En error occured while updateing a POI: ${error.message}`
       );
     }
   }
