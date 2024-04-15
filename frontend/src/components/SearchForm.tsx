@@ -42,6 +42,7 @@ export const SearchForm = () => {
 		<Paper
 			component="form"
 			onSubmit={handleSubmit}
+			data-testid="search-form-container"
 			sx={{
 				padding: `${mainTheme.spacing(3)} ${mainTheme.spacing(3)} ${mainTheme.spacing(3)} ${mainTheme.spacing(7)}`,
 				margin: mainTheme.spacing(4),
