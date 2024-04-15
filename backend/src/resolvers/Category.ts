@@ -4,24 +4,32 @@ import { Arg, Query, Resolver, Mutation } from "type-graphql";
 
 @Resolver()
 export class CategoryResolver {
-	@Query(() => [Category])
-	async getAllCategories() {
-		const result = await Category.find();
-		return result;
-	}
+  @Query(() => [Category])
+  async getAllCategories() {
+    const result = await Category.find({ relations: ["pois"] });
+    return result;
+  }
 
-	@Mutation(() => Category)
-	async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
-		const category = await Category.save({ ...categoryData });
-		return category;
-	}
+  @Mutation(() => Category)
+  async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
+    const pois = categoryData.pois
+      ? categoryData.pois.map((poi) => ({ id: poi }))
+      : [];
 
-	@Mutation(() => String)
-	async deleteCategoryById(@Arg("id") id: number) {
-		const categoryToDelete = await Category.findOneByOrFail({
-			id: id,
-		});
-		categoryToDelete.remove();
-		return "The Category has been deleted";
-	}
+    const city = await Category.create({
+      ...categoryData,
+      pois: pois,
+    }).save();
+
+    return city;
+  }
+
+  @Mutation(() => String)
+  async deleteCategoryById(@Arg("id") id: number) {
+    const categoryToDelete = await Category.findOneByOrFail({
+      id: id,
+    });
+    categoryToDelete.remove();
+    return "The Category has been deleted";
+  }
 }

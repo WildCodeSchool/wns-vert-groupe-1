@@ -1,20 +1,34 @@
 export type PoiType = {
-	id: number;
+	id?: number;
 	name: string;
-	address: string;
+	address?: string;
 	description: string;
-	postalCode:string;
-    latitude: number;
-    longitude: number;
+	postalCode?: string;
+	latitude?: number;
+	longitude?: number;
+	images: string[];
+	category: CategoryType;
+	ratings?: RatingType[];
 };
 
 export type CityType = {
 	id?: number;
-	name: string;
+	name?: string;
 	description?: string;
 	pois?: PoiType[];
 	lat?: number;
 	lon?: number;
+};
+
+export type RatingType = {
+	id: number;
+	rating: number;
+	text: string;
+};
+
+export type CategoryType = {
+	id?: number;
+	name: string;
 };
 
 export type CityMapProps = {
@@ -30,7 +44,6 @@ export type CityMapProps = {
 	}[];
 };
 
-
 export type DisplayCitiesType = {
 	cities: (CityType & CityMapProps)[];
 	onClickDelete?: (adId: number) => void;
@@ -45,9 +58,9 @@ export type POIInput = {
 	city: string;
 	category: string;
 	images: string[];
-	postalCode?:string;
-    latitude?: number;
-    longitude?: number;
+	postalCode?: string;
+	latitude?: number;
+	longitude?: number;
 };
 
 export type UserInput = {

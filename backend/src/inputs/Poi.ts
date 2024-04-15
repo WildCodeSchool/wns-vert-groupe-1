@@ -28,4 +28,7 @@ export class PoiInput {
 
   @Field()
   category: number;
+
+  @Field(() => [Number], { nullable: true })
+  ratings?: number[];
 }

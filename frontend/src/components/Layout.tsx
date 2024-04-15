@@ -57,8 +57,15 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 							maxWidth={false}
 							sx={{
 								flex: "1",
-								pt: mainTheme.spacing(6),
 								background: mainTheme.palette.background.default,
+								marginLeft: 0,
+								marginRight: 0,
+								paddingLeft: 0,
+								paddingRight: 0,
+								"@media (min-width:600px)": {
+									padding: 0,
+									margin: 0,
+								},
 							}}
 						>
 							{children}
@@ -69,6 +76,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 								display: "flex",
 								justifyContent: "flex-end",
 								alignItems: "center",
+								boxShadow: "0px -2px 4px rgba(0, 0, 0, 0.05)",
 							}}
 						>
 							<Link href="#">

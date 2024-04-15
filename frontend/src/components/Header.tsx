@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import Link from "next/link";
-import { AppBar, Toolbar, Button, Typography } from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import { UserContext } from "./Layout";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -19,7 +19,13 @@ export const Header = () => {
 
 	return (
 		<AppBar position="static">
-			<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+			<Toolbar
+				sx={{
+					display: "flex",
+					justifyContent: "space-between",
+					boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+				}}
+			>
 				<Link href="/" passHref>
 					<Typography color="inherit" sx={{ letterSpacing: "0.04em" }}>
 						CITY GUIDE
