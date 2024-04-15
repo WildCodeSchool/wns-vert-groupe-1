@@ -1,16 +1,16 @@
-import { Field, InputType } from "type-graphql";
+import { Field, Float, InputType } from "type-graphql";
 
 @InputType()
 export class RatingInput {
-    @Field()
-    id: number;
+  @Field({ nullable: true })
+  text?: string;
 
-    @Field()
-    user: string;
+  @Field(() => Float)
+  rating: number;
 
-    @Field()
-    text: string;
+  @Field({ nullable: true })
+  user?: string;
 
-    @Field()
-    rating: number;
+  @Field()
+  poi: number;
 }

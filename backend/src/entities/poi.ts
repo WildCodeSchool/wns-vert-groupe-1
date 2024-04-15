@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToMany
+  OneToMany,
 } from "typeorm";
 import { Field, ObjectType } from "type-graphql";
 import { City } from "./city";
@@ -33,7 +33,7 @@ export class Poi extends BaseEntity {
   @Field()
   @Column({ type: "float", nullable: true })
   latitude: number;
-  
+
   @Field()
   @Column({ type: "float", nullable: true })
   longitude: number;
@@ -54,8 +54,7 @@ export class Poi extends BaseEntity {
   @ManyToOne(() => Category, (category) => category.pois)
   category: Category;
 
-  @OneToMany(() => Rating, (Rating) => Rating.pois)
-  ratings: Rating;
-
+  @Field(() => [Rating])
+  @OneToMany(() => Rating, (rating) => rating.poi, { nullable: true })
+  ratings: Rating[];
 }
-

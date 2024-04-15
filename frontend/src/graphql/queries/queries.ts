@@ -36,7 +36,12 @@ export const GET_CITY_BY_NAME = gql`
 				address
 				description
 				latitude
-	  			longitude
+				longitude
+				images
+				category {
+					id
+					name
+				}
 			}
 			lon
 			lat
@@ -78,4 +83,3 @@ export const GET_AUTH_INFO = gql`
 		}
 	}
 `;
-

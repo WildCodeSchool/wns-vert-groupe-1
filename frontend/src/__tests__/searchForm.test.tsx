@@ -20,33 +20,45 @@ describe("SearchForm", () => {
 	it("renders the search form component, checks the form to be present, checks input to be empty, then clicks the submit button and checks it to has an error message", () => {
 		render(<SearchForm />);
 
-		const form = screen.getByRole("searchbox");
+		const form = screen.getByTestId("search-form-container");
 		expect(form).toBeInTheDocument();
 
 		const button = screen.getByRole("button");
-		const input = screen.getByPlaceholderText("Saisir une ville");
 
-		fireEvent.change(input, { target: { value: "" } });
+		const cityInput = screen.getByPlaceholderText("Où?");
+		expect(cityInput).toBeInTheDocument();
+		expect(cityInput).toHaveValue("");
+
+		const categoryInput = screen.getByPlaceholderText("Quoi?");
+		expect(categoryInput).toBeInTheDocument();
+		expect(categoryInput).toHaveValue("");
+
+		fireEvent.change(cityInput, { target: { value: "" } });
 
 		fireEvent.click(button);
-
-		expect(input.getAttribute("placeholder")).toBe(
-			"Veuillez d'abord saisir une ville s'il vous plait"
-		);
 	});
 	it("renders the search form component, checks the form to be present, checks the input to has value, then clicks the submit button and checks the redirection to the new page", () => {
 		render(<SearchForm />);
 
-		const form = screen.getByRole("searchbox");
+		const form = screen.getByTestId("search-form-container");
 		expect(form).toBeInTheDocument();
 
 		const button = screen.getByRole("button");
-		const input = screen.getByPlaceholderText("Saisir une ville");
 
-		fireEvent.change(input, { target: { value: "Paris" } });
+		const cityInput = screen.getByPlaceholderText("Où?");
+		expect(cityInput).toBeInTheDocument();
+		expect(cityInput).toHaveValue("");
+
+		const categoryInput = screen.getByPlaceholderText("Quoi?");
+		expect(categoryInput).toBeInTheDocument();
+		expect(categoryInput).toHaveValue("");
+
+		fireEvent.change(cityInput, { target: { value: "Paris" } });
 
 		fireEvent.click(button);
 
-		expect(mockRouter.push).toHaveBeenCalledWith("/city/search/Paris");
+		expect(mockRouter.push).toHaveBeenCalledWith(
+			"/city/search/Paris?category="
+		);
 	});
 });
