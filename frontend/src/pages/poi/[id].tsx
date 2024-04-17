@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client";
 import Carousel from 'react-material-ui-carousel'
-import { Breadcrumbs, ImageList, ImageListItem, Typography, Grid, Paper, Divider } from '@mui/material';
+import { Breadcrumbs, ImageList, ImageListItem, Typography, Grid, Paper, Link } from '@mui/material';
 import { GET_POI_BY_ID } from "@queries";
 import { POIInput } from "@types";
 import { mainTheme } from "@theme";
@@ -50,13 +50,22 @@ const POIDetails = () => {
         setSelectedImageIndex(index);
         console.log(selectedImageIndex)
     };
-console.log(POI.images)
+
+
+    const handleCityClick = () => {
+        router.push(`/city/search/${POI.city}`);
+    };    
+
+    const handleCategoryClick = () => {
+        router.push(`/city/search/${POI.city}/category/${POI.category}`);
+    };   
+    
     return (
         <div>
-            <Breadcrumbs aria-label="breadcrumb" sx={{ marginTop: '1rem', marginLeft: '1rem' }}>
-                <Typography sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }} color={mainTheme.palette.primary.dark}>{POI.city}</Typography>
-                <Typography sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }} color={mainTheme.palette.primary.dark}>{POI.category}</Typography>
-                <Typography sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light"}} color={mainTheme.palette.primary.dark}>{POI.name}</Typography>
+            <Breadcrumbs aria-label="breadcrumb" separator="›" sx={{ marginTop: '1rem', marginLeft: '1rem' }}>
+                <Link underline="hover" onClick={handleCityClick} sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }} color={mainTheme.palette.primary.dark}>{POI.city}</Link>
+                <Link underline="hover" onClick={handleCategoryClick}  sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }} color={mainTheme.palette.primary.dark}>{POI.category}</Link>
+                <Link underline="hover" sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }} color={mainTheme.palette.primary.dark}>{POI.name}</Link>
             </Breadcrumbs>
             <Grid container spacing={6} sx={{ padding: '1rem' }}>
                 <Grid item xs={6}>
