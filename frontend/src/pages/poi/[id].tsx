@@ -91,7 +91,6 @@ const POIDetails = () => {
                     <Typography color={mainTheme.palette.primary.main} align="left" sx={{ fontSize: mainTheme.typography.h4, fontWeight: "bold", marginTop: '3rem' }}>COMMENTAIRES</Typography>
                 </Grid>
             </Grid>
-
         </div>
     );
 }
