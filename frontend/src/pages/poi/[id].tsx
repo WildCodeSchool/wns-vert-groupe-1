@@ -5,6 +5,8 @@ import Carousel from 'react-material-ui-carousel'
 import { Breadcrumbs, ImageList, ImageListItem, Typography, Grid, Paper, Divider } from '@mui/material';
 import { GET_POI_BY_ID } from "@queries";
 import { POIInput } from "@types";
+import { mainTheme } from "@theme";
+import PlaceIcon from '@mui/icons-material/Place';
 
 const POIDetails = () => {
     const router = useRouter();
@@ -48,15 +50,16 @@ const POIDetails = () => {
         setSelectedImageIndex(index);
         console.log(selectedImageIndex)
     };
-
+console.log(POI.images)
     return (
         <div>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Typography color="textPrimary">{POI.city}</Typography>
-                <Typography color="textPrimary">{POI.category}</Typography>
+            <Breadcrumbs aria-label="breadcrumb" sx={{ marginTop: '1rem', marginLeft: '1rem' }}>
+                <Typography sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }} color={mainTheme.palette.primary.dark}>{POI.city}</Typography>
+                <Typography sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }} color={mainTheme.palette.primary.dark}>{POI.category}</Typography>
+                <Typography sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light"}} color={mainTheme.palette.primary.dark}>{POI.name}</Typography>
             </Breadcrumbs>
-            <Grid container spacing={6}>
-                <Grid item xs={8}>
+            <Grid container spacing={6} sx={{ padding: '1rem' }}>
+                <Grid item xs={6}>
                     <Carousel autoPlay={false} index={selectedImageIndex !== null ? selectedImageIndex : undefined}>
                         {POI.images.map((imageUrl, i) => <Item key={i} item={imageUrl} index={i} />)}
                     </Carousel>
@@ -68,16 +71,18 @@ const POIDetails = () => {
                         ))}
                     </ImageList>
                 </Grid>
-                <Grid item xs={4}>
-                    <Typography variant="h4">{POI.name}</Typography>
-                    <Typography variant="h6">Adresse: {POI.address}</Typography>
-                    <Divider variant="middle" style={{ marginBottom: '1rem', marginTop: '8rem' }} /> {/* Ajoute un espace avec un Divider */}
-
-                    <Typography variant="h5">Description</Typography>
-                    <Typography>{POI.description}</Typography>
-
+                <Grid item xs sx={{ padding: '1rem' }}>
+                    <Typography color={mainTheme.palette.primary.main} align="center" sx={{ fontSize: mainTheme.typography.h3, fontWeight: "bold" }}>{POI.name}</Typography>
+                    <Typography align="justify" sx={{ fontSize: mainTheme.typography.h6, marginTop: '3rem' }}>{POI.description}</Typography>
+                    <div style={{ display: 'flex', alignItems: 'center', marginTop: '3rem' }}>
+                        <PlaceIcon color="primary" />
+                        <Typography sx={{ fontSize: mainTheme.typography.h6 }}>{POI.address}</Typography>
+                    </div>
+                    <Typography color={mainTheme.palette.primary.main} align="left" sx={{ fontSize: mainTheme.typography.h4, fontWeight: "bold", marginTop: '3rem' }}>NOTE</Typography>
+                    <Typography color={mainTheme.palette.primary.main} align="left" sx={{ fontSize: mainTheme.typography.h4, fontWeight: "bold", marginTop: '3rem' }}>COMMENTAIRES</Typography>
                 </Grid>
             </Grid>
+
         </div>
     );
 }
