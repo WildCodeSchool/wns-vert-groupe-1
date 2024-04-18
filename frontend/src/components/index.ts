@@ -7,3 +7,4 @@ export * from "./PoiCard";
 export * from "./SearchButton";
 export * from "./SearchForm";
 export * from "./SearchInput";
+export * from "./common";
