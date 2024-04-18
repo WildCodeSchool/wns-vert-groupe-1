@@ -39,6 +39,7 @@ export class City extends BaseEntity {
   pois: Poi[];
 
   // a category can contain multiple ads
+  @Field(() => [User])
   @OneToMany(() => User, (User) => User.city)
   users: User[];
 }

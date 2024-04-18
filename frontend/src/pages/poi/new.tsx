@@ -1,53 +1,53 @@
-'use client'
-
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
-
-import { GeoCodingService } from '../../services/GeoCodingService';
-
+import { styled } from '@mui/material/styles';
+import { Paper, TextField, Select, MenuItem, Button, Grid, InputLabel, Typography, FormControl } from "@mui/material";
+import { mainTheme } from "@theme";
+import { GeoCodingService } from "../../services/GeoCodingService";
 import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const NewPoi = () => {
   const [imageURLs, setImageURLs] = useState<string[]>([]);
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<POIInput>();
-
+  } = useForm<POIInput>({ mode: "onBlur" }); 
   const { data: cityData } = useQuery<{
-		getAllCities: {
-			id: number;
-			name: string;
-		}[];
-	}>(GET_ALL_CITIES);
+    getAllCities: {
+      id: number;
+      name: string;
+    }[];
+  }>(GET_ALL_CITIES);
 
   const { data: categoryData } = useQuery<{
-		getAllCategories: {
-			id: number;
-			name: string;
-		}[];
-	}>(GET_ALL_CATEGORIES);
+    getAllCategories: {
+      id: number;
+      name: string;
+    }[];
+  }>(GET_ALL_CATEGORIES);
 
   const [createNewPoi] = useMutation(CREATE_NEW_POI);
 
   const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
-
     try {
       const coordinates = await GeoCodingService.getCoordinates(formData.address);
-  
+
       if (coordinates) {
         formData.latitude = coordinates.latitude;
         formData.longitude = coordinates.longitude;
       }
-  
+
       const result = await createNewPoi({
         variables: {
           poiData: {
@@ -58,108 +58,143 @@ const NewPoi = () => {
             images: imageURLs.map((image) => "http://localhost:8000" + image),
             city: Number.parseInt(formData.city),
             category: Number.parseInt(formData.category),
-            latitude: formData.latitude, 
-            longitude: formData.longitude, 
+            latitude: formData.latitude,
+            longitude: formData.longitude,
           },
         },
       });
+      console.log(result)
       setImageURLs([]);
       reset();
+      router.push(`/poi/${result.data.createNewPoi.id}`);    
     } catch (err: any) {
       console.error(err);
     }
-  }
-
-    if (cityData && categoryData) {
-    return (
-      <div>
-        	<h2>Ajouter un POI</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <label>
-            Nom: <br />
-            <input className="text-field" {...register("name")} />
-          </label>
-          <br />
-          <label>
-          Adresse: <br />
-            <input className="text-field" {...register("address")} />
-          </label>
-          <br />
-          <label>
-          Code Postal: <br />
-            <input className="text-field" {...register("postalCode")} />
-          </label>
-          <br />
-          <label>
-            Ville: <br />
-          <select {...register("city")}>
-            {cityData?.getAllCities?.map((city) => (
-              <option key={city.id} value={city.id}>
-                {city.name}
-              </option>
-            ))}
-          </select>
-          </label>
-        < br/>
-          <label>
-            Description: <br />
-            <input className="text-field" {...register("description")} />
-          </label>
-          <br />
-          <label>
-            Catégorie: <br />
-          <select {...register("category")}>
-            {categoryData?.getAllCategories?.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          </label>
-          <br />
-          <br />
-          <input
-						type="file"
-						onChange={async (e) => {
-							if (e.target.files) {
-								const selectedFiles = Array.from(e.target.files);
-								const url = "http://localhost:8000/upload";
-								selectedFiles.forEach(async (file) => {
-									const formData = new FormData();
-									formData.append("file", file, file.name);
-									try {
-										const response = await axios.post(url, formData);
-										console.log(response);
-										setImageURLs((prevImageURLs) => [
-											...prevImageURLs,
-											response.data.filename,
-										]);
-									} catch (err) {
-										console.log("error", err);
-									}
-								});
-							}
-						}}
-						multiple
-					/>
-					<br />
-					<br />
-          <input className="button" type="submit" />
-        </form>
-        {imageURLs.map((url, index) => (
-					<div key={index}>
-						<br />
-						<img
-							width={"500"}
-							alt={`uploadedImg${index}`}
-							src={"http://localhost:8000" + url}
-						/>
-						<br />
-					</div>
-				))}
-      </div>
-    );
   };
-};
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
+
+// TODO : add redirection after submit, add form control and make all fields mandatory, fix image display
+  if (cityData && categoryData) {
+    return (
+      <Grid container justifyContent="center" alignItems="center" style={{ maxHeight: "75vh" }}>
+        <Grid item xs={12} sm={8}>
+          <Paper
+            component="form"
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              padding: mainTheme.spacing(3),
+              borderRadius: mainTheme.spacing(2),
+              boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
+              marginTop: "1rem"
+            }}
+          >
+            <Typography color={mainTheme.palette.primary.main} align="center" sx={{ fontSize: mainTheme.typography.h4, fontWeight: "bold" }}>Ajouter un POI</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField label="Nom" {...register("name", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small" />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField label="Adresse" {...register("address", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small" />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField label="Code Postal" {...register("postalCode", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small"/>
+              </Grid>
+              <Grid item xs={4}>
+                <FormControl fullWidth margin="normal" size="small" >
+                  <InputLabel id="city">Ville</InputLabel>
+                  <Select label="Ville" labelId="city" {...register("city", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth color="primary">
+                    {cityData?.getAllCities?.map((city) => (
+                      <MenuItem key={city.id} value={city.id}>
+                        {city.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                <FormControl fullWidth margin="normal" size="small" >
+                  <InputLabel id="category">Catégorie</InputLabel>
+                  <Select label="Catégorie" labelId="category" {...register("category", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth color="primary">
+                    {categoryData?.getAllCategories?.map((category) => (
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField label="Description" multiline rows={3} {...register("description", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal"/>
+              </Grid>
+            
+              <Grid item xs={12} sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1rem" }}>
+                <Button
+                  component="label"
+                  color="primary"
+                  role={undefined}
+                  variant="contained"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Ajouter des images
+                  <VisuallyHiddenInput type="file"
+                    onChange={async (e: any) => {
+                      if (e.target.files) {
+                        const selectedFiles = Array.from(e.target.files);
+                        const url = "http://localhost:8000/upload";
+                        const uploadPromises = (selectedFiles as File[]).map(async (file: File) => {
+                          const formData = new FormData();
+                          formData.append("file", file, file.name);
+                          try {
+                            const response = await axios.post(url, formData);
+                            console.log(response);
+                            return response.data.filename;
+                          } catch (err) {
+                            console.log("error", err);
+                            return null;
+                          }
+                        });
+
+                        Promise.all(uploadPromises).then((filenames) => {
+                          setImageURLs((prevImageURLs) => [
+                            ...prevImageURLs,
+                            ...filenames.filter((filename) => filename !== null),
+                          ]);
+                        });
+                      }
+                    }}
+                    multiple />
+                </Button>
+              </Grid>
+              <Grid item xs={12} sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1rem" }}>
+              {imageURLs.map((url, index) => (
+                <Grid key={index} item xs={1} sx={{ margin: "0.5rem" }}>
+                  <img width={"100%"} alt={`uploadedImg${index}`} src={"http://localhost:8000" + url} />
+                </Grid>
+              ))}
+            </Grid>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "right", marginTop: "1rem", }}>
+                <Button type="submit" variant="contained" color="primary" >
+                  Valider
+                </Button>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
+    );
+  }
+}
 
 export default NewPoi;

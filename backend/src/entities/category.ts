@@ -21,6 +21,7 @@ export class Category extends BaseEntity {
   @Length(1, 255)
   name: string;
 
-  @OneToMany(() => Poi, (poi) => poi.category)
+  @Field(() => [Poi])
+  @OneToMany(() => Poi, (poi) => poi.category, { nullable: true })
   pois: Poi[];
 }

@@ -29,6 +29,7 @@ export const mainTheme = createTheme({
 	},
 	typography: {
 		fontFamily: ["Manrope", "sans-serif"].join(","),
+		fontWeightLight: 300,
 		fontWeightRegular: 400,
 		fontWeightMedium: 500,
 		fontWeightBold: 700,
@@ -44,10 +45,12 @@ export const mainTheme = createTheme({
 			fontWeight: 500,
 		},
 		h3: {
+			fontFamily: "Lexend, sans-serif",
 			fontSize: "34px",
 			fontWeight: 500,
 		},
 		h4: {
+			fontFamily: "Lexend, sans-serif",
 			fontSize: "20px",
 			fontWeight: 500,
 		},
@@ -57,7 +60,7 @@ export const mainTheme = createTheme({
 		},
 		h6: {
 			fontSize: "14px",
-			fontWeight: 400,
+			fontWeight: 300,
 		},
 	},
 	spacing: [0, 4, 8, 12, 16, 20, 24, 30, 38],

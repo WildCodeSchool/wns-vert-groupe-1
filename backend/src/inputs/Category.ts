@@ -4,4 +4,7 @@ import { Field, InputType } from "type-graphql";
 export class CategoryInput {
   @Field()
   name: string;
+
+  @Field(() => [Number], { nullable: true })
+  pois?: [number];
 }
