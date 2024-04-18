@@ -11,17 +11,18 @@ import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const NewPoi = () => {
   const [imageURLs, setImageURLs] = useState<string[]>([]);
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<POIInput>();
-
+  } = useForm<POIInput>({ mode: "onBlur" }); 
   const { data: cityData } = useQuery<{
     getAllCities: {
       id: number;
@@ -62,8 +63,10 @@ const NewPoi = () => {
           },
         },
       });
+      console.log(result)
       setImageURLs([]);
       reset();
+      router.push(`/poi/${result.data.createNewPoi.id}`);    
     } catch (err: any) {
       console.error(err);
     }
@@ -85,7 +88,7 @@ const NewPoi = () => {
   if (cityData && categoryData) {
     return (
       <Grid container justifyContent="center" alignItems="center" style={{ maxHeight: "75vh" }}>
-        <Grid item xs={12} sm={8} md={6} lg={4}>
+        <Grid item xs={12} sm={8}>
           <Paper
             component="form"
             onSubmit={handleSubmit(onSubmit)}
@@ -99,18 +102,18 @@ const NewPoi = () => {
             <Typography color={mainTheme.palette.primary.main} align="center" sx={{ fontSize: mainTheme.typography.h4, fontWeight: "bold" }}>Ajouter un POI</Typography>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField label="Nom" {...register("name")} fullWidth margin="normal" />
+                <TextField label="Nom" {...register("name", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small" />
               </Grid>
               <Grid item xs={12}>
-                <TextField label="Adresse" {...register("address")} fullWidth margin="normal" />
+                <TextField label="Adresse" {...register("address", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small" />
               </Grid>
-              <Grid item xs={6}>
-                <TextField label="Code Postal" {...register("postalCode")} fullWidth margin="normal" />
+              <Grid item xs={4}>
+                <TextField label="Code Postal" {...register("postalCode", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small"/>
               </Grid>
-              <Grid item xs={6}>
-                <FormControl fullWidth margin="normal">
+              <Grid item xs={4}>
+                <FormControl fullWidth margin="normal" size="small" >
                   <InputLabel id="city">Ville</InputLabel>
-                  <Select label="Ville" labelId="city" {...register("city")} fullWidth color="primary">
+                  <Select label="Ville" labelId="city" {...register("city", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth color="primary">
                     {cityData?.getAllCities?.map((city) => (
                       <MenuItem key={city.id} value={city.id}>
                         {city.name}
@@ -119,13 +122,10 @@ const NewPoi = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
-                <TextField label="Description" multiline rows={3} {...register("description")} fullWidth margin="normal" />
-              </Grid>
-              <Grid item xs={6}>
-                <FormControl fullWidth margin="normal">
+              <Grid item xs={4}>
+                <FormControl fullWidth margin="normal" size="small" >
                   <InputLabel id="category">Catégorie</InputLabel>
-                  <Select label="Catégorie" labelId="category" {...register("category")} fullWidth color="primary">
+                  <Select label="Catégorie" labelId="category" {...register("category", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth color="primary">
                     {categoryData?.getAllCategories?.map((category) => (
                       <MenuItem key={category.id} value={category.id}>
                         {category.name}
@@ -134,10 +134,14 @@ const NewPoi = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+              <Grid item xs={12}>
+                <TextField label="Description" multiline rows={3} {...register("description", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal"/>
+              </Grid>
+            
+              <Grid item xs={12} sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1rem" }}>
                 <Button
                   component="label"
-                  color="secondary"
+                  color="primary"
                   role={undefined}
                   variant="contained"
                   tabIndex={-1}
@@ -173,19 +177,19 @@ const NewPoi = () => {
                     multiple />
                 </Button>
               </Grid>
-              <Grid item xs={12} />
+              <Grid item xs={12} sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1rem" }}>
               {imageURLs.map((url, index) => (
-                <Grid key={index} item xs={2} sx={{ textAlign: "center" }}>
+                <Grid key={index} item xs={1} sx={{ margin: "0.5rem" }}>
                   <img width={"100%"} alt={`uploadedImg${index}`} src={"http://localhost:8000" + url} />
                 </Grid>
               ))}
             </Grid>
-              <Grid item xs={12} sx={{ display: "flex", justifyContent: "space-between", marginTop: "1rem", }}>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "right", marginTop: "1rem", }}>
                 <Button type="submit" variant="contained" color="primary" >
-                  Ajouter
+                  Valider
                 </Button>
               </Grid>
-              
+            </Grid>
           </Paper>
         </Grid>
       </Grid>

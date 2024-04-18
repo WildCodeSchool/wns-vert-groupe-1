@@ -59,7 +59,11 @@ const POIDetails = () => {
     const handleCategoryClick = () => {
         router.push(`/city/search/${POI.city}/category/${POI.category}`);
     };   
-    
+    const carouselImageStyle = {
+        width: '100%', 
+        height: '300px', 
+        objectFit: 'cover', 
+    };
     return (
         <div>
             <Breadcrumbs aria-label="breadcrumb" separator="›" sx={{ marginTop: '1rem', marginLeft: '1rem' }}>
@@ -69,13 +73,19 @@ const POIDetails = () => {
             </Breadcrumbs>
             <Grid container spacing={6} sx={{ padding: '1rem' }}>
                 <Grid item xs={6}>
-                    <Carousel autoPlay={false} index={selectedImageIndex !== null ? selectedImageIndex : undefined}>
-                        {POI.images.map((imageUrl, i) => <Item key={i} item={imageUrl} index={i} />)}
+                    <Carousel autoPlay={true} index={selectedImageIndex !== null ? selectedImageIndex : undefined} sx={{ height: '60vh' }}>
+                        {POI.images.map((imageUrl, i) => (
+                            <img
+                                key={i}
+                                src={imageUrl}
+                                style={{ width: '100%', height: '55vh', objectFit: 'cover', borderRadius: '45px' }}
+                            />
+                        ))}
                     </Carousel>
-                    <ImageList sx={{ width: 400, height: 100 }} cols={3}>
+                    <ImageList cols={5 }>
                         {POI.images.map((imageUrl, i) => (
                             <ImageListItem key={i} onClick={() => handleImageClick(i)}>
-                                <img src={imageUrl} loading="lazy" />
+                                <img src={imageUrl} loading="lazy" style={{ borderRadius: '20px' }}/>
                             </ImageListItem>
                         ))}
                     </ImageList>
