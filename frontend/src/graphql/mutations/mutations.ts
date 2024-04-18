@@ -13,3 +13,12 @@ export const REGISTER = gql`
 		register(newUserData: $newUserData)
 	}
 `;
+
+export const CREATE_NEW_CITY = gql`
+	mutation CreateNewCity($cityData: CityInput!) {
+		createNewCity(cityData: $cityData) {
+			id
+			name
+		}
+	}
+`;
