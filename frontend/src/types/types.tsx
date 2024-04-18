@@ -3,9 +3,9 @@ export type PoiType = {
 	name: string;
 	address: string;
 	description: string;
-	postalCode:string;
-    latitude: number;
-    longitude: number;
+	postalCode: string;
+	latitude: number;
+	longitude: number;
 };
 
 export type CityType = {
@@ -15,6 +15,13 @@ export type CityType = {
 	pois?: PoiType[];
 	lat?: number;
 	lon?: number;
+};
+
+export type CityInput = {
+	name: string;
+	description: string;
+	lat: number;
+	lon: number;
 };
 
 export type CityMapProps = {
@@ -30,7 +37,6 @@ export type CityMapProps = {
 	}[];
 };
 
-
 export type DisplayCitiesType = {
 	cities: (CityType & CityMapProps)[];
 	onClickDelete?: (adId: number) => void;
@@ -45,9 +51,9 @@ export type POIInput = {
 	city: string;
 	category: string;
 	images: string[];
-	postalCode?:string;
-    latitude?: number;
-    longitude?: number;
+	postalCode?: string;
+	latitude?: number;
+	longitude?: number;
 };
 
 export type UserInput = {

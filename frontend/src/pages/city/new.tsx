@@ -1,12 +1,19 @@
-import { FormControl, IconButton, Stack, Typography } from "@mui/material";
+import {
+	IconButton,
+	Stack,
+	Typography,
+	Button,
+	TextField,
+} from "@mui/material";
 import { mainTheme } from "@theme";
-import { Button, Input } from "components/common";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import React, { ChangeEvent, FormEvent } from "react";
 import { GeoCodingCityService } from "services/CityService";
 import { CREATE_NEW_CITY } from "@mutations";
 import { useMutation } from "@apollo/client";
-// import { GeoCodingCityService } from "@services";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { CityInput } from "@types";
+
 interface FormState {
 	name: string;
 	description: string;
@@ -18,6 +25,7 @@ const defaultState: FormState = {
 };
 
 const newCity = () => {
+	const [imageURLs, setImageURLs] = React.useState<string[]>([]);
 	const [file, setFile] = React.useState<string | undefined>();
 	const [form, setForm] = React.useState<FormState>(defaultState);
 
@@ -48,25 +56,36 @@ const newCity = () => {
 		inputElement.click();
 	};
 
-	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		console.log("submit");
-		const coordinates = await GeoCodingCityService.getCoordinates(
-			form.name.charAt(0).toUpperCase() + form.name.slice(1)
-		);
-		// console.log("coordinates", coordinates);
-		console.log("form", form);
-		createNewCity({
-			variables: {
-				cityData: {
-					name: form.name,
-					description: form.description,
-					lat: coordinates?.latitude,
-					lon: coordinates?.longitude,
-					// images: imageURLs.map((image) => "http://localhost:8000" + image),
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset,
+	} = useForm<CityInput>();
+
+	const onSubmit: SubmitHandler<CityInput> = async (formData: CityInput) => {
+		try {
+			console.log("submit");
+			const coordinates = await GeoCodingCityService.getCoordinates(
+				form.name.charAt(0).toUpperCase() + form.name.slice(1)
+			);
+
+			createNewCity({
+				variables: {
+					cityData: {
+						name: form.name,
+						description: form.description,
+						lat: coordinates?.latitude,
+						lon: coordinates?.longitude,
+						images: imageURLs.map((image) => "http://localhost:8000" + image),
+					},
 				},
-			},
-		});
+			});
+			setImageURLs([]);
+			reset();
+		} catch (e) {
+			console.error("Error : ", e);
+		}
 	};
 
 	return (
@@ -91,8 +110,8 @@ const newCity = () => {
 						fontFamily: mainTheme.typography.fontFamily,
 						color: mainTheme.palette.primary.dark,
 						fontSize: 26,
+						fontWeight: mainTheme.typography.fontWeightBold,
 						textTransform: "uppercase",
-						fontStyle: "italic",
 					}}
 				>
 					Créer une nouvelle ville
@@ -109,7 +128,6 @@ const newCity = () => {
 						spacing={5}
 						sx={{
 							flex: 1,
-							// backgroundColor: "pink",
 						}}
 					>
 						<Stack
@@ -117,9 +135,9 @@ const newCity = () => {
 								border: "solid",
 								borderColor: mainTheme.palette.primary.main,
 								borderWidth: 2,
+								borderRadius: 5,
 								flex: 1,
 								height: "70%",
-								// backgroundColor: "red",
 							}}
 							alignItems="center"
 							justifyContent="center"
@@ -129,7 +147,7 @@ const newCity = () => {
 									<img
 										src={file}
 										alt="selected image"
-										style={{ width: "100%", height: "100%" }}
+										style={{ width: "100%", height: "100%", borderRadius: 18 }}
 									/>
 								</>
 							) : (
@@ -148,20 +166,19 @@ const newCity = () => {
 						<input type="file" onChange={handleImage} id="icon-button-file" />
 					</Stack>
 
-					<Stack
-						direction="column"
-						spacing={6}
-						sx={{ flex: 1, backgroundColor: "pink" }}
-					>
-						<FormControl sx={{ flex: 1, columnGap: 20 }}>
-							<Input
+					<Stack direction="column" spacing={6} sx={{ flex: 1 }}>
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							style={{ display: "flex", flexDirection: "column", columnGap: 5 }}
+						>
+							<TextField
 								id="name"
 								variant="standard"
 								placeholder="Nom de la ville"
 								required
 								onChange={handleChangeForm}
 							/>
-							<Input
+							<TextField
 								id="description"
 								variant="standard"
 								placeholder="Description"
@@ -170,23 +187,14 @@ const newCity = () => {
 								required
 								onChange={handleChangeForm}
 							/>
-							<Button
-								style={{
-									width: 150,
-									color: mainTheme.palette.primary.dark,
-									backgroundColor: mainTheme.palette.primary.light,
-								}}
-								onClick={handleSubmit}
-								size="medium"
-							>
+							<Button type="submit" variant="contained" color="primary">
 								Créer
 							</Button>
-						</FormControl>
+						</form>
 					</Stack>
 				</Stack>
 			</Stack>
 		</div>
-		// </Stack>
 	);
 };
 
