@@ -1,3 +1,4 @@
+import { GeoCodingService } from "../services";
 import { City, Poi, Category } from "../entities";
 import { PoiInput } from "../inputs";
 import { Query, Resolver, Mutation, Arg } from "type-graphql";
@@ -46,6 +47,16 @@ export class PoiResolver {
 			throw new Error(`Category with ID ${poiData.category} not found`);
 		}
 
+		if (poiData.address !== undefined) {
+			const coordinates = await GeoCodingService.getCoordinates(
+				poiData.address
+			);
+			if (coordinates) {
+				poiData.latitude = coordinates.latitude;
+				poiData.longitude = coordinates.longitude;
+			}
+		}
+
 		const poi = await Poi.save({
 			...poiData,
 			city,
@@ -75,6 +86,16 @@ export class PoiResolver {
 
 			if (!oldPoi) {
 				throw new Error(`POI with id ${id} haven't been found`);
+			}
+
+			if (newPoiInput.address !== undefined) {
+				const coordinates = await GeoCodingService.getCoordinates(
+					newPoiInput.address
+				);
+				if (coordinates) {
+					newPoiInput.latitude = coordinates.latitude;
+					newPoiInput.longitude = coordinates.longitude;
+				}
 			}
 
 			Object.assign(oldPoi, newPoiInput);

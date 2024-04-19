@@ -4,7 +4,9 @@ export class GeoCodingService {
 	): Promise<{ latitude: number; longitude: number } | null> {
 		try {
 			const response = await fetch(
-				`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(address)}&key=AIzaSyBfE8LqtzkYYKEbWGQQrGdHalnXsp9qz_8`
+				`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
+					address
+				)}&key=AIzaSyBfE8LqtzkYYKEbWGQQrGdHalnXsp9qz_8`
 			);
 			const data = await response.json();
 

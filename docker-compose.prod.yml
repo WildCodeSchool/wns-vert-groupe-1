@@ -19,10 +19,6 @@ services:
       dockerfile: Dockerfile.prod
     command: npm start
     restart: always
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
     volumes:
       - ./frontend/src:/app/src
     depends_on:

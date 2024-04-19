@@ -4,9 +4,6 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
-
-import { GeoCodingService } from "../../services/GeoCodingService";
-
 import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
@@ -35,15 +32,6 @@ const NewPoi = () => {
 
 	const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
 		try {
-			const coordinates = await GeoCodingService.getCoordinates(
-				formData.address
-			);
-
-			if (coordinates) {
-				formData.latitude = coordinates.latitude;
-				formData.longitude = coordinates.longitude;
-			}
-
 			await createNewPoi({
 				variables: {
 					poiData: {
@@ -54,8 +42,6 @@ const NewPoi = () => {
 						images: imageURLs.map((image) => image),
 						city: Number.parseInt(formData.city),
 						category: Number.parseInt(formData.category),
-						latitude: formData.latitude,
-						longitude: formData.longitude,
 					},
 				},
 			});
