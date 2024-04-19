@@ -84,7 +84,7 @@ const NewPoi = () => {
     width: 1,
   });
 
-// TODO : add redirection after submit, add form control and make all fields mandatory, fix image display
+// TODO : add form control and make all fields mandatory, fix console errors
   if (cityData && categoryData) {
     return (
       <Grid container justifyContent="center" alignItems="center" style={{ maxHeight: "75vh" }}>
