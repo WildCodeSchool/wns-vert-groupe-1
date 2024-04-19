@@ -1,7 +1,7 @@
-import { Cities } from "@components";
+import { SearchForm } from "@components";
 
 const Home = () => {
-	return <Cities />;
+	return <SearchForm />;
 };
 
 export default Home;

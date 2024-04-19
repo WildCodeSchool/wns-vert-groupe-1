@@ -41,7 +41,7 @@ const Register = () => {
 			console.log("result", result);
 			reset();
 			router.push("/login");
-		} catch (err: any) {
+		} catch (err) {
 			console.error("Error submitting form:", err);
 		}
 	};

@@ -2,30 +2,34 @@ import { Field, Float, InputType } from "type-graphql";
 
 @InputType()
 export class PoiInput {
-  @Field()
-  name: string;
+	@Field()
+	name: string;
 
-  @Field()
-  address: string;
+	@Field()
+	address: string;
 
-  @Field()
-  postalCode: string;
+	@Field()
+	postalCode: string;
 
-  @Field()
-  description: string;
+	@Field()
+	description: string;
 
-  @Field()
-  city: number;
+	@Field()
+	city: number;
 
-  @Field(() => Float)
-  latitude?: number;
+	@Field(() => Float, { nullable: true })
+	latitude?: number;
 
-  @Field(() => Float)
-  longitude?: number;
+	@Field(() => Float, { nullable: true })
+	longitude?: number;
 
-  @Field(() => [String])
-  images: string[];
+	//TODO: delete nullable true
+	@Field(() => [String], { nullable: true })
+	images?: string[];
 
-  @Field()
-  category: number;
+	@Field()
+	category: number;
+
+	@Field(() => [Number], { nullable: true })
+	ratings?: number[];
 }

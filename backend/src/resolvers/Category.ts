@@ -1,19 +1,27 @@
-import { CategoryInput } from "@inputs";
-import { Category } from "@entities";
+import { CategoryInput } from "../inputs";
+import { Category } from "../entities";
 import { Arg, Query, Resolver, Mutation } from "type-graphql";
 
 @Resolver()
 export class CategoryResolver {
 	@Query(() => [Category])
 	async getAllCategories() {
-		const result = await Category.find();
+		const result = await Category.find({ relations: ["pois"] });
 		return result;
 	}
 
 	@Mutation(() => Category)
 	async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
-		const category = await Category.save({ ...categoryData });
-		return category;
+		const pois = categoryData.pois
+			? categoryData.pois.map((poi) => ({ id: poi }))
+			: [];
+
+		const city = await Category.create({
+			...categoryData,
+			pois: pois,
+		}).save();
+
+		return city;
 	}
 
 	@Mutation(() => String)
