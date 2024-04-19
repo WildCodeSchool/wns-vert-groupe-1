@@ -1,4 +1,4 @@
-import { Cities, SearchForm } from "@components";
+import { SearchForm } from "@components";
 
 const Home = () => {
 	return <SearchForm />;

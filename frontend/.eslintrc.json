@@ -8,7 +8,6 @@
 		"plugin:@typescript-eslint/recommended",
 		"prettier",
 		"plugin:prettier/recommended",
-		"plugin:import/recommended",
 		"plugin:react/recommended"
 	],
 	"parser": "@typescript-eslint/parser",
@@ -21,7 +20,7 @@
 	"rules": {
 		"react/react-in-jsx-scope": "off",
 		"prettier/prettier": [2, { "endOfLine": "auto" }],
-		"import/no-unused-modules": [2, { "unusedExports": true }]
+		"indent": [2, "tab"]
 	},
 	"settings": {
 		"import/resolver": {

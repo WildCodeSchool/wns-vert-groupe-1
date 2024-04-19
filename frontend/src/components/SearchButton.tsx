@@ -6,7 +6,7 @@ export type SearchButtonProps = {
 	disabled?: boolean;
 };
 
-export const SearchButton: React.FC<SearchButtonProps> = ({ disabled }) => (
+export const SearchButton = ({ disabled }: SearchButtonProps) => (
 	<IconButton
 		type="submit"
 		aria-label="search"

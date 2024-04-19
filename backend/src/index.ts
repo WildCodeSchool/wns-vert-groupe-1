@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import "module-alias/register";
 import { buildSchema } from "type-graphql";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { ApolloServer } from "@apollo/server";
@@ -10,8 +9,8 @@ import {
 	UserResolver,
 	CategoryResolver,
 	RatingResolver,
-} from "@resolvers";
-import { User, UserRole } from "@entities";
+} from "./resolvers";
+import { User, UserRole } from "./entities";
 import * as jwt from "jsonwebtoken";
 import * as argon2 from "argon2";
 

@@ -11,5 +11,5 @@ COPY tsconfig.json tsconfig.json
 COPY package.json package.json
 
 COPY src src
-
-CMD npm run build
+RUN npm run build
+CMD npm start

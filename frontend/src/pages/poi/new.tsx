@@ -15,12 +15,7 @@ import axios from "axios";
 const NewPoi = () => {
 	const [imageURLs, setImageURLs] = useState<string[]>([]);
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<POIInput>();
+	const { register, handleSubmit, reset } = useForm<POIInput>();
 
 	const { data: cityData } = useQuery<{
 		getAllCities: {
@@ -49,9 +44,7 @@ const NewPoi = () => {
 				formData.longitude = coordinates.longitude;
 			}
 
-			const url = "/upload";
-
-			const result = await createNewPoi({
+			await createNewPoi({
 				variables: {
 					poiData: {
 						name: formData.name,
@@ -68,7 +61,7 @@ const NewPoi = () => {
 			});
 			setImageURLs([]);
 			reset();
-		} catch (err: any) {
+		} catch (err) {
 			console.error(err);
 		}
 	};
