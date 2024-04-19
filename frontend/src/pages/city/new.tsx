@@ -4,41 +4,55 @@ import {
 	Typography,
 	Button,
 	TextField,
+	ImageList,
+	ImageListItem,
 } from "@mui/material";
 import { mainTheme } from "@theme";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
-import React, { ChangeEvent, FormEvent } from "react";
+import React, { ChangeEvent } from "react";
 import { GeoCodingCityService } from "services/CityService";
 import { CREATE_NEW_CITY } from "@mutations";
 import { useMutation } from "@apollo/client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CityInput } from "@types";
+import Carousel from "react-material-ui-carousel";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-interface FormState {
-	name: string;
-	description: string;
-}
+// interface FormState {
+// 	name: string;
+// 	description: string;
+// 	images: string[];
+// }
 
-const defaultState: FormState = {
+const defaultState: CityInput = {
 	name: "",
 	description: "",
+	images: [],
 };
 
 const newCity = () => {
-	const [imageURLs, setImageURLs] = React.useState<string[]>([]);
+	const [selectedImageIndex, setSelectedImageIndex] = React.useState<
+		number | null
+	>(null);
+	const [image, setImage] = React.useState<string[]>([]);
 	const [file, setFile] = React.useState<string | undefined>();
-	const [form, setForm] = React.useState<FormState>(defaultState);
+	const [form, setForm] = React.useState<CityInput>(defaultState);
+	// 	const [city, setCity] = React.useState<CityInput>({
+	// 		name: "",
+	// 		description: "",
+	// 		images: [],
+	// });
 
 	const [createNewCity, { data, loading, error }] =
 		useMutation(CREATE_NEW_CITY);
 
-	const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log(e.target.files);
-		if (e.target.files && e.target.files[0]) {
-			const fileUrl = URL.createObjectURL(e.target.files[0]);
-			setFile(fileUrl);
-		}
-	};
+	// const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+	// 	console.log(e.target.files);
+	// 	if (e.target.files && e.target.files[0]) {
+	// 		const fileUrl = URL.createObjectURL(e.target.files[0]);
+	// 		setFile(fileUrl);
+	// 	}
+	// };
 
 	const handleChangeForm = (
 		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -49,12 +63,12 @@ const newCity = () => {
 		setForm({ ...form, [id]: value });
 	};
 
-	const handleIconButtonClick = () => {
-		const inputElement = document.getElementById(
-			"icon-button-file"
-		) as HTMLInputElement;
-		inputElement.click();
-	};
+	// const handleIconButtonClick = () => {
+	// 	const inputElement = document.getElementById(
+	// 		"icon-button-file"
+	// 	) as HTMLInputElement;
+	// 	inputElement.click();
+	// };
 
 	const {
 		register,
@@ -77,11 +91,11 @@ const newCity = () => {
 						description: form.description,
 						lat: coordinates?.latitude,
 						lon: coordinates?.longitude,
-						images: imageURLs.map((image) => "http://localhost:8000" + image),
+						images: image.map((i) => "http://localhost:8000" + i),
 					},
 				},
 			});
-			setImageURLs([]);
+			setImage([]);
 			reset();
 		} catch (e) {
 			console.error("Error : ", e);
@@ -130,7 +144,38 @@ const newCity = () => {
 							flex: 1,
 						}}
 					>
-						<Stack
+						<Carousel
+							autoPlay={true}
+							index={
+								selectedImageIndex !== null ? selectedImageIndex : undefined
+							}
+							sx={{ height: "60vh" }}
+						>
+							{form.images.map((imageUrl, i) => (
+								<img
+									key={i}
+									src={imageUrl}
+									style={{
+										width: "100%",
+										height: "55vh",
+										objectFit: "cover",
+										borderRadius: "45px",
+									}}
+								/>
+							))}
+						</Carousel>
+						<ImageList cols={5}>
+							{form.images.map((imageUrl, i) => (
+								<ImageListItem key={i} onClick={() => setSelectedImageIndex(i)}>
+									<img
+										src={imageUrl}
+										loading="lazy"
+										style={{ borderRadius: "20px" }}
+									/>
+								</ImageListItem>
+							))}
+						</ImageList>
+						{/* <Stack
 							sx={{
 								border: "solid",
 								borderColor: mainTheme.palette.primary.main,
@@ -163,7 +208,50 @@ const newCity = () => {
 								</>
 							)}
 						</Stack>
-						<input type="file" onChange={handleImage} id="icon-button-file" />
+						<input type="file" onChange={handleImage} id="icon-button-file" /> */}
+						<Stack>
+							<Button
+								component="label"
+								color="primary"
+								role={undefined}
+								variant="contained"
+								tabIndex={-1}
+								startIcon={<CloudUploadIcon />}
+							>
+								Ajouter des images
+								<VisuallyHiddenInput
+									type="file"
+									onChange={async (e: any) => {
+										if (e.target.files) {
+											const selectedFiles = Array.from(e.target.files);
+											const url = "http://localhost:8000/upload";
+											const uploadPromises = (selectedFiles as File[]).map(
+												async (file: File) => {
+													const formData = new FormData();
+													formData.append("file", file, file.name);
+													try {
+														const response = await axios.post(url, formData);
+														console.log(response);
+														return response.data.filename;
+													} catch (err) {
+														console.log("error", err);
+														return null;
+													}
+												}
+											);
+
+											Promise.all(uploadPromises).then((filenames) => {
+												setImageURLs((prevImageURLs) => [
+													...prevImageURLs,
+													...filenames.filter((filename) => filename !== null),
+												]);
+											});
+										}
+									}}
+									multiple
+								/>
+							</Button>
+						</Stack>
 					</Stack>
 
 					<Stack direction="column" spacing={6} sx={{ flex: 1 }}>
