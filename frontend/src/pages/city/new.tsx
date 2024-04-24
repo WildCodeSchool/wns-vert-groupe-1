@@ -1,15 +1,15 @@
 import {
-	IconButton,
 	Stack,
 	Typography,
 	Button,
 	TextField,
 	ImageList,
 	ImageListItem,
+	Paper,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { mainTheme } from "@theme";
-import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { GeoCodingCityService } from "services/CityService";
 import { CREATE_NEW_CITY } from "@mutations";
 import { useMutation } from "@apollo/client";
@@ -17,12 +17,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { CityInput } from "@types";
 import Carousel from "react-material-ui-carousel";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
-// interface FormState {
-// 	name: string;
-// 	description: string;
-// 	images: string[];
-// }
+import axios from "axios";
 
 const defaultState: CityInput = {
 	name: "",
@@ -34,41 +29,17 @@ const newCity = () => {
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState<
 		number | null
 	>(null);
-	const [image, setImage] = React.useState<string[]>([]);
-	const [file, setFile] = React.useState<string | undefined>();
+	const [images, setImages] = React.useState<string[]>([]);
 	const [form, setForm] = React.useState<CityInput>(defaultState);
-	// 	const [city, setCity] = React.useState<CityInput>({
-	// 		name: "",
-	// 		description: "",
-	// 		images: [],
-	// });
 
+	//TODO : gestion erreur
 	const [createNewCity, { data, loading, error }] =
 		useMutation(CREATE_NEW_CITY);
 
-	// const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-	// 	console.log(e.target.files);
-	// 	if (e.target.files && e.target.files[0]) {
-	// 		const fileUrl = URL.createObjectURL(e.target.files[0]);
-	// 		setFile(fileUrl);
-	// 	}
-	// };
-
-	const handleChangeForm = (
-		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		// console.log(e.target.value);
-		const { id, value } = e.target;
-		console.log(id, value);
-		setForm({ ...form, [id]: value });
+	const handleImageClick = (index: number) => {
+		setSelectedImageIndex(index);
+		console.log(selectedImageIndex);
 	};
-
-	// const handleIconButtonClick = () => {
-	// 	const inputElement = document.getElementById(
-	// 		"icon-button-file"
-	// 	) as HTMLInputElement;
-	// 	inputElement.click();
-	// };
 
 	const {
 		register,
@@ -77,12 +48,11 @@ const newCity = () => {
 		reset,
 	} = useForm<CityInput>();
 
-	const onSubmit: SubmitHandler<CityInput> = async (formData: CityInput) => {
+	const onSubmit: SubmitHandler<CityInput> = async (form) => {
 		try {
 			console.log("submit");
-			const coordinates = await GeoCodingCityService.getCoordinates(
-				form.name.charAt(0).toUpperCase() + form.name.slice(1)
-			);
+			form.name = form.name.charAt(0).toUpperCase() + form.name.slice(1);
+			const coordinates = await GeoCodingCityService.getCoordinates(form.name);
 
 			createNewCity({
 				variables: {
@@ -91,16 +61,29 @@ const newCity = () => {
 						description: form.description,
 						lat: coordinates?.latitude,
 						lon: coordinates?.longitude,
-						images: image.map((i) => "http://localhost:8000" + i),
+						images: images.map((image) => "http://localhost:8000" + image),
 					},
 				},
 			});
-			setImage([]);
+			setImages([]);
 			reset();
 		} catch (e) {
 			console.error("Error : ", e);
 		}
 	};
+
+	const VisuallyHiddenInput = styled("input")({
+		clip: "rect(0 0 0 0)",
+		clipPath: "inset(50%)",
+		height: 1,
+		overflow: "hidden",
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		whiteSpace: "nowrap",
+		width: 1,
+	});
+	console.log("form", form);
 
 	return (
 		<div
@@ -112,17 +95,19 @@ const newCity = () => {
 			}}
 		>
 			<Stack
-				width="100%"
+				width="90%"
+				display="flex"
 				direction="column"
 				alignItems="center"
 				justifyContent="center"
 				spacing={5}
 				height="100%"
+				// sx={{ backgroundColor: "pink" }}
 			>
 				<Typography
 					sx={{
 						fontFamily: mainTheme.typography.fontFamily,
-						color: mainTheme.palette.primary.dark,
+						color: mainTheme.palette.primary.main,
 						fontSize: 26,
 						fontWeight: mainTheme.typography.fontWeightBold,
 						textTransform: "uppercase",
@@ -134,82 +119,62 @@ const newCity = () => {
 					direction="row"
 					spacing={5}
 					marginY={5}
-					width="100%"
-					height="70%"
+					width="90%"
+					height="80%"
+					// sx={{ backgroundColor: "pink" }}
 				>
 					<Stack
 						direction="column"
 						spacing={5}
 						sx={{
 							flex: 1,
+							// backgroundColor: "pink",
 						}}
 					>
-						<Carousel
-							autoPlay={true}
-							index={
-								selectedImageIndex !== null ? selectedImageIndex : undefined
-							}
-							sx={{ height: "60vh" }}
-						>
-							{form.images.map((imageUrl, i) => (
-								<img
-									key={i}
-									src={imageUrl}
-									style={{
-										width: "100%",
-										height: "55vh",
-										objectFit: "cover",
-										borderRadius: "45px",
-									}}
-								/>
-							))}
-						</Carousel>
-						<ImageList cols={5}>
-							{form.images.map((imageUrl, i) => (
-								<ImageListItem key={i} onClick={() => setSelectedImageIndex(i)}>
-									<img
-										src={imageUrl}
-										loading="lazy"
-										style={{ borderRadius: "20px" }}
-									/>
-								</ImageListItem>
-							))}
-						</ImageList>
-						{/* <Stack
-							sx={{
-								border: "solid",
-								borderColor: mainTheme.palette.primary.main,
-								borderWidth: 2,
-								borderRadius: 5,
-								flex: 1,
-								height: "70%",
-							}}
-							alignItems="center"
-							justifyContent="center"
-						>
-							{file ? (
-								<>
-									<img
-										src={file}
-										alt="selected image"
-										style={{ width: "100%", height: "100%", borderRadius: 18 }}
-									/>
-								</>
-							) : (
-								<>
-									<IconButton onClick={handleIconButtonClick}>
-										<AddPhotoAlternateOutlinedIcon
+						{images.length > 0 ? (
+							<>
+								<Carousel
+									autoPlay={true}
+									index={
+										selectedImageIndex !== null ? selectedImageIndex : undefined
+									}
+									sx={{ height: "70vh", backgroundcolor: "pink" }}
+								>
+									{images.map((image, i) => (
+										<img
+											key={i}
+											src={"http://localhost:8000" + image}
 											style={{
-												color: mainTheme.palette.primary.main,
-												fontSize: 40,
+												width: "100%",
+												// height: "100%",
+												height: "55vh",
+												objectFit: "cover",
+												borderRadius: "45px",
 											}}
 										/>
-									</IconButton>
-								</>
-							)}
-						</Stack>
-						<input type="file" onChange={handleImage} id="icon-button-file" /> */}
-						<Stack>
+									))}
+								</Carousel>
+								<ImageList cols={5}>
+									{images.map((image, i) => (
+										<ImageListItem
+											key={i}
+											onClick={() => handleImageClick(i)}
+											// onClick={() => setSelectedImageIndex(i)}
+										>
+											<img
+												src={"http://localhost:8000" + image}
+												loading="lazy"
+												style={{ borderRadius: "20px" }}
+											/>
+										</ImageListItem>
+									))}
+								</ImageList>
+							</>
+						) : (
+							<></>
+						)}
+
+						<Stack justifyContent="end" display="flex" flex={1}>
 							<Button
 								component="label"
 								color="primary"
@@ -225,6 +190,7 @@ const newCity = () => {
 										if (e.target.files) {
 											const selectedFiles = Array.from(e.target.files);
 											const url = "http://localhost:8000/upload";
+
 											const uploadPromises = (selectedFiles as File[]).map(
 												async (file: File) => {
 													const formData = new FormData();
@@ -241,8 +207,9 @@ const newCity = () => {
 											);
 
 											Promise.all(uploadPromises).then((filenames) => {
-												setImageURLs((prevImageURLs) => [
-													...prevImageURLs,
+												console.log("filenames", filenames);
+												setImages((prevImages) => [
+													...prevImages,
 													...filenames.filter((filename) => filename !== null),
 												]);
 											});
@@ -254,17 +221,35 @@ const newCity = () => {
 						</Stack>
 					</Stack>
 
-					<Stack direction="column" spacing={6} sx={{ flex: 1 }}>
-						<form
+					<Stack spacing={6} sx={{ flex: 1 }}>
+						<Paper
+							component="form"
 							onSubmit={handleSubmit(onSubmit)}
-							style={{ display: "flex", flexDirection: "column", columnGap: 5 }}
+							elevation={24}
+							sx={{
+								flex: 1,
+								padding: mainTheme.spacing(3),
+								display: "flex",
+								flexDirection: "column",
+								justifyContent: "space-evenly",
+								alignItems: "center",
+							}}
 						>
 							<TextField
 								id="name"
 								variant="standard"
 								placeholder="Nom de la ville"
 								required
-								onChange={handleChangeForm}
+								size="medium"
+								fullWidth
+								margin="normal"
+								{...register("name", {
+									required: {
+										value: true,
+										message: "Ce champ est obligatoire",
+									},
+								})}
+								onChange={(e) => setForm({ ...form, name: e.target.value })}
 							/>
 							<TextField
 								id="description"
@@ -273,12 +258,23 @@ const newCity = () => {
 								multiline
 								rows={5}
 								required
-								onChange={handleChangeForm}
+								size="medium"
+								fullWidth
+								margin="normal"
+								{...register("description", {
+									required: {
+										value: true,
+										message: "Ce champ est obligatoire",
+									},
+								})}
+								onChange={(e) =>
+									setForm({ ...form, description: e.target.value })
+								}
 							/>
 							<Button type="submit" variant="contained" color="primary">
 								Créer
 							</Button>
-						</form>
+						</Paper>
 					</Stack>
 				</Stack>
 			</Stack>
