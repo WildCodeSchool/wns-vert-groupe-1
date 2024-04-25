@@ -3,6 +3,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
+    image: cityguide2024/backend
     volumes:
       - ./backend/src:/app/src
     healthcheck:
@@ -17,6 +18,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
+    image: cityguide2024/frontend
     command: npm start
     restart: always
     volumes:
@@ -37,14 +39,17 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
   imagesupload:
-    build: ./imagesupload
+    build:
+      context: ./imagesupload
+      dockerfile: Dockerfile.prod
+    image: cityguide2024/images-upload
     volumes:
       - ./imagesupload/src:/app/src
       - ./imagesupload/uploads:/app/uploads
   adminer:
     image: adminer
     ports:
-      - 8080:8080
+      - 8081:8080
   gateway:
     image: nginx
     ports:
