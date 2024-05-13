@@ -10,8 +10,10 @@ import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { ImagesCarousel } from "@components";
 
 const NewPoi = () => {
   const [imageURLs, setImageURLs] = useState<string[]>([]);
@@ -87,113 +89,239 @@ const NewPoi = () => {
 // TODO : add form control and make all fields mandatory, fix console errors
   if (cityData && categoryData) {
     return (
-      <Grid container justifyContent="center" alignItems="center" style={{ maxHeight: "75vh" }}>
-        <Grid item xs={12} sm={8}>
-          <Paper
-            component="form"
-            onSubmit={handleSubmit(onSubmit)}
-            sx={{
-              padding: mainTheme.spacing(3),
-              borderRadius: mainTheme.spacing(2),
-              boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
-              marginTop: "1rem"
-            }}
-          >
-            <Typography color={mainTheme.palette.primary.main} align="center" sx={{ fontSize: mainTheme.typography.h4, fontWeight: "bold" }}>Ajouter un POI</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField label="Nom" {...register("name", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small" />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField label="Adresse" {...register("address", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small" />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField label="Code Postal" {...register("postalCode", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal" size="small"/>
-              </Grid>
-              <Grid item xs={4}>
-                <FormControl fullWidth margin="normal" size="small" >
-                  <InputLabel id="city">Ville</InputLabel>
-                  <Select label="Ville" labelId="city" {...register("city", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth color="primary">
-                    {cityData?.getAllCities?.map((city) => (
-                      <MenuItem key={city.id} value={city.id}>
-                        {city.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={4}>
-                <FormControl fullWidth margin="normal" size="small" >
-                  <InputLabel id="category">Catégorie</InputLabel>
-                  <Select label="Catégorie" labelId="category" {...register("category", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth color="primary">
-                    {categoryData?.getAllCategories?.map((category) => (
-                      <MenuItem key={category.id} value={category.id}>
-                        {category.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField label="Description" multiline rows={3} {...register("description", { required: {value: true, message: "Ce champ est obligatoire"} })} fullWidth margin="normal"/>
-              </Grid>
-            
-              <Grid item xs={12} sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1rem" }}>
-                <Button
-                  component="label"
-                  color="primary"
-                  role={undefined}
-                  variant="contained"
-                  tabIndex={-1}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Ajouter des images
-                  <VisuallyHiddenInput type="file"
-                    onChange={async (e: any) => {
-                      if (e.target.files) {
-                        const selectedFiles = Array.from(e.target.files);
-                        const url = "http://localhost:8000/upload";
-                        const uploadPromises = (selectedFiles as File[]).map(async (file: File) => {
-                          const formData = new FormData();
-                          formData.append("file", file, file.name);
-                          try {
-                            const response = await axios.post(url, formData);
-                            console.log(response);
-                            return response.data.filename;
-                          } catch (err) {
-                            console.log("error", err);
-                            return null;
-                          }
-                        });
+			<Grid
+				container
+				justifyContent="space-evenly"
+				alignItems="center"
+				style={{ maxHeight: "75vh" }}
+			>
+				<Grid item xs={6}>
+					{imageURLs.length > 0 ? (
+						<Paper
+							sx={{
+								padding: mainTheme.spacing(3),
+								borderRadius: mainTheme.spacing(2),
+								boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
+								marginTop: "1rem",
+							}}
+						>
+							<ImagesCarousel images={imageURLs} />
+						</Paper>
+					) : (
+						<Paper
+							sx={{
+								padding: mainTheme.spacing(3),
+								borderRadius: mainTheme.spacing(2),
+								boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
+								marginTop: "1rem",
+							}}
+						>
+							<AddPhotoAlternateOutlinedIcon
+								sx={{
+									color: mainTheme.palette.primary.main,
+									fontSize: "200px",
+									opacity: 0.7,
+								}}
+							/>
+						</Paper>
+					)}
+				</Grid>
+				<Grid item xs={12} sm={5}>
+					<Paper
+						component="form"
+						onSubmit={handleSubmit(onSubmit)}
+						sx={{
+							padding: mainTheme.spacing(3),
+							borderRadius: mainTheme.spacing(2),
+							boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
+							marginTop: "1rem",
+						}}
+					>
+						<Typography
+							color={mainTheme.palette.primary.main}
+							align="center"
+							sx={{ fontSize: mainTheme.typography.h4, fontWeight: "bold" }}
+						>
+							Ajouter un POI
+						</Typography>
+						<Grid container spacing={2}>
+							<Grid item xs={12}>
+								<TextField
+									label="Nom"
+									{...register("name", {
+										required: {
+											value: true,
+											message: "Ce champ est obligatoire",
+										},
+									})}
+									fullWidth
+									margin="normal"
+									size="small"
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									label="Adresse"
+									{...register("address", {
+										required: {
+											value: true,
+											message: "Ce champ est obligatoire",
+										},
+									})}
+									fullWidth
+									margin="normal"
+									size="small"
+								/>
+							</Grid>
+							<Grid item xs={4}>
+								<TextField
+									label="Code Postal"
+									{...register("postalCode", {
+										required: {
+											value: true,
+											message: "Ce champ est obligatoire",
+										},
+									})}
+									fullWidth
+									margin="normal"
+									size="small"
+								/>
+							</Grid>
+							<Grid item xs={4}>
+								<FormControl fullWidth margin="normal" size="small">
+									<InputLabel id="city">Ville</InputLabel>
+									<Select
+										label="Ville"
+										labelId="city"
+										{...register("city", {
+											required: {
+												value: true,
+												message: "Ce champ est obligatoire",
+											},
+										})}
+										fullWidth
+										color="primary"
+									>
+										{cityData?.getAllCities?.map((city) => (
+											<MenuItem key={city.id} value={city.id}>
+												{city.name}
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+							</Grid>
+							<Grid item xs={4}>
+								<FormControl fullWidth margin="normal" size="small">
+									<InputLabel id="category">Catégorie</InputLabel>
+									<Select
+										label="Catégorie"
+										labelId="category"
+										{...register("category", {
+											required: {
+												value: true,
+												message: "Ce champ est obligatoire",
+											},
+										})}
+										fullWidth
+										color="primary"
+									>
+										{categoryData?.getAllCategories?.map((category) => (
+											<MenuItem key={category.id} value={category.id}>
+												{category.name}
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									label="Description"
+									multiline
+									rows={3}
+									{...register("description", {
+										required: {
+											value: true,
+											message: "Ce champ est obligatoire",
+										},
+									})}
+									fullWidth
+									margin="normal"
+								/>
+							</Grid>
 
-                        Promise.all(uploadPromises).then((filenames) => {
-                          setImageURLs((prevImageURLs) => [
-                            ...prevImageURLs,
-                            ...filenames.filter((filename) => filename !== null),
-                          ]);
-                        });
-                      }
-                    }}
-                    multiple />
-                </Button>
-              </Grid>
-              <Grid item xs={12} sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1rem" }}>
-              {imageURLs.map((url, index) => (
-                <Grid key={index} item xs={1} sx={{ margin: "0.5rem" }}>
-                  <img width={"100%"} alt={`uploadedImg${index}`} src={"http://localhost:8000" + url} />
-                </Grid>
-              ))}
-            </Grid>
-              <Grid item xs={12} sx={{ display: "flex", justifyContent: "right", marginTop: "1rem", }}>
-                <Button type="submit" variant="contained" color="primary" >
-                  Valider
-                </Button>
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-      </Grid>
-    );
+							<Grid
+								item
+								xs={12}
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									marginTop: "1rem",
+								}}
+							>
+								<Button
+									component="label"
+									color="primary"
+									role={undefined}
+									variant="contained"
+									tabIndex={-1}
+									startIcon={<AddPhotoAlternateOutlinedIcon />}
+								>
+									Ajouter des images
+									<VisuallyHiddenInput
+										type="file"
+										onChange={async (e: any) => {
+											if (e.target.files) {
+												const selectedFiles = Array.from(e.target.files);
+												const url = "http://localhost:8000/upload";
+												const uploadPromises = (selectedFiles as File[]).map(
+													async (file: File) => {
+														const formData = new FormData();
+														formData.append("file", file, file.name);
+														try {
+															const response = await axios.post(url, formData);
+															console.log(response);
+															return response.data.filename;
+														} catch (err) {
+															console.log("error", err);
+															return null;
+														}
+													}
+												);
+
+												Promise.all(uploadPromises).then((filenames) => {
+													setImageURLs((prevImageURLs) => [
+														...prevImageURLs,
+														...filenames.filter(
+															(filename) => filename !== null
+														),
+													]);
+												});
+											}
+										}}
+										multiple
+									/>
+								</Button>
+							</Grid>
+
+							<Grid
+								item
+								xs={12}
+								sx={{
+									display: "flex",
+									justifyContent: "right",
+									marginTop: "1rem",
+								}}
+							>
+								<Button type="submit" variant="contained" color="primary">
+									Valider
+								</Button>
+							</Grid>
+						</Grid>
+					</Paper>
+				</Grid>
+			</Grid>
+		);
   }
 }
 
