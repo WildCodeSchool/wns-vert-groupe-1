@@ -14,6 +14,7 @@ import axios from "axios";
 
 const NewPoi = () => {
 	const [imageURLs, setImageURLs] = useState<string[]>([]);
+	// const [imageURL, setImageURL] = useState<string>();
 
 	const {
 		register,
@@ -59,6 +60,7 @@ const NewPoi = () => {
 						postalCode: formData.postalCode,
 						description: formData.description,
 						images: imageURLs.map((image) => image),
+						// images: imageURL,
 						city: Number.parseInt(formData.city),
 						category: Number.parseInt(formData.category),
 						latitude: formData.latitude,

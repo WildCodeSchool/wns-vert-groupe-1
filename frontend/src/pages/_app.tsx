@@ -11,6 +11,14 @@ import { setContext } from "@apollo/client/link/context";
 import { Layout } from "@components";
 import "../styles/globals.css";
 
+// let backend_url =
+// 	typeof window !== "undefined" &&
+// 	window.location.origin.startsWith("http://localhost")
+// 		? "http://localhost:4000"
+// 		: "/graphql";
+// console.log("typeof window ", typeof window);
+// console.log("backend_url", backend_url);
+
 let backend_url = "/graphql";
 
 const httpLink = createHttpLink({

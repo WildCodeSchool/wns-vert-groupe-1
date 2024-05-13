@@ -1,10 +1,11 @@
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
-    volumes:
-      - ./backend/src:/app/src
+    image: cityguide2024/frontend
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile.prod
+    # volumes:
+    #   - ./backend/src:/app/src
     healthcheck:
       test: 'curl --fail --request POST --header ''content-type: application/json'' --url ''http://localhost:4000'' --data ''{"query":"query { __typename }"}'' || exit 1'
       interval: 5s
@@ -14,17 +15,14 @@ services:
       db:
         condition: service_healthy
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
+    image: cityguide2024/backend
+    # build:
+    #   context: ./frontend
+    #   dockerfile: Dockerfile.prod
     command: npm start
-    restart: always
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
-    volumes:
-      - ./frontend/src:/app/src
+    # restart: always
+    # volumes:
+    #   - ./frontend/src:/app/src
     depends_on:
       backend:
         condition: service_healthy
@@ -41,14 +39,16 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
   imagesupload:
-    build: ./imagesupload
-    volumes:
-      - ./imagesupload/src:/app/src
-      - ./imagesupload/uploads:/app/uploads
+  image:
+    cityguide-2024/images-upload
+    # build: ./imagesupload
+    # volumes:
+    #   - ./imagesupload/src:/app/src
+    #   - ./imagesupload/uploads:/app/uploads
   adminer:
     image: adminer
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
   gateway:
     image: nginx
     ports:

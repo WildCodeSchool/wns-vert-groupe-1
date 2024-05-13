@@ -1,0 +1,11 @@
+{
+	"name": "2023-09-wns-vert-groupe1",
+	"version": "1.0.0",
+	"description": "CityGuide",
+	"scripts": {
+		"startprod": "docker-compose -f docker-compose.prod.yml up --build",
+		"start": "docker-compose -f docker-compose.yml up --build"
+	},
+	"author": "",
+	"license": "ISC"
+}
