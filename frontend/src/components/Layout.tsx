@@ -6,12 +6,9 @@ import {
 	ThemeProvider,
 	Container,
 	BottomNavigation,
-	BottomNavigationAction,
 	Typography,
 } from "@mui/material";
-import { mainTheme } from "@theme";
-import HomeIcon from "@mui/icons-material/Home";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { mainTheme } from "../theme";
 import Link from "next/link";
 
 export const UserContext = createContext({

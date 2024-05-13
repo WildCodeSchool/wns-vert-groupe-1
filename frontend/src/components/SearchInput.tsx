@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { mainTheme } from "@theme";
+import { mainTheme } from "../theme";
 
 type SearchInputProps = {
 	label: string;

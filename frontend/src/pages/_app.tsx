@@ -19,7 +19,7 @@ import "../styles/globals.css";
 // console.log("typeof window ", typeof window);
 // console.log("backend_url", backend_url);
 
-let backend_url = "/graphql";
+let backend_url = "http://localhost:4000";
 
 const httpLink = createHttpLink({
 	uri: backend_url,

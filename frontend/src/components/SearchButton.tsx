@@ -1,6 +1,6 @@
 import { IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { mainTheme } from "@theme";
+import { mainTheme } from "../theme";
 
 export type SearchButtonProps = {
 	disabled?: boolean;

@@ -5,7 +5,7 @@ import { UserContext } from "./Layout";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { mainTheme } from "@theme";
+import { mainTheme } from "../theme";
 
 export const Header = () => {
 	const authInfo = useContext(UserContext);

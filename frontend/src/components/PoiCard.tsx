@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
-import { mainTheme } from "@theme";
-import { PoiType } from "@types";
+import { mainTheme } from "../theme";
+import { PoiType } from "../types";
 
 export const PoiCard = ({ name, images, category, description }: PoiType) => {
 	return (

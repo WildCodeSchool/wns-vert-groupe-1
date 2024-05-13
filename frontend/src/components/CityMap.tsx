@@ -1,6 +1,6 @@
 "use client";
 import { Map, Marker } from "react-map-gl";
-import { CityType } from "@types";
+import { CityType } from "../types";
 
 export const CityMap = ({ lat, lon, pois }: CityType) => {
 	const key = `${lat}-${lon}`;

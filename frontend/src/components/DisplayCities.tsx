@@ -1,11 +1,11 @@
-import { CityCard } from "@components";
-import { DisplayCitiesType} from "@types";
+// import { CityCard } from "../components";
+import { DisplayCitiesType } from "@types";
 
 export const DisplayCities = ({ cities }: DisplayCitiesType) => {
 	return (
 		<>
 			<section className="recent-cities">
-				{!!cities &&
+				{/* {!!cities &&
 					cities.map((city) => (
 						<div key={city.id}>
 							<CityCard
@@ -15,7 +15,7 @@ export const DisplayCities = ({ cities }: DisplayCitiesType) => {
 								pois={city.pois}
 							/>
 						</div>
-					))}
+					))} */}
 			</section>
 		</>
 	);

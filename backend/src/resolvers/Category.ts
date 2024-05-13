@@ -1,5 +1,5 @@
-import { CategoryInput } from "@inputs";
-import { Category } from "@entities";
+import { CategoryInput } from "../inputs";
+import { Category } from "../entities";
 import { Arg, Query, Resolver, Mutation } from "type-graphql";
 
 @Resolver()

@@ -1,11 +1,11 @@
 services:
   backend:
-    image: cityguide2024/frontend
-    # build:
-    #   context: ./backend
-    #   dockerfile: Dockerfile.prod
-    # volumes:
-    #   - ./backend/src:/app/src
+    # image: cityguide2024/backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    volumes:
+      - ./backend/src:/app/src
     healthcheck:
       test: 'curl --fail --request POST --header ''content-type: application/json'' --url ''http://localhost:4000'' --data ''{"query":"query { __typename }"}'' || exit 1'
       interval: 5s
@@ -15,10 +15,10 @@ services:
       db:
         condition: service_healthy
   frontend:
-    image: cityguide2024/backend
-    # build:
-    #   context: ./frontend
-    #   dockerfile: Dockerfile.prod
+    # image: cityguide2024/frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
     command: npm start
     # restart: always
     # volumes:
@@ -39,12 +39,11 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
   imagesupload:
-  image:
-    cityguide-2024/images-upload
-    # build: ./imagesupload
-    # volumes:
-    #   - ./imagesupload/src:/app/src
-    #   - ./imagesupload/uploads:/app/uploads
+    # image: cityguide2024/images-upload
+    build: ./imagesupload
+    volumes:
+      - ./imagesupload/src:/app/src
+      - ./imagesupload/uploads:/app/uploads
   adminer:
     image: adminer
     # ports:
@@ -52,7 +51,7 @@ services:
   gateway:
     image: nginx
     ports:
-      - 7000:80
+      - 7001:80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./logs:/var/log/nginx

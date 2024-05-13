@@ -1,11 +1,7 @@
 import { useState } from "react";
-
 import { useRouter } from "next/router";
-
 import { Paper } from "@mui/material";
-
-import { mainTheme } from "@theme";
-
+import { mainTheme } from "../theme";
 import { SearchInput } from "./SearchInput";
 import { SearchButton } from "./SearchButton";
 
