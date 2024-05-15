@@ -20,7 +20,7 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 			<Carousel
 				autoPlay={true}
 				index={selectedImageIndex !== null ? selectedImageIndex : undefined}
-				sx={{ height: "60vh" }}
+				sx={{ height: "50vh" }}
 			>
 				{images.map((imageUrl, i) => (
 					<img
@@ -28,7 +28,7 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 						src={imageUrl}
 						style={{
 							width: "100%",
-							height: "55vh",
+							height: "50vh",
 							objectFit: "cover",
 							borderRadius: "45px",
 						}}
