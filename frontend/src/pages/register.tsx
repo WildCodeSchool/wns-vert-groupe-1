@@ -5,6 +5,17 @@ import { CityType, UserInput } from "@types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import {
+	Grid,
+	TextField,
+	Button,
+	Paper,
+	Typography,
+	Link,
+	Select,
+	InputLabel,
+	MenuItem,
+} from "@mui/material";
 
 const Register = () => {
 	const router = useRouter();
@@ -54,52 +65,115 @@ const Register = () => {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className="mb-10">
-					<input
-						className="text-field"
-						placeholder="Prénom :"
-						{...registerForm("firstName", { required: true })}
-					/>
-					{errors.firstName && <span>This field is required</span>}
-				</div>
-				<div className="mb-10">
-					<input
-						placeholder="Nom :"
-						className="text-field"
-						{...registerForm("lastName", { required: true })}
-					/>
-					{errors.lastName && <span>This field is required</span>}
-				</div>
-				<div className="mb-10">
-					<input
-						placeholder="e-mail :"
-						className="text-field"
-						{...registerForm("email", {
-							required: true,
-							maxLength: 200,
-						})}
-					/>
-					{errors.email && <span>This field is required</span>}
-				</div>
-				<div className="mb-10">
-					<input
-						className="text-field"
-						placeholder="Mot de passe :"
-						{...registerForm("password", { required: true })}
-						type="password"
-					/>
-					{errors.password && <span>This field is required</span>}
-				</div>
-				<select {...registerForm("city")} className="mb-10">
-					{cities.map((el) => (
-						<option value={el.id} key={el.id}>
-							{el.name}
-						</option>
-					))}
-				</select>
-				<button className="button">Submit</button>
-			</form>
+			<Grid container justifyContent="center">
+				<Grid item xs={12} sm={8} md={6}>
+				<Paper variant="elevation" elevation={3} style={{ paddingLeft: '6rem', paddingRight: '6rem'}}>
+
+                        <Typography 
+						variant="h3" 
+						color="primary" 
+						align="center" 
+						gutterBottom 
+						fontWeight="bold"
+						style={{ marginBottom: "2rem", paddingTop: "2rem", marginTop: "4rem" }}
+						>
+                            S'inscrire
+                        </Typography>
+
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<div>
+							<TextField
+								fullWidth
+								placeholder="Prénom"
+								variant="standard"
+								style={{ marginBottom: "1rem" }}
+								{...registerForm("firstName", { required: true })}
+							/>
+							{errors.firstName && <span>Ce champ est requis</span>}
+						</div>
+
+						<div>
+							<TextField
+								fullWidth
+								placeholder="Nom"
+								variant="standard"
+								style={{ marginBottom: "1rem" }}
+								{...registerForm("lastName", { required: true })}
+							/>
+							{errors.lastName && <span>Ce champ est requis</span>}
+						</div>
+
+						<div>
+							<TextField
+								fullWidth
+								placeholder="E-mail"
+								variant="standard"
+								style={{ marginBottom: "1rem" }}
+								{...registerForm("email", {
+									required: true,
+									maxLength: 200,
+								})}
+							/>
+							{errors.email && <span>Ce champ est requis</span>}
+						</div>
+
+						<div>
+							<TextField
+								fullWidth
+								placeholder="Mot de passe"
+								id="standard-basic"
+								variant="standard"
+								type="password"
+								style={{ marginBottom: "1rem" }}
+								{...registerForm("password", { required: true })}
+							/>
+							{errors.password && <span>Ce champ est requis</span>}
+						</div>
+
+						<InputLabel id="city-label">Sélectionner une ville</InputLabel>
+						<Select
+							labelId="city-label"
+							id="city"
+							defaultValue=""
+							sx={{ width: "100%" }}
+							{...registerForm("city")}
+						>
+							{cities.map((el) => (
+								<MenuItem key={el.id} value={el.id}>
+									{el.name}
+								</MenuItem>
+							))}
+						</Select>
+
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+							fullWidth
+							style={{
+								marginBottom: "2rem",
+								marginTop: "1rem",
+								borderRadius: "24px",
+							}}
+						>
+							Envoyer
+						</Button>
+
+						<Typography 
+								gutterBottom
+								color="primary"
+								variant="subtitle1"
+								align="center"
+								sx={{ fontSize: '1rem', textAlign: 'center', paddingBottom: "1rem" }}
+			  				>
+							Vous avez déjà un compte ? 
+							<Link href="/login" underline="hover" sx={{ fontSize: '1rem', color: 'primary' }}> Se connecter</Link>
+							</Typography>
+					</form>
+					</Paper>
+				</Grid>
+			</Grid>
+		
 		</>
 	);
 };
