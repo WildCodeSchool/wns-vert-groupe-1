@@ -1,5 +1,5 @@
 export type PoiType = {
-	id?: number;
+	id: number;
 	name: string;
 	address?: string;
 	description: string;
@@ -42,12 +42,6 @@ export type CityMapProps = {
 		latitude: number;
 		longitude: number;
 	}[];
-};
-
-export type DisplayCitiesType = {
-	cities: (CityType & CityMapProps)[];
-	onClickDelete?: (adId: number) => void;
-	onClickEdit?: (adId: number) => void;
 };
 
 export type POIInput = {

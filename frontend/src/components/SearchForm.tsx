@@ -26,7 +26,6 @@ export const SearchForm = () => {
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
 		if (city.trim() === "") {
 			setError(true);
 			console.log("error", error);
@@ -45,13 +44,13 @@ export const SearchForm = () => {
 			data-testid="search-form-container"
 			sx={{
 				padding: `${mainTheme.spacing(3)} ${mainTheme.spacing(3)} ${mainTheme.spacing(3)} ${mainTheme.spacing(7)}`,
-				margin: mainTheme.spacing(4),
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "space-between",
 				flexWrap: "wrap",
 				borderRadius: "45px",
 				boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
+				maxWidth: "500px",
 			}}
 		>
 			<SearchInput

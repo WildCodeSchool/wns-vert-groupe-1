@@ -6,11 +6,12 @@ export const mainTheme = createTheme({
 			main: "#41785D",
 			light: "#D3E3D5",
 			dark: "#1E3E3D",
-			contrastText: "#EEEBE3",
+			contrastText: "#AFCDB3",
 		},
 		secondary: {
 			main: "#424856",
 			light: "#DEE1E6",
+			contrastText: "#EEEBE3",
 		},
 		background: {
 			default: "#EEEBE3",
@@ -23,7 +24,7 @@ export const mainTheme = createTheme({
 			main: "#A3E2B5",
 		},
 		error: {
-			main: "#FFB2B2",
+			main: "#fe6363",
 		},
 	},
 	typography: {
@@ -62,5 +63,5 @@ export const mainTheme = createTheme({
 			fontWeight: 300,
 		},
 	},
-	spacing: [0, 4, 8, 12, 16, 20, 24, 30, 38],
+	spacing: [0, 4, 8, 12, 16, 20, 24, 30, 38, 48, 56],
 });
