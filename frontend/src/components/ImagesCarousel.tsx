@@ -15,7 +15,9 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 		setSelectedImageIndex(index);
 	};
 
-	return (
+	  const expressServerUrl = "http://localhost:8000";
+
+	  return (
 		<>
 			<Carousel
 				autoPlay={true}
@@ -25,14 +27,13 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 				{images.map((imageUrl, i) => (
 					<img
 						key={i}
-						src={"/../imagesupload/uploads/1715765204632-MTU_accrochage 46_62.jpg"}
+						src={`${expressServerUrl}${imageUrl}`}
 						style={{
 							width: "100%",
 							height: "55vh",
 							objectFit: "cover",
 							borderRadius: "45px",
 						}}
-					
 					/>
 				))}
 			</Carousel>
@@ -40,7 +41,7 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 				{images.map((imageUrl, i) => (
 					<ImageListItem key={i}>
 						<img
-							src={imageUrl}
+							src={`${expressServerUrl}${imageUrl}`}
 							loading="lazy"
 							style={{ borderRadius: "20px" }}
 							onClick={() => handleImageClick(i)}
