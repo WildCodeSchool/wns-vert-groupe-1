@@ -24,7 +24,7 @@ export const mainTheme = createTheme({
 			main: "#A3E2B5",
 		},
 		error: {
-			main: "#FFB2B2",
+			main: "#fe6363",
 		},
 	},
 	typography: {
@@ -63,5 +63,5 @@ export const mainTheme = createTheme({
 			fontWeight: 300,
 		},
 	},
-	spacing: [0, 4, 8, 12, 16, 20, 24, 30, 38],
+	spacing: [0, 4, 8, 12, 16, 20, 24, 30, 38, 48, 56],
 });

@@ -11,8 +11,13 @@ import { setContext } from "@apollo/client/link/context";
 import { Layout } from "@components";
 import "../styles/globals.css";
 
+const backend_url =
+	process.env.NODE_ENV === "development"
+		? "http://localhost:4000/api/graphql"
+		: "/graphql";
+
 const httpLink = createHttpLink({
-	uri: "http://localhost:4000",
+	uri: backend_url,
 });
 
 const authLink = setContext((_, { headers }) => {

@@ -10,14 +10,14 @@ type SearchInputProps = {
 	error?: boolean;
 };
 
-export const SearchInput: React.FC<SearchInputProps> = ({
+export const SearchInput = ({
 	label,
 	name,
 	value,
 	onChange,
 	placeholder,
 	error,
-}) => (
+}: SearchInputProps) => (
 	<Box display="flex" flexDirection="column">
 		<Typography
 			sx={{
