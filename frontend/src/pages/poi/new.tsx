@@ -5,11 +5,9 @@ import { useQuery } from "@apollo/client";
 import { styled } from '@mui/material/styles';
 import { Paper, TextField, Select, MenuItem, Button, Grid, InputLabel, Typography, FormControl } from "@mui/material";
 import { mainTheme } from "@theme";
-import { GeoCodingService } from "../../services/GeoCodingService";
 import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -43,12 +41,6 @@ const NewPoi = () => {
 
   const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
     try {
-      const coordinates = await GeoCodingService.getCoordinates(formData.address);
-
-      if (coordinates) {
-        formData.latitude = coordinates.latitude;
-        formData.longitude = coordinates.longitude;
-      }
 
       const result = await createNewPoi({
         variables: {
@@ -60,8 +52,6 @@ const NewPoi = () => {
             images: imageURLs.map((image) => "http://localhost:8000" + image),
             city: Number.parseInt(formData.city),
             category: Number.parseInt(formData.category),
-            latitude: formData.latitude,
-            longitude: formData.longitude,
           },
         },
       });

@@ -29,7 +29,7 @@ export const Header = () => {
 				<Link href="/" passHref>
 					<Typography color="inherit" sx={{ letterSpacing: "0.04em" }}>
 						CITY GUIDE
-					</Typography>
+		</Typography>
 				</Link>
 				<div>
 					<img
@@ -61,7 +61,12 @@ export const Header = () => {
 					</div>
 				) : (
 					<Link href="/login" passHref>
-						<Typography color="inherit">CONNEXION</Typography>
+						<AccountCircleIcon
+							sx={{
+								fontSize: mainTheme.typography.h2,
+								mr: mainTheme.spacing(3),
+							}}
+						/>
 					</Link>
 				)}
 			</Toolbar>

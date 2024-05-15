@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from "next/router"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
 import Carousel from 'react-material-ui-carousel'
 import { Breadcrumbs, ImageList, ImageListItem, Typography, Grid, Paper, Link } from '@mui/material';
@@ -20,30 +20,34 @@ const POIDetails = () => {
         category: "",
     });
 
-    const { loading, error, data } = useQuery(GET_POI_BY_ID, {
-        variables: { id: parseInt(router.query.id as string) },
-    });
+	const { loading, error, data } = useQuery(GET_POI_BY_ID, {
+		variables: { id: parseInt(router.query.id as string) },
+	});
 
-    useEffect(() => {
-        if (!loading && data && data.getPoiById) {
-            setPOI({
-                name: data.getPoiById.name,
-                address: data.getPoiById.address,
-                description: data.getPoiById.description,
-                images: data.getPoiById.images,
-                city: data.getPoiById.city.name,
-                category: data.getPoiById.category.name,
-            });
-        }
-    }, [data, error, router.query.id]);
+	useEffect(() => {
+		if (!loading && data && data.getPoiById) {
+			setPOI({
+				name: data.getPoiById.name,
+				address: data.getPoiById.address,
+				description: data.getPoiById.description,
+				images: data.getPoiById.images,
+				city: data.getPoiById.city.name,
+				category: data.getPoiById.category.name,
+			});
+		}
+	}, [data, error, router.query.id]);
 
-    function Item(props: any) {
-        return (
-            <Paper>
-                <img src={props.item} alt={`Image ${props.index}`} style={{ width: '100%' }} />
-            </Paper>
-        )
-    }
+	function Item(props: { item: string; index: number }) {
+		return (
+			<Paper>
+				<img
+					src={props.item}
+					alt={`Image ${props.index}`}
+					style={{ width: "100%" }}
+				/>
+			</Paper>
+		);
+	}
 
     const handleCityClick = () => {
         router.push(`/city/search/${POI.city}`);
