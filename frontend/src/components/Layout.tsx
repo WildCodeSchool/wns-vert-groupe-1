@@ -57,7 +57,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 							maxWidth={false}
 							sx={{
 								flex: "1",
-								background: mainTheme.palette.background.default,
+								background: mainTheme.palette.primary.dark,
 								marginLeft: 0,
 								marginRight: 0,
 								paddingLeft: 0,

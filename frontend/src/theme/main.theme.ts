@@ -6,11 +6,12 @@ export const mainTheme = createTheme({
 			main: "#41785D",
 			light: "#D3E3D5",
 			dark: "#1E3E3D",
-			contrastText: "#EEEBE3",
+			contrastText: "#AFCDB3",
 		},
 		secondary: {
 			main: "#424856",
 			light: "#DEE1E6",
+			contrastText: "#EEEBE3",
 		},
 		background: {
 			default: "#EEEBE3",
