@@ -96,7 +96,11 @@ console.log(imageURLs);
 								height: "70vh",
 							}}
 						>
-							<ImagesCarousel images={imageURLs} />
+							<ImagesCarousel
+								images={imageURLs.map(
+									(image) => `http://localhost:8000${image}`
+								)}
+							/>
 						</Paper>
 					) : (
 						<Paper

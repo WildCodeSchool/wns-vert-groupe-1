@@ -15,8 +15,6 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 		setSelectedImageIndex(index);
 	};
 
-	  const expressServerUrl = "http://localhost:8000";
-
 	  return (
 		<>
 			<Carousel
@@ -27,7 +25,7 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 				{images.map((imageUrl, i) => (
 					<img
 						key={i}
-						src={`${expressServerUrl}${imageUrl}`}
+						src={imageUrl}
 						style={{
 							width: "100%",
 							height: "55vh",
@@ -41,7 +39,7 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 				{images.map((imageUrl, i) => (
 					<ImageListItem key={i}>
 						<img
-							src={`${expressServerUrl}${imageUrl}`}
+							src={imageUrl}
 							loading="lazy"
 							style={{ borderRadius: "20px" }}
 							onClick={() => handleImageClick(i)}
