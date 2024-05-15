@@ -119,8 +119,7 @@ const NewPoi = () => {
 							<AddPhotoAlternateOutlinedIcon
 								sx={{
 									color: mainTheme.palette.primary.main,
-									fontSize: "200px",
-									opacity: 0.7,
+									fontSize: "100px",
 								}}
 							/>
 						</Paper>
