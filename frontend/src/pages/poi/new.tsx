@@ -75,7 +75,7 @@ const NewPoi = () => {
     whiteSpace: 'nowrap',
     width: 1,
   });
-
+console.log(imageURLs);
 // TODO : add form control and make all fields mandatory, fix console errors
   if (cityData && categoryData) {
     return (
@@ -93,6 +93,7 @@ const NewPoi = () => {
 								borderRadius: mainTheme.spacing(2),
 								boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
 								marginTop: "1rem",
+								height: "70vh",
 							}}
 						>
 							<ImagesCarousel images={imageURLs} />
@@ -104,6 +105,10 @@ const NewPoi = () => {
 								borderRadius: mainTheme.spacing(2),
 								boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
 								marginTop: "1rem",
+								height: "70vh",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
 							}}
 						>
 							<AddPhotoAlternateOutlinedIcon
@@ -124,6 +129,7 @@ const NewPoi = () => {
 							borderRadius: mainTheme.spacing(2),
 							boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
 							marginTop: "1rem",
+							height: "70vh",
 						}}
 					>
 						<Typography
