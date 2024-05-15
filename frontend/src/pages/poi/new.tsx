@@ -153,6 +153,7 @@ console.log(imageURLs);
 											message: "Ce champ est obligatoire",
 										},
 									})}
+									variant="standard"
 									fullWidth
 									margin="normal"
 									size="small"
@@ -167,6 +168,7 @@ console.log(imageURLs);
 											message: "Ce champ est obligatoire",
 										},
 									})}
+									variant="standard"
 									fullWidth
 									margin="normal"
 									size="small"
@@ -181,6 +183,7 @@ console.log(imageURLs);
 											message: "Ce champ est obligatoire",
 										},
 									})}
+									variant="standard"
 									fullWidth
 									margin="normal"
 									size="small"
@@ -244,6 +247,7 @@ console.log(imageURLs);
 										},
 									})}
 									fullWidth
+									variant="standard"
 									margin="normal"
 								/>
 							</Grid>
