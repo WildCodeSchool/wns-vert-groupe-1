@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { GET_CITY_BY_NAME } from "@queries";
-import { PoiCard, SearchForm, CityMap } from "@components";
+import { PoiCard, SearchForm, CityMap, Tag } from "@components";
 import { CityType } from "@types";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { mainTheme } from "@theme";
@@ -18,6 +18,14 @@ const SearchResults = () => {
 		lat: undefined,
 		lon: undefined,
 	});
+
+	const [activePoiId, setActivePoiId] = useState<number | null>(null);
+
+	// TODO replace fake tags data
+	const [tags, setTags] = useState(["Paris", "Monuments"]);
+	const handleCloseTag = (tagName: string) => {
+		setTags(tags.filter((tag) => tag !== tagName));
+	};
 
 	const { loading, error, data } = useQuery(GET_CITY_BY_NAME, {
 		variables: { name: router.query.keyword },
@@ -48,6 +56,25 @@ const SearchResults = () => {
 		}
 	}, [data, error, router.query.keyword]);
 
+	const scrollToPoi = (poiId: number) => {
+		setActivePoiId(poiId);
+		const poiElementId = `poi-${poiId}`;
+
+		const poiElement = document.getElementById(poiElementId);
+
+		if (poiElement) {
+			poiElement.scrollIntoView({ behavior: "smooth", block: "start" });
+		}
+	};
+
+	const handleMouseOverPoi = (poiId: number) => {
+		setActivePoiId(poiId);
+	};
+
+	const handleMouseOutPoi = () => {
+		setActivePoiId(null);
+	};
+
 	if (loading)
 		return (
 			<div
@@ -63,11 +90,24 @@ const SearchResults = () => {
 		);
 
 	return (
-		<Box display="flex" justifyContent="space-between">
-			<Box display="flex" flexDirection="column" flex="1">
-				<SearchForm />
+		<Box display="flex">
+			<Box flex="1" maxHeight="100vh" overflow="auto">
+				<Box padding={mainTheme.spacing(6)}>
+					<SearchForm />
+				</Box>
+				<Box
+					display="flex"
+					alignItems="center"
+					gap={mainTheme.spacing(3)}
+					paddingLeft={mainTheme.spacing(6)}
+					paddingRight={mainTheme.spacing(6)}
+				>
+					{tags.map((tag) => (
+						<Tag key={tag} name={tag} onClose={() => handleCloseTag(tag)} />
+					))}
+				</Box>
 				{searchedCity.name !== "" ? (
-					<Box>
+					<Box padding={mainTheme.spacing(6)}>
 						<Typography
 							sx={{
 								color: mainTheme.palette.primary.dark,
@@ -79,11 +119,14 @@ const SearchResults = () => {
 						</Typography>
 						{searchedCity.pois?.map((poi) => (
 							<PoiCard
+								id={poi.id}
 								key={poi.id}
 								name={poi.name}
 								images={poi.images}
 								category={poi.category}
 								description={poi.description}
+								onMouseOver={() => handleMouseOverPoi(poi.id)}
+								onMouseOut={handleMouseOutPoi}
 							/>
 						))}
 					</Box>
@@ -103,6 +146,8 @@ const SearchResults = () => {
 				lat={searchedCity.lat}
 				lon={searchedCity.lon}
 				pois={searchedCity.pois}
+				activePoiId={activePoiId}
+				onMarkerClick={(poiId) => scrollToPoi(poiId)}
 			/>
 		</Box>
 	);

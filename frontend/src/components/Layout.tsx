@@ -55,6 +55,8 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 							sx={{
 								flex: "1",
 								background: mainTheme.palette.background.default,
+								display: "flex",
+								flexDirection: "column",
 								marginLeft: 0,
 								marginRight: 0,
 								paddingLeft: 0,
