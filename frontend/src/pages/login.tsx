@@ -1,20 +1,19 @@
-import { useLazyQuery } from "@apollo/client";
-import { UserContext } from "@components";
-import { LOGIN } from "@queries";
-import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useAuth } from "context/UserContext";
+import router from "next/router";
+import React from "react";
 
 const LoginPage = () => {
-	const router = useRouter();
-	const authInfo = useContext(UserContext);
+	const { onLogin, user } = useAuth();
 
-	const [handleLogin] = useLazyQuery(LOGIN, {
-		async onCompleted(data) {
-			localStorage.setItem("jwt", data.login);
-			authInfo.refetchLogin();
-			router.push("/");
-		},
-	});
+	React.useEffect(() => {
+		if (user) {
+			if (user.role === "ADMIN" || user.role === "CITYADMIN") {
+				router.replace("/admin");
+			} else {
+				router.replace("/");
+			}
+		}
+	}, [user]);
 
 	return (
 		<div>
@@ -23,17 +22,12 @@ const LoginPage = () => {
 					e.preventDefault();
 					const form = e.target;
 					const formData = new FormData(form as HTMLFormElement);
-
-					// Or you can work with it as a plain object:
-					const formJson = Object.fromEntries(formData.entries());
-					// console.log(formJson);
-
-					handleLogin({
-						variables: {
-							userData: formJson,
-						},
+					const email = formData.get("email") as string;
+					const password = formData.get("password") as string;
+					onLogin({
+						email: email,
+						password: password,
 					});
-					// router.back();
 				}}
 				className="text-field-with-button"
 			>
@@ -41,15 +35,15 @@ const LoginPage = () => {
 					name="email"
 					className="text-field main-search-field"
 					type="text"
-					defaultValue={"yuliia@gmail.com"}
+					placeholder="Votre email"
 				/>
 				<input
 					name="password"
 					className="text-field main-search-field"
 					type="password"
-					defaultValue={"yuliia"}
+					placeholder="Votre mot de passe"
 				/>
-				<button className="button button-primary">Login</button>
+				<button className="button button-primary">Se connecter</button>
 			</form>
 		</div>
 	);

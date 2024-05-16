@@ -8,6 +8,7 @@ import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const NewPoi = () => {
 	const [imageURLs, setImageURLs] = useState<string[]>([]);
@@ -111,12 +112,12 @@ const NewPoi = () => {
 									formData.append("file", file, file.name);
 									try {
 										const response = await axios.post(url, formData);
-										console.log(response);
 										setImageURLs((prevImageURLs) => [
 											...prevImageURLs,
 											response.data.filename,
 										]);
 									} catch (err) {
+										toast.error("Erreur lors de la soumission des images");
 										console.log("error", err);
 									}
 								});

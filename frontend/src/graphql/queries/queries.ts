@@ -74,12 +74,27 @@ export const LOGIN = gql`
 	}
 `;
 
-export const GET_AUTH_INFO = gql`
-	query WhoAmI {
-		whoAmI {
+export const CHECK_INFO = gql`
+	query CheckSession {
+		checkSession {
+			email
 			isLoggedIn
+			role
+		}
+	}
+`;
+
+export const GET_USER = gql`
+	query GetUserById($getUserByIdId: Float!) {
+		getUserById(id: $getUserByIdId) {
+			id
+			lastName
+			firstName
 			email
 			role
+			city {
+				name
+			}
 		}
 	}
 `;

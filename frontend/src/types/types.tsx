@@ -70,3 +70,18 @@ export type UserInput = {
 	password: string;
 	city?: number;
 };
+
+export type UserType = {
+	id: string;
+	firstName: string;
+	lastName: number;
+	email: string;
+	password: string;
+	city?: number;
+	role: string;
+};
+
+export type LoginT = {
+	email: string;
+	password: string;
+};

@@ -31,7 +31,8 @@
 		"react-dom": "^18",
 		"react-hook-form": "^7.50.0",
 		"react-map-gl": "^7.1.7",
-		"react-material-ui-carousel": "^3.4.2"
+		"react-material-ui-carousel": "^3.4.2",
+		"react-toastify": "^10.0.5"
 	},
 	"devDependencies": {
 		"@types/node": "^20",

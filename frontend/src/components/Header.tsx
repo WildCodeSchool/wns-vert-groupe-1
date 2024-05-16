@@ -1,21 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import Link from "next/link";
-import { AppBar, Toolbar, Typography } from "@mui/material";
-import { UserContext } from "./Layout";
+import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { mainTheme } from "@theme";
+import { useAuth } from "context/UserContext";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 export const Header = () => {
-	const authInfo = useContext(UserContext);
+	const { onLogout, isAuthenticated, user } = useAuth();
 	const router = useRouter();
-
-	const handleLogout = () => {
-		localStorage.removeItem("jwt");
-		authInfo.refetchLogin();
-		router.push("/");
-	};
 
 	return (
 		<AppBar position="static">
@@ -34,31 +29,40 @@ export const Header = () => {
 				<div>
 					<img
 						src="/images/logo.png"
-						alt="logo"
+						alt="Logo CityGuide"
 						style={{ height: 60, marginRight: 1 }}
 					/>
 				</div>
-				{authInfo.isLoggedIn ? (
-					<div>
-						{authInfo.role === "admin" && (
-							<Link href="/admin/users" passHref>
-								<Typography color="inherit">ADMIN PANEL</Typography>
-							</Link>
+				{isAuthenticated ? (
+					<Stack flexDirection="row" gap={4}>
+						{user?.role === "ADMIN" || user?.role === "CITYADMIN" ? (
+							<AdminPanelSettingsIcon
+								onClick={() => {
+									router.push("/admin");
+								}}
+								sx={{
+									fontSize: mainTheme.typography.h3,
+									cursor: "pointer",
+								}}
+							/>
+						) : (
+							<></>
 						)}
 						<AccountCircleIcon
+							onClick={() => router.push("/profil")}
 							sx={{
-								fontSize: mainTheme.typography.h2,
-								mr: mainTheme.spacing(3),
+								fontSize: mainTheme.typography.h3,
+								cursor: "pointer",
 							}}
 						/>
 						<LogoutIcon
-							onClick={handleLogout}
+							onClick={onLogout}
 							sx={{
-								mr: mainTheme.spacing(2),
-								fontSize: mainTheme.typography.h2,
+								fontSize: mainTheme.typography.h3,
+								cursor: "pointer",
 							}}
 						/>
-					</div>
+					</Stack>
 				) : (
 					<Link href="/login" passHref>
 						<Typography color="inherit">CONNEXION</Typography>
