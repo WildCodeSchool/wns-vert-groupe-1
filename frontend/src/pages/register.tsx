@@ -67,7 +67,7 @@ const Register = () => {
 		<>
 			<Grid container justifyContent="center">
 				<Grid item xs={12} sm={8} md={6}>
-				<Paper variant="elevation" elevation={3} style={{ paddingLeft: '6rem', paddingRight: '6rem'}}>
+				<Paper variant="elevation" elevation={3} style={{ paddingLeft: '6rem', paddingRight: '6rem'}} component="form" onSubmit={handleSubmit(onSubmit)}>
 
                         <Typography 
 						variant="h3" 
@@ -79,31 +79,25 @@ const Register = () => {
 						>
                             S'inscrire
                         </Typography>
-
-					<form onSubmit={handleSubmit(onSubmit)}>
-						<div>
+					
 							<TextField
 								fullWidth
 								placeholder="Prénom"
 								variant="standard"
 								style={{ marginBottom: "1rem" }}
 								{...registerForm("firstName", { required: true })}
+								helperText={errors.firstName && "Ce champ est requis"}
 							/>
-							{errors.firstName && <span>Ce champ est requis</span>}
-						</div>
 
-						<div>
 							<TextField
 								fullWidth
 								placeholder="Nom"
 								variant="standard"
 								style={{ marginBottom: "1rem" }}
 								{...registerForm("lastName", { required: true })}
+								helperText={errors.lastName && "Ce champ est requis"}
 							/>
-							{errors.lastName && <span>Ce champ est requis</span>}
-						</div>
 
-						<div>
 							<TextField
 								fullWidth
 								placeholder="E-mail"
@@ -113,11 +107,9 @@ const Register = () => {
 									required: true,
 									maxLength: 200,
 								})}
+								helperText={errors.email && "Ce champ est requis"}
 							/>
-							{errors.email && <span>Ce champ est requis</span>}
-						</div>
 
-						<div>
 							<TextField
 								fullWidth
 								placeholder="Mot de passe"
@@ -126,9 +118,8 @@ const Register = () => {
 								type="password"
 								style={{ marginBottom: "1rem" }}
 								{...registerForm("password", { required: true })}
+								helperText={errors.password && "Ce champ est requis"}
 							/>
-							{errors.password && <span>Ce champ est requis</span>}
-						</div>
 
 						<InputLabel id="city-label">Sélectionner une ville</InputLabel>
 						<Select
@@ -169,7 +160,6 @@ const Register = () => {
 							Vous avez déjà un compte ? 
 							<Link href="/login" underline="hover" sx={{ fontSize: '1rem', color: 'primary' }}> Se connecter</Link>
 							</Typography>
-					</form>
 					</Paper>
 				</Grid>
 			</Grid>
