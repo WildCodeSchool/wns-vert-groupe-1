@@ -35,7 +35,6 @@ const Home = () => {
 					EXPLOREZ
 				</Typography>
 				<Typography
-					variant="h1"
 					sx={{
 						color: mainTheme.palette.primary.main,
 						marginBottom: mainTheme.spacing(2),
@@ -45,8 +44,8 @@ const Home = () => {
 				>
 					<ReactTyped
 						strings={["PARIS", "LYON", "NICE", "REIMS", "LILE", "ANNECY"]}
-						typeSpeed={60}
-						backSpeed={80}
+						typeSpeed={80}
+						backSpeed={90}
 						loop
 					/>
 				</Typography>
@@ -56,7 +55,6 @@ const Home = () => {
 						fontSize: mainTheme.typography.h2,
 						fontWeight: "bold",
 						marginBottom: mainTheme.spacing(8),
-						textAlign: "left",
 					}}
 				>
 					COMME UN LOCAL
@@ -71,7 +69,6 @@ const Home = () => {
 					alignItems: "center",
 					height: "100%",
 					overflow: "hidden",
-					marginLeft: "auto",
 					width: "50%",
 				}}
 			>
