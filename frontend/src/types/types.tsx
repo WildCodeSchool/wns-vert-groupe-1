@@ -1,5 +1,5 @@
 export type PoiType = {
-	id?: number;
+	id: number;
 	name: string;
 	address?: string;
 	description: string;
@@ -51,12 +51,6 @@ export type CityMapProps = {
 	}[];
 };
 
-export type DisplayCitiesType = {
-	cities: (CityType & CityMapProps)[];
-	onClickDelete?: (adId: number) => void;
-	onClickEdit?: (adId: number) => void;
-};
-
 export type POIInput = {
 	id?: number;
 	name: string;
@@ -76,4 +70,19 @@ export type UserInput = {
 	email: string;
 	password: string;
 	city?: number;
+};
+
+export type UserType = {
+	id: string;
+	firstName: string;
+	lastName: number;
+	email: string;
+	password: string;
+	city?: number;
+	role: string;
+};
+
+export type LoginT = {
+	email: string;
+	password: string;
 };
