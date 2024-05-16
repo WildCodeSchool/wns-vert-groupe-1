@@ -157,7 +157,7 @@ const Register = () => {
 								align="center"
 								sx={{ fontSize: '1rem', textAlign: 'center', paddingBottom: "1rem" }}
 			  				>
-							Vous avez déjà un compte ? 
+							Vous avez déjà un compte? 
 							<Link href="/login" underline="hover" sx={{ fontSize: '1rem', color: 'primary' }}> Se connecter</Link>
 							</Typography>
 					</Paper>
