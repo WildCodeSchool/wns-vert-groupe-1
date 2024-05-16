@@ -15,7 +15,7 @@ const backend_url =
 	process.env.NODE_ENV === "development"
 		? "http://localhost:4000/api/graphql"
 		: "/graphql";
-		
+
 const httpLink = createHttpLink({
 	uri: backend_url,
 });
