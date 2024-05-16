@@ -28,7 +28,7 @@ export const Header = () => {
 				</Link>
 				<div>
 					<img
-						src="/images/logo.png"
+						src="/images/logo_city_guide.png"
 						alt="Logo CityGuide"
 						style={{ height: 60, marginRight: 1 }}
 					/>
@@ -65,7 +65,12 @@ export const Header = () => {
 					</Stack>
 				) : (
 					<Link href="/login" passHref>
-						<Typography color="inherit">CONNEXION</Typography>
+						<AccountCircleIcon
+							sx={{
+								fontSize: mainTheme.typography.h2,
+								mr: mainTheme.spacing(3),
+							}}
+						/>
 					</Link>
 				)}
 			</Toolbar>
