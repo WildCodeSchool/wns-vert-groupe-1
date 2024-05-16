@@ -1,10 +1,9 @@
 import { SearchForm } from "@components";
 import * as React from "react";
 import Typography from "@mui/material/Typography";
-
 import { Box, Stack } from "@mui/material";
 import { mainTheme } from "@theme";
-
+import { ReactTyped } from "react-typed";
 const Home = () => {
 	return (
 		<Stack
@@ -13,13 +12,16 @@ const Home = () => {
 			justifyContent="space-between"
 			flex="1"
 			spacing={1}
-			sx={{ height: "100%" }}
+			sx={{ height: "100%", marginRight: mainTheme.spacing(12) }}
+			marginTop="5%"
 		>
 			<Box
 				sx={{
-					paddingLeft: mainTheme.spacing(10),
-					height: "100%",
+					display: "flex",
+					flexDirection: "column",
+					width: "50%",
 					alignItems: "flex-start",
+					padding: "4%",
 				}}
 			>
 				<Typography
@@ -35,12 +37,17 @@ const Home = () => {
 				<Typography
 					sx={{
 						color: mainTheme.palette.primary.main,
+						marginBottom: mainTheme.spacing(2),
 						fontSize: mainTheme.typography.h1,
 						fontWeight: "bold",
-						marginBottom: mainTheme.spacing(4),
 					}}
 				>
-					PARIS
+					<ReactTyped
+						strings={["PARIS", "LYON", "NICE", "REIMS", "LILE", "ANNECY"]}
+						typeSpeed={80}
+						backSpeed={90}
+						loop
+					/>
 				</Typography>
 				<Typography
 					sx={{
@@ -52,21 +59,25 @@ const Home = () => {
 				>
 					COMME UN LOCAL
 				</Typography>
-				<SearchForm />
+				<Box sx={{ width: "80%" }}>
+					<SearchForm />
+				</Box>
 			</Box>
 			<Box
 				sx={{
 					display: "flex",
-					justifyContent: "center",
 					alignItems: "center",
+					height: "100%",
+					overflow: "hidden",
 					width: "50%",
 				}}
 			>
 				<img
 					style={{
-						width: "100%",
-						height: "100%",
+						width: "150%",
+						height: "auto",
 						objectFit: "cover",
+						transform: "translateX(+5%)",
 					}}
 					src="/images/homepage.png"
 					alt="View from nature"
@@ -75,5 +86,4 @@ const Home = () => {
 		</Stack>
 	);
 };
-
 export default Home;

@@ -1,20 +1,14 @@
 import { useState } from "react";
-
 import { useRouter } from "next/router";
-
 import { Paper } from "@mui/material";
-
 import { mainTheme } from "@theme";
-
 import { SearchInput } from "./SearchInput";
 import { SearchButton } from "./SearchButton";
-
 export const SearchForm = () => {
 	const router = useRouter();
 	const [error, setError] = useState(false);
 	const [city, setCity] = useState("");
 	const [category, setCategory] = useState("");
-
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.name === "city") {
 			setCity(e.target.value);
@@ -23,7 +17,6 @@ export const SearchForm = () => {
 		}
 		setError(false);
 	};
-
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (city.trim() === "") {
@@ -36,7 +29,6 @@ export const SearchForm = () => {
 			router.push(`/city/search/${city}?category=${category}`);
 		}
 	};
-
 	return (
 		<Paper
 			component="form"
