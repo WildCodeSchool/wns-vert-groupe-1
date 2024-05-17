@@ -7,9 +7,11 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { mainTheme } from "@theme";
 import { useAuth } from "context/UserContext";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import useWindowDimensions from "utils/windowDimensions";
 
 export const Header = () => {
 	const { onLogout, isAuthenticated, user } = useAuth();
+	const { height, width } = useWindowDimensions();
 	const router = useRouter();
 
 	return (
@@ -19,6 +21,9 @@ export const Header = () => {
 					display: "flex",
 					justifyContent: "space-between",
 					boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+					width: width,
+					backgroundColor: mainTheme.palette.primary.main,
+					height: (height * 2) / 100,
 				}}
 			>
 				<Link href="/" passHref>
@@ -30,7 +35,7 @@ export const Header = () => {
 					<img
 						src="/images/logo_city_guide.png"
 						alt="Logo CityGuide"
-						style={{ height: 60, marginRight: 1 }}
+						style={{ height: 60 }}
 					/>
 				</div>
 				{isAuthenticated ? (

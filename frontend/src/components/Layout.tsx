@@ -1,15 +1,14 @@
 import { ReactNode } from "react";
 import { Header } from "./Header";
-import {
-	ThemeProvider,
-	Container,
-	BottomNavigation,
-	Typography,
-} from "@mui/material";
+import { ThemeProvider, Container } from "@mui/material";
 import { mainTheme } from "@theme";
-import Link from "next/link";
+import useWindowDimensions from "../utils/windowDimensions";
+import Footer from "./Footer";
+import React from "react";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
+	const { height, width } = useWindowDimensions();
+
 	return (
 		<ThemeProvider theme={mainTheme}>
 			<main
@@ -17,6 +16,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 					display: "flex",
 					flexDirection: "column",
 					minHeight: "100vh",
+					width: width,
 				}}
 			>
 				<Header />
@@ -37,28 +37,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 				>
 					{children}
 				</Container>
-				<BottomNavigation
-					sx={{
-						background: mainTheme.palette.primary.light,
-						display: "flex",
-						justifyContent: "flex-end",
-						alignItems: "center",
-						boxShadow: "0px -2px 4px rgba(0, 0, 0, 0.05)",
-					}}
-				>
-					<Link href="#">
-						<Typography
-							sx={{
-								color: mainTheme.palette.primary.main,
-								mr: mainTheme.spacing(5),
-								fontSize: mainTheme.typography.h5,
-								letterSpacing: "0.04em",
-							}}
-						>
-							Mentions légales
-						</Typography>
-					</Link>
-				</BottomNavigation>
+				<Footer />
 			</main>
 		</ThemeProvider>
 	);

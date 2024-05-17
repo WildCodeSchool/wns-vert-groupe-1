@@ -12,10 +12,13 @@ import {
 } from "@mui/material";
 import { useAuth } from "context/UserContext";
 import React from "react";
+import useWindowDimensions from "utils/windowDimensions";
+import { mainTheme } from "@theme";
 
 const LoginPage = () => {
 	const router = useRouter();
 	const { onLogin, user } = useAuth();
+	const { height } = useWindowDimensions();
 
 	React.useEffect(() => {
 		if (user) {
@@ -29,7 +32,7 @@ const LoginPage = () => {
 
 	return (
 		<Box
-			height="100vh"
+			height={height - 120}
 			display="flex"
 			alignItems="center"
 			justifyContent="center"
@@ -37,43 +40,38 @@ const LoginPage = () => {
 			<Paper
 				variant="elevation"
 				elevation={3}
-				sx={{ display: "flex", alignItems: "center" }}
+				sx={{
+					display: "flex",
+					alignItems: "center",
+				}}
 			>
-				<Grid container spacing={4}>
+				<Grid container direction={{ xs: "column", sm: "row", md: "row" }}>
 					<Grid
 						item
 						xs={12}
 						md={6}
 						order={-1}
-						display="flex"
+						display={{ xs: "none", md: "flex" }}
 						alignItems="center"
-						justifyContent="flex-start"
-						sx={{
-							px: 0,
-							"& img": {
-								m: 0,
-								ml: -10,
-								height: "100%",
-							},
-						}}
+						justifyContent="center"
+						sx={{ backgroundColor: mainTheme.palette.primary.light }}
 					>
-						<Box height="100%" display="flex" alignItems="flex-start">
+						<Box>
 							<img
-								src="/images/login.png"
+								src="/images/logo_city_guide.png"
 								alt="login"
-								style={{ width: "auto", maxWidth: "100%" }}
+								style={{ objectFit: "contain", width: "15em" }}
 							/>
 						</Box>
 					</Grid>
 
-					<Grid item xs={12} md={6} sx={{ p: 2, ml: "-70px" }}>
+					<Grid item xs={12} md={6} p={6}>
 						<Typography
 							variant="h3"
 							color="primary"
 							align="center"
 							gutterBottom
 							fontWeight="bold"
-							style={{ marginBottom: "4rem", marginTop: "2rem" }}
 						>
 							Se connecter
 						</Typography>
@@ -83,7 +81,7 @@ const LoginPage = () => {
 								const form = e.target;
 								const formData = new FormData(form as HTMLFormElement);
 
-								const formJson = Object.fromEntries(formData.entries());
+								// const formJson = Object.fromEntries(formData.entries());
 								const email = formData.get("email") as string;
 								const password = formData.get("password") as string;
 								onLogin({
@@ -96,18 +94,20 @@ const LoginPage = () => {
 								name="email"
 								fullWidth
 								label="Email"
-								id="standard-basic"
+								id="email_input"
 								variant="standard"
-								style={{ marginBottom: "3rem" }}
+								required
+								margin="normal"
 							/>
 							<TextField
 								name="password"
 								fullWidth
 								label="Mot de passe"
-								id="standard-basic"
+								id="password_input"
 								variant="standard"
 								type="password"
-								style={{ marginBottom: "3rem" }}
+								required
+								margin="normal"
 							/>
 							<FormControlLabel
 								control={<Checkbox name="rememberMe" />}

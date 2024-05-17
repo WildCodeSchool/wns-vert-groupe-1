@@ -4,16 +4,20 @@ import Typography from "@mui/material/Typography";
 import { Box, Stack } from "@mui/material";
 import { mainTheme } from "@theme";
 import { ReactTyped } from "react-typed";
+import useWindowDimensions from "utils/windowDimensions";
+
 const Home = () => {
+	const { height, width } = useWindowDimensions();
+
 	return (
 		<Stack
 			direction="row"
+			display="flex"
 			alignItems="center"
-			justifyContent="space-between"
+			justifyContent="center"
 			flex="1"
-			spacing={1}
-			sx={{ height: "100%", marginRight: mainTheme.spacing(12) }}
-			marginTop="5%"
+			height={height - 120}
+			width={width}
 		>
 			<Box
 				sx={{

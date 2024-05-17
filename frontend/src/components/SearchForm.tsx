@@ -4,6 +4,8 @@ import { Paper } from "@mui/material";
 import { mainTheme } from "@theme";
 import { SearchInput } from "./SearchInput";
 import { SearchButton } from "./SearchButton";
+import { toast } from "react-toastify";
+
 export const SearchForm = () => {
 	const router = useRouter();
 	const [error, setError] = useState(false);
@@ -21,6 +23,7 @@ export const SearchForm = () => {
 		e.preventDefault();
 		if (city.trim() === "") {
 			setError(true);
+			toast.error("Veuillez saisir un nom de ville.");
 			console.log("error", error);
 		} else {
 			setError(false);
@@ -60,7 +63,7 @@ export const SearchForm = () => {
 				onChange={handleChange}
 				placeholder="Quoi?"
 			/>
-			<SearchButton disabled={error} />
+			<SearchButton />
 		</Paper>
 	);
 };
