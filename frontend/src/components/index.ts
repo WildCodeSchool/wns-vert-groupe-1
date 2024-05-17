@@ -2,6 +2,7 @@ export * from "./CityMap";
 export * from "./Header";
 export * from "./ImagesCarousel";
 export * from "./Layout";
+export * from "./Logo";
 export * from "./PoiCard";
 export * from "./SearchButton";
 export * from "./SearchForm";

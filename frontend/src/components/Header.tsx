@@ -8,6 +8,7 @@ import { mainTheme } from "@theme";
 import { useAuth } from "../context";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import useWindowDimensions from "../utils/windowDimensions";
+import Logo from "./Logo";
 
 export const Header = () => {
 	const { onLogout, isAuthenticated, user } = useAuth();
@@ -31,13 +32,7 @@ export const Header = () => {
 						CITY GUIDE
 					</Typography>
 				</Link>
-				<div>
-					<img
-						src="/images/logo_city_guide.png"
-						alt="Logo CityGuide"
-						style={{ height: 60 }}
-					/>
-				</div>
+				<Logo />
 				{isAuthenticated ? (
 					<Stack flexDirection="row" gap={4}>
 						{user?.role === "ADMIN" || user?.role === "CITYADMIN" ? (

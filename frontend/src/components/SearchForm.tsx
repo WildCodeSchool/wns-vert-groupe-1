@@ -10,12 +10,9 @@ export const SearchForm = () => {
 	const router = useRouter();
 	const [error, setError] = useState(false);
 	const [city, setCity] = useState("");
-	const [category, setCategory] = useState("");
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.name === "city") {
 			setCity(e.target.value);
-		} else if (e.target.name === "category") {
-			setCategory(e.target.value);
 		}
 		setError(false);
 	};
@@ -28,8 +25,7 @@ export const SearchForm = () => {
 		} else {
 			setError(false);
 			setCity(city);
-			setCategory(category);
-			router.push(`/city/search/${city}?category=${category}`);
+			router.push(`/city/search/${city}`);
 		}
 	};
 	return (
@@ -55,13 +51,6 @@ export const SearchForm = () => {
 				onChange={handleChange}
 				placeholder="Où?"
 				error={error}
-			/>
-			<SearchInput
-				label="Catégorie"
-				name="category"
-				value={category}
-				onChange={handleChange}
-				placeholder="Quoi?"
 			/>
 			<SearchButton />
 		</Paper>

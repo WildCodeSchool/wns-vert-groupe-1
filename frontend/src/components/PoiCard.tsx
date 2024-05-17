@@ -38,7 +38,7 @@ export const PoiCard = ({
 		<Box
 			id={`poi-${id}`}
 			marginTop={2}
-			marginBottom={3}
+			marginBottom={10}
 			bgcolor={mainTheme.palette.secondary.contrastText}
 			onMouseOver={onMouseOver}
 			onMouseOut={onMouseOut}
