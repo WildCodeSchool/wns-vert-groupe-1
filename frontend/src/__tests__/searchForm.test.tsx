@@ -29,10 +29,6 @@ describe("SearchForm", () => {
 		expect(cityInput).toBeInTheDocument();
 		expect(cityInput).toHaveValue("");
 
-		const categoryInput = screen.getByPlaceholderText("Quoi?");
-		expect(categoryInput).toBeInTheDocument();
-		expect(categoryInput).toHaveValue("");
-
 		fireEvent.change(cityInput, { target: { value: "" } });
 
 		fireEvent.click(button);
@@ -49,16 +45,10 @@ describe("SearchForm", () => {
 		expect(cityInput).toBeInTheDocument();
 		expect(cityInput).toHaveValue("");
 
-		const categoryInput = screen.getByPlaceholderText("Quoi?");
-		expect(categoryInput).toBeInTheDocument();
-		expect(categoryInput).toHaveValue("");
-
 		fireEvent.change(cityInput, { target: { value: "Paris" } });
 
 		fireEvent.click(button);
 
-		expect(mockRouter.push).toHaveBeenCalledWith(
-			"/city/search/Paris?category="
-		);
+		expect(mockRouter.push).toHaveBeenCalledWith("/city/search/Paris");
 	});
 });
