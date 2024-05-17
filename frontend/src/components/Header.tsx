@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { mainTheme } from "@theme";
+import Logo from "IconCustom/Logo";
 
 export const Header = () => {
 	const authInfo = useContext(UserContext);
@@ -29,15 +30,9 @@ export const Header = () => {
 				<Link href="/" passHref>
 					<Typography color="inherit" sx={{ letterSpacing: "0.04em" }}>
 						CITY GUIDE
-		</Typography>
+					</Typography>
 				</Link>
-				<div>
-					<img
-						src="/images/logo.png"
-						alt="logo"
-						style={{ height: 60, marginRight: 1 }}
-					/>
-				</div>
+				<Logo />
 				{authInfo.isLoggedIn ? (
 					<div>
 						{authInfo.role === "admin" && (

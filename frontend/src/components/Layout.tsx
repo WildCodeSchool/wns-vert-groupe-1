@@ -7,6 +7,7 @@ import {
 	Container,
 	BottomNavigation,
 	Typography,
+	CircularProgress,
 } from "@mui/material";
 import { mainTheme } from "@theme";
 import Link from "next/link";
@@ -24,9 +25,19 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 
 	console.log("who am i data", data);
 
-	if (loading) {
-		return <p>Loading</p>;
-	}
+	if (loading)
+		return (
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					minHeight: "200px",
+				}}
+			>
+				<CircularProgress />
+			</div>
+		);
 	if (error) {
 		console.log("error", error);
 		return <p>Error</p>;
