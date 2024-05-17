@@ -1,7 +1,7 @@
 import { BottomNavigation, Typography } from "@mui/material";
 import { mainTheme } from "@theme";
 import Link from "next/link";
-import useWindowDimensions from "utils/windowDimensions";
+import useWindowDimensions from "../utils/windowDimensions";
 
 export default function Footer() {
 	const { height, width } = useWindowDimensions();

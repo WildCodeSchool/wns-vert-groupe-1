@@ -1,5 +1,5 @@
 import { useLazyQuery } from "@apollo/client";
-import { CHECK_INFO, GET_USER, LOGIN } from "@queries";
+import { CHECK_INFO, GET_USER, LOGIN } from "../graphql/queries/queries";
 import { LoginT, UserType } from "@types";
 import { useRouter } from "next/router";
 import React from "react";

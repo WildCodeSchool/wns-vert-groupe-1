@@ -5,9 +5,9 @@ import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { mainTheme } from "@theme";
-import { useAuth } from "context/UserContext";
+import { useAuth } from "../context";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import useWindowDimensions from "utils/windowDimensions";
+import useWindowDimensions from "../utils/windowDimensions";
 
 export const Header = () => {
 	const { onLogout, isAuthenticated, user } = useAuth();
