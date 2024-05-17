@@ -19,18 +19,6 @@ export const SearchInput = ({
 	error,
 }: SearchInputProps) => (
 	<Box display="flex">
-		<Typography
-			sx={{
-				fontSize: mainTheme.typography.h6,
-				fontWeight: "bold",
-				marginRight: mainTheme.spacing(2),
-				color: error
-					? mainTheme.palette.error.main
-					: mainTheme.palette.secondary.dark,
-			}}
-		>
-			{label}
-		</Typography>
 		<InputBase
 			type="text"
 			fullWidth
@@ -39,13 +27,9 @@ export const SearchInput = ({
 			value={value}
 			onChange={onChange}
 			style={{
-				border: "none",
 				outline: "none",
 				fontSize: mainTheme.typography.h6.fontSize,
 				color: mainTheme.palette.primary.main,
-				borderBottom: error
-					? `1px solid ${mainTheme.palette.error.main}`
-					: "none",
 			}}
 		/>
 	</Box>

@@ -108,21 +108,18 @@ const SearchResults = () => {
 		}
 	};
 
-	if (loading)
-		return (
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					minHeight: "200px",
-				}}
-			>
-				<CircularProgress />
-			</div>
-		);
-
-	return (
+	return loading ? (
+		<div
+			style={{
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				minHeight: "200px",
+			}}
+		>
+			<CircularProgress />
+		</div>
+	) : (
 		<Box display="flex">
 			<Box flex="1" maxHeight="100vh" overflow="auto">
 				<Box padding={mainTheme.spacing(6)}>
@@ -188,13 +185,15 @@ const SearchResults = () => {
 					)
 				)}
 			</Box>
-			<CityMap
-				lat={searchedCity.lat}
-				lon={searchedCity.lon}
-				pois={searchedCity.pois}
-				activePoiId={activePoiId}
-				onMarkerClick={(poiId) => scrollToPoi(poiId)}
-			/>
+			{dataFetched && (
+				<CityMap
+					lat={searchedCity.lat}
+					lon={searchedCity.lon}
+					pois={searchedCity.pois}
+					activePoiId={activePoiId}
+					onMarkerClick={(poiId) => scrollToPoi(poiId)}
+				/>
+			)}
 		</Box>
 	);
 };

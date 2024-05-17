@@ -49,7 +49,7 @@ export const SearchForm = () => {
 				name="city"
 				value={city}
 				onChange={handleChange}
-				placeholder="Où?"
+				placeholder="Cherchez une ville"
 				error={error}
 			/>
 			<SearchButton />
