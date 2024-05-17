@@ -27,8 +27,6 @@
 			"@types": ["types"],
 			"@theme": ["theme"],
 			"@services": ["service"],
-			// "@context": ["context"],
-			// "@utils": ["utils"],
 		},
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

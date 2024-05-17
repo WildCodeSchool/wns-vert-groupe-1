@@ -29,9 +29,14 @@ const Home = () => {
 				}}
 			>
 				<Typography
+					fontSize={{
+						xs: mainTheme.typography.h2.fontSize,
+						sm: mainTheme.typography.h2.fontSize,
+						md: mainTheme.typography.h1.fontSize,
+						lg: mainTheme.typography.h1.fontSize,
+					}}
 					sx={{
 						color: mainTheme.palette.primary.contrastText,
-						fontSize: mainTheme.typography.h1,
 						fontWeight: "bold",
 						marginBottom: mainTheme.spacing(3),
 					}}
@@ -39,10 +44,15 @@ const Home = () => {
 					EXPLOREZ
 				</Typography>
 				<Typography
+					fontSize={{
+						xs: mainTheme.typography.h2.fontSize,
+						sm: mainTheme.typography.h2.fontSize,
+						md: mainTheme.typography.h1.fontSize,
+						lg: mainTheme.typography.h1.fontSize,
+					}}
 					sx={{
 						color: mainTheme.palette.primary.main,
 						marginBottom: mainTheme.spacing(2),
-						fontSize: mainTheme.typography.h1,
 						fontWeight: "bold",
 					}}
 				>
@@ -54,9 +64,14 @@ const Home = () => {
 					/>
 				</Typography>
 				<Typography
+					fontSize={{
+						xs: mainTheme.typography.h3.fontSize,
+						sm: mainTheme.typography.h3.fontSize,
+						md: mainTheme.typography.h2.fontSize,
+						lg: mainTheme.typography.h2.fontSize,
+					}}
 					sx={{
 						color: mainTheme.palette.primary.contrastText,
-						fontSize: mainTheme.typography.h2,
 						fontWeight: "bold",
 						marginBottom: mainTheme.spacing(8),
 					}}

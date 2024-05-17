@@ -5,9 +5,11 @@ import { mainTheme } from "@theme";
 import { SearchInput } from "./SearchInput";
 import { SearchButton } from "./SearchButton";
 import { toast } from "react-toastify";
+import useWindowDimensions from "utils/windowDimensions";
 
 export const SearchForm = () => {
 	const router = useRouter();
+	const { width } = useWindowDimensions();
 	const [error, setError] = useState(false);
 	const [city, setCity] = useState("");
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,20 +38,22 @@ export const SearchForm = () => {
 			sx={{
 				padding: `${mainTheme.spacing(3)} ${mainTheme.spacing(3)} ${mainTheme.spacing(3)} ${mainTheme.spacing(7)}`,
 				display: "flex",
+				flexDirection: "row",
 				alignItems: "center",
-				justifyContent: "space-between",
-				flexWrap: "wrap",
+				justifyContent: "space-around",
 				borderRadius: "45px",
+				width: width * 0.8,
+				"@media (min-width:600px)": {
+					width: width * 0.4,
+				},
 				boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
-				maxWidth: "500px",
 			}}
 		>
 			<SearchInput
-				label="Ville"
 				name="city"
 				value={city}
 				onChange={handleChange}
-				placeholder="Où?"
+				placeholder="Cherchez une ville "
 				error={error}
 			/>
 			<SearchButton />
