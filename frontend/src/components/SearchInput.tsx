@@ -18,12 +18,12 @@ export const SearchInput = ({
 	placeholder,
 	error,
 }: SearchInputProps) => (
-	<Box display="flex" flexDirection="column">
+	<Box display="flex">
 		<Typography
 			sx={{
 				fontSize: mainTheme.typography.h6,
 				fontWeight: "bold",
-				marginBottom: mainTheme.spacing(1),
+				marginRight: mainTheme.spacing(2),
 				color: error
 					? mainTheme.palette.error.main
 					: mainTheme.palette.secondary.dark,

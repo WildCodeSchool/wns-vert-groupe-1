@@ -1,40 +1,31 @@
-import React from "react";
-import { IconButton, Paper, Typography } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import React, { useState } from "react";
+import { Paper, Typography } from "@mui/material";
 import { mainTheme } from "@theme";
 
 type TagProps = {
 	name: string;
-	onClose: () => void;
+	isActive: boolean;
+	onClick: () => void;
 };
 
-export const Tag: React.FC<TagProps> = ({ name, onClose }) => {
+export const Tag: React.FC<TagProps> = ({ name, isActive, onClick }) => {
 	return (
 		<Paper
+			onClick={onClick}
 			sx={{
 				backgroundColor: mainTheme.palette.primary.light,
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
 				borderRadius: "20px",
+				border: isActive
+					? `2px solid ${mainTheme.palette.primary.main}`
+					: "none",
 				padding: `${mainTheme.spacing(2)} ${mainTheme.spacing(3)}`,
 				boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+				cursor: "pointer",
 			}}
 		>
-			<IconButton
-				onClick={onClose}
-				sx={{
-					padding: 0,
-				}}
-			>
-				<CloseIcon
-					sx={{
-						color: mainTheme.palette.primary.main,
-						padding: 0,
-					}}
-				/>
-			</IconButton>
-			<Typography color={mainTheme.palette.primary.main}>{name}</Typography>
+			<Typography color={mainTheme.palette.primary.main} textAlign="center">
+				{name}
+			</Typography>
 		</Paper>
 	);
 };
