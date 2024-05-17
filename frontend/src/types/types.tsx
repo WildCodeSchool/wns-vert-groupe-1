@@ -20,6 +20,13 @@ export type CityType = {
 	lon?: number;
 };
 
+export type CityInput = {
+	name: string;
+	description: string;
+	lat?: number;
+	lon?: number;
+	images: string[];
+};
 export type RatingType = {
 	id: number;
 	rating: number;
@@ -63,4 +70,19 @@ export type UserInput = {
 	email: string;
 	password: string;
 	city?: number;
+};
+
+export type UserType = {
+	id: string;
+	firstName: string;
+	lastName: number;
+	email: string;
+	password: string;
+	city?: number;
+	role: string;
+};
+
+export type LoginT = {
+	email: string;
+	password: string;
 };

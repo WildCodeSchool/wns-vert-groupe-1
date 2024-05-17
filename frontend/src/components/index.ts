@@ -8,3 +8,4 @@ export * from "./SearchButton";
 export * from "./SearchForm";
 export * from "./SearchInput";
 export * from "./Tag";
+export * from "./Footer";

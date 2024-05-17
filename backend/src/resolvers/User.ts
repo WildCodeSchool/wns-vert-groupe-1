@@ -129,9 +129,8 @@ export class UserResolver {
 
 			if (await argon2.verify(user.hashedPassword, password)) {
 				payload = { email: user.email, role: user.role };
-				const token = jwt.sign(payload, "mysupersecretkey");
-
-				return token;
+				const token: string = jwt.sign(payload, "mysupersecretkey");
+				return JSON.stringify({ token: token, id: user.id });
 			} else {
 				throw new Error("Invalid password");
 			}
@@ -142,7 +141,7 @@ export class UserResolver {
 	}
 
 	@Query(() => UserInfo)
-	async whoAmI(@Ctx() ctx: { email: string; role: string }) {
+	async checkSession(@Ctx() ctx: { email: string; role: string }) {
 		if (ctx.email !== undefined) {
 			return { ...ctx, isLoggedIn: true };
 		} else {

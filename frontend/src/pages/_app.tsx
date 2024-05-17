@@ -1,3 +1,5 @@
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -10,6 +12,8 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { Layout } from "@components";
 import "../styles/globals.css";
+import { UserProvider } from "../context/UserContext";
+import useWindowDimensions from "../utils/windowDimensions";
 
 const backend_url =
 	process.env.NODE_ENV === "development"
@@ -22,7 +26,6 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
 	const token = localStorage.getItem("jwt");
-	console.log("token", token);
 	return {
 		headers: {
 			...headers,
@@ -31,19 +34,21 @@ const authLink = setContext((_, { headers }) => {
 	};
 });
 
-console.log("authLink", authLink);
-
 const client = new ApolloClient({
 	link: authLink.concat(httpLink),
 	cache: new InMemoryCache(),
 });
 
 function App({ Component, pageProps }: AppProps) {
+	const { height, width } = useWindowDimensions();
 	return (
 		<ApolloProvider client={client}>
-			<Layout>
-				<Component {...pageProps} />
-			</Layout>
+			<UserProvider>
+				<Layout>
+					<Component style={{ height: height - 120 }} {...pageProps} />
+				</Layout>
+				<ToastContainer />
+			</UserProvider>
 		</ApolloProvider>
 	);
 }

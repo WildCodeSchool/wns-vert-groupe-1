@@ -2,83 +2,96 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
-import { styled } from '@mui/material/styles';
-import { Paper, TextField, Select, MenuItem, Button, Grid, InputLabel, Typography, FormControl } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import {
+	Paper,
+	TextField,
+	Select,
+	MenuItem,
+	Button,
+	Grid,
+	InputLabel,
+	Typography,
+	FormControl,
+} from "@mui/material";
 import { mainTheme } from "@theme";
 import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { POIInput } from "@types";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { ImagesCarousel } from "@components";
 
 const NewPoi = () => {
-  const [imageURLs, setImageURLs] = useState<string[]>([]);
-  const router = useRouter();
+	const [imageURLs, setImageURLs] = useState<string[]>([]);
+	const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<POIInput>({ mode: "onBlur" }); 
-  const { data: cityData } = useQuery<{
-    getAllCities: {
-      id: number;
-      name: string;
-    }[];
-  }>(GET_ALL_CITIES);
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset,
+	} = useForm<POIInput>({ mode: "onBlur" });
+	const { data: cityData } = useQuery<{
+		getAllCities: {
+			id: number;
+			name: string;
+		}[];
+	}>(GET_ALL_CITIES);
 
-  const { data: categoryData } = useQuery<{
-    getAllCategories: {
-      id: number;
-      name: string;
-    }[];
-  }>(GET_ALL_CATEGORIES);
+	const { data: categoryData } = useQuery<{
+		getAllCategories: {
+			id: number;
+			name: string;
+		}[];
+	}>(GET_ALL_CATEGORIES);
 
-  const [createNewPoi] = useMutation(CREATE_NEW_POI);
+	const [createNewPoi] = useMutation(CREATE_NEW_POI);
 
-  const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
-    try {
+	const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
+		try {
+			const result = await createNewPoi({
+				variables: {
+					poiData: {
+						name: formData.name,
+						address: formData.address,
+						postalCode: formData.postalCode,
+						description: formData.description,
+						images: imageURLs.map((image) => "http://localhost:8000" + image),
+						city: Number.parseInt(formData.city),
+						category: Number.parseInt(formData.category),
+					},
+				},
+			});
+			console.log(result);
+			setImageURLs([]);
+			reset();
+			router.push(`/poi/${result.data.createNewPoi.id}`);
+		} catch (err: any) {
+			toast.error(
+				"Une erreur est survenue lors de la soumission du formulaire."
+			);
+			console.error(err);
+		}
+	};
 
-      const result = await createNewPoi({
-        variables: {
-          poiData: {
-            name: formData.name,
-            address: formData.address,
-            postalCode: formData.postalCode,
-            description: formData.description,
-            images: imageURLs.map((image) => "http://localhost:8000" + image),
-            city: Number.parseInt(formData.city),
-            category: Number.parseInt(formData.category),
-          },
-        },
-      });
-      console.log(result)
-      setImageURLs([]);
-      reset();
-      router.push(`/poi/${result.data.createNewPoi.id}`);    
-    } catch (err: any) {
-      console.error(err);
-    }
-  };
-
-  const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
-console.log(imageURLs);
-// TODO : add form control and make all fields mandatory, fix console errors
-  if (cityData && categoryData) {
-    return (
+	const VisuallyHiddenInput = styled("input")({
+		clip: "rect(0 0 0 0)",
+		clipPath: "inset(50%)",
+		height: 1,
+		overflow: "hidden",
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		whiteSpace: "nowrap",
+		width: 1,
+	});
+	console.log(imageURLs);
+	// TODO : add form control and make all fields mandatory, fix console errors
+	if (cityData && categoryData) {
+		return (
 			<Grid
 				container
 				justifyContent="space-evenly"
@@ -325,7 +338,7 @@ console.log(imageURLs);
 				</Grid>
 			</Grid>
 		);
-  }
-}
+	}
+};
 
 export default NewPoi;

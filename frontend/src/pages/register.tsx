@@ -67,59 +67,68 @@ const Register = () => {
 		<>
 			<Grid container justifyContent="center">
 				<Grid item xs={12} sm={8} md={6}>
-				<Paper variant="elevation" elevation={3} style={{ paddingLeft: '6rem', paddingRight: '6rem'}} component="form" onSubmit={handleSubmit(onSubmit)}>
-
-                        <Typography 
-						variant="h3" 
-						color="primary" 
-						align="center" 
-						gutterBottom 
-						fontWeight="bold"
-						style={{ marginBottom: "2rem", paddingTop: "2rem", marginTop: "4rem" }}
+					<Paper
+						variant="elevation"
+						elevation={3}
+						style={{ paddingLeft: "6rem", paddingRight: "6rem" }}
+						component="form"
+						onSubmit={handleSubmit(onSubmit)}
+					>
+						<Typography
+							variant="h3"
+							color="primary"
+							align="center"
+							gutterBottom
+							fontWeight="bold"
+							style={{
+								marginBottom: "2rem",
+								paddingTop: "2rem",
+								marginTop: "4rem",
+							}}
 						>
-                            S'inscrire
-                        </Typography>
-					
-							<TextField
-								fullWidth
-								placeholder="Prénom"
-								variant="standard"
-								style={{ marginBottom: "1rem" }}
-								{...registerForm("firstName", { required: true })}
-								helperText={errors.firstName && "Ce champ est requis"}
-							/>
+							S&apos;inscrire
+						</Typography>
 
-							<TextField
-								fullWidth
-								placeholder="Nom"
-								variant="standard"
-								style={{ marginBottom: "1rem" }}
-								{...registerForm("lastName", { required: true })}
-								helperText={errors.lastName && "Ce champ est requis"}
-							/>
+						<TextField
+							fullWidth
+							placeholder="Prénom"
+							variant="standard"
+							style={{ marginBottom: "1rem" }}
+							{...registerForm("firstName", { required: true })}
+							helperText={errors.firstName && "Ce champ est requis"}
+						/>
 
-							<TextField
-								fullWidth
-								placeholder="E-mail"
-								variant="standard"
-								style={{ marginBottom: "1rem" }}
-								{...registerForm("email", {
-									required: true,
-									maxLength: 200,
-								})}
-								helperText={errors.email && "Ce champ est requis"}
-							/>
+						<TextField
+							fullWidth
+							placeholder="Nom"
+							variant="standard"
+							style={{ marginBottom: "1rem" }}
+							{...registerForm("lastName", { required: true })}
+							helperText={errors.lastName && "Ce champ est requis"}
+						/>
 
-							<TextField
-								fullWidth
-								placeholder="Mot de passe"
-								id="standard-basic"
-								variant="standard"
-								type="password"
-								style={{ marginBottom: "1rem" }}
-								{...registerForm("password", { required: true })}
-								helperText={errors.password && "Ce champ est requis"}
-							/>
+						<TextField
+							fullWidth
+							placeholder="E-mail"
+							variant="standard"
+							style={{ marginBottom: "1rem" }}
+							{...registerForm("email", {
+								required: true,
+								maxLength: 200,
+							})}
+							helperText={errors.email && "Ce champ est requis"}
+						/>
+
+						<TextField
+							fullWidth
+							placeholder="Mot de passe"
+							id="standard-basic"
+							variant="standard"
+							type="password"
+							style={{ marginBottom: "1rem" }}
+							{...registerForm("password", { required: true })}
+							helperText={errors.password && "Ce champ est requis"}
+						/>
 
 						<InputLabel id="city-label">Sélectionner une ville</InputLabel>
 						<Select
@@ -150,20 +159,30 @@ const Register = () => {
 							Envoyer
 						</Button>
 
-						<Typography 
-								gutterBottom
-								color="primary"
-								variant="subtitle1"
-								align="center"
-								sx={{ fontSize: '1rem', textAlign: 'center', paddingBottom: "1rem" }}
-			  				>
-							Vous avez déjà un compte? 
-							<Link href="/login" underline="hover" sx={{ fontSize: '1rem', color: 'primary' }}> Se connecter</Link>
-							</Typography>
+						<Typography
+							gutterBottom
+							color="primary"
+							variant="subtitle1"
+							align="center"
+							sx={{
+								fontSize: "1rem",
+								textAlign: "center",
+								paddingBottom: "1rem",
+							}}
+						>
+							Vous avez déjà un compte?
+							<Link
+								href="/login"
+								underline="hover"
+								sx={{ fontSize: "1rem", color: "primary" }}
+							>
+								{" "}
+								Se connecter
+							</Link>
+						</Typography>
 					</Paper>
 				</Grid>
 			</Grid>
-		
 		</>
 	);
 };

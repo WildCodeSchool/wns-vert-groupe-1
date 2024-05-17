@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, InputBase, Typography } from "@mui/material";
 import { mainTheme } from "@theme";
 
 type SearchInputProps = {
@@ -31,8 +31,9 @@ export const SearchInput = ({
 		>
 			{label}
 		</Typography>
-		<input
+		<InputBase
 			type="text"
+			fullWidth
 			name={name}
 			placeholder={placeholder}
 			value={value}
@@ -41,7 +42,6 @@ export const SearchInput = ({
 				border: "none",
 				outline: "none",
 				fontSize: mainTheme.typography.h6.fontSize,
-				width: "110px",
 				color: mainTheme.palette.primary.main,
 				borderBottom: error
 					? `1px solid ${mainTheme.palette.error.main}`

@@ -1,22 +1,19 @@
-import React, { useContext } from "react";
+import React from "react";
 import Link from "next/link";
-import { AppBar, Toolbar, Typography } from "@mui/material";
-import { UserContext } from "./Layout";
+import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { mainTheme } from "@theme";
+import { useAuth } from "../context";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import useWindowDimensions from "../utils/windowDimensions";
 import Logo from "./Logo";
 
 export const Header = () => {
-	const authInfo = useContext(UserContext);
+	const { onLogout, isAuthenticated, user } = useAuth();
+	const { height, width } = useWindowDimensions();
 	const router = useRouter();
-
-	const handleLogout = () => {
-		localStorage.removeItem("jwt");
-		authInfo.refetchLogin();
-		router.push("/");
-	};
 
 	return (
 		<AppBar position="static">
@@ -25,6 +22,9 @@ export const Header = () => {
 					display: "flex",
 					justifyContent: "space-between",
 					boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+					width: width,
+					backgroundColor: mainTheme.palette.primary.main,
+					height: (height * 2) / 100,
 				}}
 			>
 				<Link href="/" passHref>
@@ -33,27 +33,36 @@ export const Header = () => {
 					</Typography>
 				</Link>
 				<Logo />
-				{authInfo.isLoggedIn ? (
-					<div>
-						{authInfo.role === "admin" && (
-							<Link href="/admin/users" passHref>
-								<Typography color="inherit">ADMIN PANEL</Typography>
-							</Link>
+				{isAuthenticated ? (
+					<Stack flexDirection="row" gap={4}>
+						{user?.role === "ADMIN" || user?.role === "CITYADMIN" ? (
+							<AdminPanelSettingsIcon
+								onClick={() => {
+									router.push("/admin");
+								}}
+								sx={{
+									fontSize: mainTheme.typography.h3,
+									cursor: "pointer",
+								}}
+							/>
+						) : (
+							<></>
 						)}
 						<AccountCircleIcon
+							onClick={() => router.push("/profil")}
 							sx={{
-								fontSize: mainTheme.typography.h2,
-								mr: mainTheme.spacing(3),
+								fontSize: mainTheme.typography.h3,
+								cursor: "pointer",
 							}}
 						/>
 						<LogoutIcon
-							onClick={handleLogout}
+							onClick={onLogout}
 							sx={{
-								mr: mainTheme.spacing(2),
-								fontSize: mainTheme.typography.h2,
+								fontSize: mainTheme.typography.h3,
+								cursor: "pointer",
 							}}
 						/>
-					</div>
+					</Stack>
 				) : (
 					<Link href="/login" passHref>
 						<AccountCircleIcon
