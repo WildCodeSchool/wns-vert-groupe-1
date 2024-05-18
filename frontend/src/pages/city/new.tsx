@@ -45,6 +45,11 @@ const NewCity = () => {
 		console.log(selectedImageIndex);
 	};
 
+	const isDisabled = React.useMemo(() => {
+		console.log(!!form.name && !!form.description);
+		return !(form.name && form.description);
+	}, [form]);
+
 	const {
 		register,
 		handleSubmit,
@@ -94,205 +99,230 @@ const NewCity = () => {
 			flex={1}
 			display="flex"
 			alignItems="center"
-			justifyContent="space-between"
+			justifyContent="center"
 			width={width}
 			height={height - 120}
+			// sx={{ backgroundColor: "black" }}
 		>
-			<Typography
+			<Paper
+				component={Box}
+				elevation={5}
+				square={false}
 				sx={{
-					fontFamily: mainTheme.typography.fontFamily,
-					color: mainTheme.palette.primary.main,
-					fontSize: {
-						xs: "16px",
-						sm: "18px",
-						md: "20px",
-						lg: "24px",
-						xl: "26px",
-					},
-					paddingTop: "4em",
-					fontWeight: mainTheme.typography.fontWeightMedium,
-					textTransform: "uppercase",
+					display: "flex",
+					flexDirection: "row",
+					height: (height - 120) * 0.7,
+					width: width * 0.8,
+					alignItems: "center",
+					justifyContent: "center",
 				}}
 			>
-				Création d&apos;une nouvelle ville
-			</Typography>
-			<Grid container flex={1} width="90%" height="100%" spacing={6}>
 				<Grid
-					item
+					container
 					flex={1}
-					display="flex"
+					width={width * 0.8}
+					height={(height - 120) * 0.7}
 					alignItems="center"
 					justifyContent="center"
+					flexWrap="wrap"
+					// direction={{
+					// 	xs: "column-reverse",
+					// 	sm: "column-reverse",
+					// 	md: "row",
+					// 	lg: "row",
+					// }}
+					// spacing={6}
+					// sx={{ backgroundColor: "black" }}
 				>
-					<Stack
-						direction="column"
-						spacing={5}
+					<Grid
+						item
 						flex={1}
-						height="70%"
-						sx={{
-							backgroundColor: mainTheme.palette.primary.light,
-						}}
+						display="flex"
+						alignItems="center"
+						justifyContent="center"
+						sx={{ backgroundColor: "black" }}
 					>
-						{images.length > 0 ? (
-							<Box flex={1}>
-								<Box flex={1 / 2} sx={{ backgroundColor: "black" }}>
-									<Carousel
-										autoPlay={true}
-										index={
-											selectedImageIndex !== null
-												? selectedImageIndex
-												: undefined
-										}
-										sx={{ height: "70vh", backgroundColor: "pink" }}
-									>
-										{images.map((image, i) => (
-											<img
-												key={i}
-												src={"http://localhost:8000" + image}
-												style={{
-													width: "100%",
-													height: "50%",
-													objectFit: "fill",
-													borderRadius: "45px",
-												}}
-											/>
-										))}
-									</Carousel>
-								</Box>
-								<Box flex={1 / 2} sx={{ backgroundColor: "grey" }}>
-									<ImageList cols={5}>
-										{images.map((image, i) => (
-											<ImageListItem
-												key={i}
-												onClick={() => handleImageClick(i)}
-												cols={5}
-												rows={1}
-												// onClick={() => setSelectedImageIndex(i)}
-											>
+						<Stack
+							direction="column"
+							spacing={5}
+							flex={1}
+							height="100%"
+							sx={{
+								backgroundColor: mainTheme.palette.primary.light,
+							}}
+						>
+							{images.length > 0 ? (
+								<Box flex={1}>
+									<Box flex={1 / 2} sx={{ backgroundColor: "black" }}>
+										<Carousel
+											autoPlay={true}
+											index={
+												selectedImageIndex !== null
+													? selectedImageIndex
+													: undefined
+											}
+											sx={{ height: "70vh", backgroundColor: "pink" }}
+										>
+											{images.map((image, i) => (
 												<img
+													key={i}
 													src={"http://localhost:8000" + image}
-													loading="lazy"
-													style={{ borderRadius: "20px" }}
+													style={{
+														width: "100%",
+														height: "50%",
+														objectFit: "fill",
+														borderRadius: "45px",
+													}}
 												/>
-											</ImageListItem>
-										))}
-									</ImageList>
+											))}
+										</Carousel>
+									</Box>
+									<Box flex={1 / 2} sx={{ backgroundColor: "grey" }}>
+										<ImageList cols={5}>
+											{images.map((image, i) => (
+												<ImageListItem
+													key={i}
+													onClick={() => handleImageClick(i)}
+													cols={5}
+													rows={1}
+													// onClick={() => setSelectedImageIndex(i)}
+												>
+													<img
+														src={"http://localhost:8000" + image}
+														loading="lazy"
+														style={{ borderRadius: "20px" }}
+													/>
+												</ImageListItem>
+											))}
+										</ImageList>
+									</Box>
 								</Box>
-							</Box>
-						) : (
-							<></>
-						)}
+							) : (
+								<></>
+							)}
 
-						<Stack justifyContent="end" display="flex" flex={1}>
-							<Button
-								component="label"
-								color="primary"
-								role={undefined}
-								variant="contained"
-								tabIndex={-1}
-								startIcon={<CloudUploadIcon />}
-							>
-								Ajouter des images
-								<VisuallyHiddenInput
-									type="file"
-									onChange={async (e: any) => {
-										if (e.target.files) {
-											const selectedFiles = Array.from(e.target.files);
-											const url = "http://localhost:8000/upload";
+							<Stack display="flex" justifyContent="end" flex={1}>
+								<Button
+									component="label"
+									color="primary"
+									role={undefined}
+									variant="contained"
+									tabIndex={-1}
+									startIcon={<CloudUploadIcon />}
+								>
+									Ajouter des images
+									<VisuallyHiddenInput
+										type="file"
+										onChange={async (e: any) => {
+											if (e.target.files) {
+												const selectedFiles = Array.from(e.target.files);
+												const url = "http://localhost:8000/upload";
 
-											const uploadPromises = (selectedFiles as File[]).map(
-												async (file: File) => {
-													const formData = new FormData();
-													formData.append("file", file, file.name);
-													try {
-														const response = await axios.post(url, formData);
-														console.log(response);
-														return response.data.filename;
-													} catch (err) {
-														console.log("error", err);
-														return null;
+												const uploadPromises = (selectedFiles as File[]).map(
+													async (file: File) => {
+														const formData = new FormData();
+														formData.append("file", file, file.name);
+														try {
+															const response = await axios.post(url, formData);
+															console.log(response);
+															return response.data.filename;
+														} catch (err) {
+															console.log("error", err);
+															return null;
+														}
 													}
-												}
-											);
+												);
 
-											Promise.all(uploadPromises).then((filenames) => {
-												console.log("filenames", filenames);
-												setImages((prevImages) => [
-													...prevImages,
-													...filenames.filter((filename) => filename !== null),
-												]);
-											});
-										}
-									}}
-									multiple
-								/>
-							</Button>
+												Promise.all(uploadPromises).then((filenames) => {
+													console.log("filenames", filenames);
+													setImages((prevImages) => [
+														...prevImages,
+														...filenames.filter(
+															(filename) => filename !== null
+														),
+													]);
+												});
+											}
+										}}
+										multiple
+									/>
+								</Button>
+							</Stack>
 						</Stack>
-					</Stack>
-				</Grid>
-				<Grid
-					item
-					flex={1}
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
-				>
-					<Paper
-						component="form"
-						onSubmit={handleSubmit(onSubmit)}
-						elevation={24}
-						sx={{
-							flex: 1,
-							padding: mainTheme.spacing(6),
-							display: "flex",
-							flexDirection: "column",
-							justifyContent: "space-evenly",
-							alignItems: "center",
-							height: "70%",
-						}}
+					</Grid>
+					<Grid
+						item
+						flex={1}
+						display="flex"
+						alignItems="center"
+						justifyContent="center"
 					>
-						<TextField
-							id="name"
-							variant="standard"
-							placeholder="Nom de la ville"
-							required
-							size="medium"
-							fullWidth
-							margin="normal"
-							{...register("name", {
-								required: {
-									value: true,
-									message: "Ce champ est obligatoire",
-								},
-							})}
-							onChange={(e) => setForm({ ...form, name: e.target.value })}
-						/>
-						<TextField
-							id="description"
-							variant="standard"
-							placeholder="Description"
-							multiline
-							rows={5}
-							required
-							size="medium"
-							fullWidth
-							margin="normal"
-							{...register("description", {
-								required: {
-									value: true,
-									message: "Ce champ est obligatoire",
-								},
-							})}
-							onChange={(e) =>
-								setForm({ ...form, description: e.target.value })
-							}
-						/>
-						<Button type="submit" variant="contained" color="primary">
-							Créer
-						</Button>
-					</Paper>
+						<Box
+							component="form"
+							onSubmit={handleSubmit(onSubmit)}
+							flex={1}
+							display="flex"
+							flexDirection="column"
+							justifyContent="space-evenly"
+							alignItems="center"
+							height="100%"
+							padding={5}
+						>
+							<Typography
+								fontFamily={mainTheme.typography.fontFamily}
+								fontSize={{
+									sx: mainTheme.typography.h6.fontSize,
+									sm: mainTheme.typography.h5.fontSize,
+									md: mainTheme.typography.h4.fontSize,
+									lg: mainTheme.typography.h3.fontSize,
+								}}
+								color={mainTheme.palette.primary.main}
+								fontWeight={mainTheme.typography.fontWeightMedium}
+							>
+								Création d&apos;une nouvelle ville
+							</Typography>
+							<TextField
+								id="name"
+								variant="standard"
+								placeholder="Nom de la ville"
+								required
+								size="medium"
+								fullWidth
+								margin="normal"
+								onChange={(e) => setForm({ ...form, name: e.target.value })}
+							/>
+							<TextField
+								id="description"
+								variant="standard"
+								placeholder="Description"
+								multiline
+								rows={5}
+								required
+								size="medium"
+								fullWidth
+								margin="normal"
+								{...register("description", {
+									required: {
+										value: true,
+										message: "Ce champ est obligatoire",
+									},
+								})}
+								onChange={(e) =>
+									setForm({ ...form, description: e.target.value })
+								}
+							/>
+							<Button
+								disabled={isDisabled}
+								type="submit"
+								variant="contained"
+								color="primary"
+							>
+								Créer
+							</Button>
+						</Box>
+					</Grid>
 				</Grid>
-			</Grid>
+			</Paper>
 		</Stack>
 	);
 };

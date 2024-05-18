@@ -42,10 +42,6 @@ export const SearchForm = () => {
 				alignItems: "center",
 				justifyContent: "space-around",
 				borderRadius: "45px",
-				width: width * 0.8,
-				"@media (min-width:600px)": {
-					width: width * 0.4,
-				},
 				boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
 			}}
 		>

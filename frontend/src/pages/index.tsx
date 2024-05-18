@@ -20,13 +20,18 @@ const Home = () => {
 			width={width}
 		>
 			<Box
-				sx={{
-					display: "flex",
-					flexDirection: "column",
-					width: "50%",
-					alignItems: "flex-start",
-					padding: "4%",
+				display="flex"
+				flexDirection="column"
+				alignItems="flex-start"
+				justifyContent={{
+					xs: "space-between",
+					sm: "space-between",
+					md: "space-around",
+					lg: "space-around",
 				}}
+				width={width * 0.5}
+				paddingLeft={{ xs: 4, sm: 6, md: 8, lg: 10 }}
+				gap={{ xs: 10, sm: 8, md: 6, lg: 6 }}
 			>
 				<Typography
 					fontSize={{
@@ -38,7 +43,6 @@ const Home = () => {
 					sx={{
 						color: mainTheme.palette.primary.contrastText,
 						fontWeight: "bold",
-						marginBottom: mainTheme.spacing(3),
 					}}
 				>
 					EXPLOREZ
@@ -52,7 +56,6 @@ const Home = () => {
 					}}
 					sx={{
 						color: mainTheme.palette.primary.main,
-						marginBottom: mainTheme.spacing(2),
 						fontWeight: "bold",
 					}}
 				>
@@ -73,27 +76,31 @@ const Home = () => {
 					sx={{
 						color: mainTheme.palette.primary.contrastText,
 						fontWeight: "bold",
-						marginBottom: mainTheme.spacing(8),
 					}}
 				>
 					COMME UN LOCAL
 				</Typography>
-				<Box sx={{ width: "80%" }}>
+				<Box
+					width={{
+						xs: width * 0.8,
+						sm: (width / 2) * 0.8,
+						md: (width / 2) * 1,
+						lg: (width / 2) * 0.6,
+					}}
+				>
 					<SearchForm />
 				</Box>
 			</Box>
 			<Box
-				sx={{
-					display: "flex",
-					alignItems: "center",
-					height: "100%",
-					overflow: "hidden",
-					width: "50%",
-				}}
+				display="flex"
+				alignItems="center"
+				height="100%"
+				overflow="hidden"
+				width={width * 0.5}
 			>
 				<img
 					style={{
-						width: "150%",
+						width: width * 1.5,
 						height: "auto",
 						objectFit: "cover",
 						transform: "translateX(+5%)",
