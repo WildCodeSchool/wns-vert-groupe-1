@@ -1,13 +1,15 @@
 import { SearchForm } from "@components";
 import * as React from "react";
 import Typography from "@mui/material/Typography";
-import { Box, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { mainTheme } from "@theme";
 import { ReactTyped } from "react-typed";
 import useWindowDimensions from "utils/windowDimensions";
+import { useRouter } from "next/router";
 
 const Home = () => {
 	const { height, width } = useWindowDimensions();
+	const router = useRouter();
 
 	return (
 		<Stack
@@ -33,6 +35,9 @@ const Home = () => {
 				paddingLeft={{ xs: 4, sm: 6, md: 8, lg: 10 }}
 				gap={{ xs: 10, sm: 8, md: 6, lg: 6 }}
 			>
+				<Button color="primary" onClick={() => router.push("/city/new")}>
+					GO CITY NEW FORM
+				</Button>
 				<Typography
 					fontSize={{
 						xs: mainTheme.typography.h2.fontSize,

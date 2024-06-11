@@ -3,24 +3,24 @@ import {
 	Typography,
 	Button,
 	TextField,
-	ImageList,
-	ImageListItem,
 	Paper,
 	Box,
 	Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { mainTheme } from "@theme";
-import React, { useState } from "react";
-import { GeoCodingCityService } from "services/CityService";
+import React from "react";
 import { CREATE_NEW_CITY } from "@mutations";
 import { useMutation } from "@apollo/client";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { CityInput } from "@types";
-import Carousel from "react-material-ui-carousel";
+import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import axios from "axios";
 import useWindowDimensions from "utils/windowDimensions";
+import { toast } from "react-toastify";
+import { ImagesCarousel } from "@components";
+import { useAuth } from "context";
+import { useRouter } from "next/navigation";
 
 const defaultState: CityInput = {
 	name: "",
@@ -30,56 +30,79 @@ const defaultState: CityInput = {
 
 const NewCity = () => {
 	const { height, width } = useWindowDimensions();
-	const [selectedImageIndex, setSelectedImageIndex] = React.useState<
-		number | null
-	>(null);
+	const { isAuthenticated } = useAuth();
 	const [images, setImages] = React.useState<string[]>([]);
+	const router = useRouter();
 	const [form, setForm] = React.useState<CityInput>(defaultState);
 
-	//TODO : gestion erreur
 	const [createNewCity, { data, loading, error }] =
 		useMutation(CREATE_NEW_CITY);
 
-	const handleImageClick = (index: number) => {
-		setSelectedImageIndex(index);
-		console.log(selectedImageIndex);
+	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setForm({
+			...form,
+			images: images.map((image) => "http://localhost:8000" + image),
+		});
+		createNewCity({
+			variables: {
+				cityData: {
+					name: form.name.charAt(0).toUpperCase() + form.name.slice(1),
+					description: form.description,
+					images: form.images,
+				},
+			},
+		})
+			.then((res) => {
+				console.log("res", res);
+				toast.success(`La ville ${form.name} a été crée`);
+			})
+			.catch((e) => {
+				console.log("Error : ", e);
+				toast.error("Une erreur est survenue lors de la création de la ville");
+			});
+		setImages([]);
+	};
+
+	const handleFileChange = async (e: any) => {
+		if (e.target.files) {
+			const selectedFiles = Array.from(e.target.files);
+			console.log("selectedFiles", selectedFiles);
+			const url = "http://localhost:8000/upload";
+			const uploadPromises = (selectedFiles as File[]).map(
+				async (file: File) => {
+					const formData = new FormData();
+					console.log("formData", formData);
+					formData.append("file", file, file.name);
+					try {
+						const response = await axios.post(url, formData);
+						console.log("response", response);
+						return response.data.filename;
+					} catch (err) {
+						console.log("error", err);
+						return null;
+					}
+				}
+			);
+
+			Promise.all(uploadPromises).then((filenames) => {
+				setImages((prevImageURLs) => [
+					...prevImageURLs,
+					...filenames.filter((filename) => filename !== null),
+				]);
+			});
+		}
 	};
 
 	const isDisabled = React.useMemo(() => {
-		console.log(!!form.name && !!form.description);
 		return !(form.name && form.description);
 	}, [form]);
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<CityInput>();
-
-	const onSubmit: SubmitHandler<CityInput> = async (form) => {
-		try {
-			console.log("submit");
-			form.name = form.name.charAt(0).toUpperCase() + form.name.slice(1);
-			const coordinates = await GeoCodingCityService.getCoordinates(form.name);
-
-			createNewCity({
-				variables: {
-					cityData: {
-						name: form.name,
-						description: form.description,
-						lat: coordinates?.latitude,
-						lon: coordinates?.longitude,
-						images: images.map((image) => "http://localhost:8000" + image),
-					},
-				},
-			});
-			setImages([]);
-			reset();
-		} catch (e) {
-			console.error("Error : ", e);
+	React.useLayoutEffect(() => {
+		if (!isAuthenticated) {
+			router.replace("/");
 		}
-	};
+	}, [isAuthenticated]);
 
 	const VisuallyHiddenInput = styled("input")({
 		clip: "rect(0 0 0 0)",
@@ -92,9 +115,8 @@ const NewCity = () => {
 		whiteSpace: "nowrap",
 		width: 1,
 	});
-	console.log("form", form);
 
-	return (
+	return isAuthenticated ? (
 		<Stack
 			flex={1}
 			display="flex"
@@ -111,155 +133,69 @@ const NewCity = () => {
 				sx={{
 					display: "flex",
 					flexDirection: "row",
-					height: (height - 120) * 0.7,
+					height: (height - 120) * 0.8,
 					width: width * 0.8,
 					alignItems: "center",
 					justifyContent: "center",
+					boxSizing: "border-box",
+					overflow: "hidden",
 				}}
 			>
 				<Grid
 					container
 					flex={1}
-					width={width * 0.8}
-					height={(height - 120) * 0.7}
-					alignItems="center"
-					justifyContent="center"
+					width="100%"
+					height="100%"
 					flexWrap="wrap"
-					// direction={{
-					// 	xs: "column-reverse",
-					// 	sm: "column-reverse",
-					// 	md: "row",
-					// 	lg: "row",
-					// }}
-					// spacing={6}
-					// sx={{ backgroundColor: "black" }}
+					flexDirection={{
+						xs: "column-reverse",
+						sm: "column-reverse",
+						md: "row",
+						lg: "row",
+					}}
 				>
 					<Grid
 						item
-						flex={1}
 						display="flex"
 						alignItems="center"
 						justifyContent="center"
-						sx={{ backgroundColor: "black" }}
+						height={{ xs: 1 / 2, md: 1, lg: 1, xl: 1 }}
+						width={{ xs: 1, md: 1, lg: 1 / 2, xl: 1 / 2 }}
+						sx={{ backgroundColor: mainTheme.palette.primary.light }}
+						// mainTheme.palette.primary.light
 					>
-						<Stack
-							direction="column"
-							spacing={5}
-							flex={1}
-							height="100%"
-							sx={{
-								backgroundColor: mainTheme.palette.primary.light,
-							}}
-						>
-							{images.length > 0 ? (
-								<Box flex={1}>
-									<Box flex={1 / 2} sx={{ backgroundColor: "black" }}>
-										<Carousel
-											autoPlay={true}
-											index={
-												selectedImageIndex !== null
-													? selectedImageIndex
-													: undefined
-											}
-											sx={{ height: "70vh", backgroundColor: "pink" }}
-										>
-											{images.map((image, i) => (
-												<img
-													key={i}
-													src={"http://localhost:8000" + image}
-													style={{
-														width: "100%",
-														height: "50%",
-														objectFit: "fill",
-														borderRadius: "45px",
-													}}
-												/>
-											))}
-										</Carousel>
-									</Box>
-									<Box flex={1 / 2} sx={{ backgroundColor: "grey" }}>
-										<ImageList cols={5}>
-											{images.map((image, i) => (
-												<ImageListItem
-													key={i}
-													onClick={() => handleImageClick(i)}
-													cols={5}
-													rows={1}
-													// onClick={() => setSelectedImageIndex(i)}
-												>
-													<img
-														src={"http://localhost:8000" + image}
-														loading="lazy"
-														style={{ borderRadius: "20px" }}
-													/>
-												</ImageListItem>
-											))}
-										</ImageList>
-									</Box>
-								</Box>
-							) : (
-								<></>
-							)}
-
-							<Stack display="flex" justifyContent="end" flex={1}>
-								<Button
-									component="label"
-									color="primary"
-									role={undefined}
-									variant="contained"
-									tabIndex={-1}
-									startIcon={<CloudUploadIcon />}
-								>
-									Ajouter des images
-									<VisuallyHiddenInput
-										type="file"
-										onChange={async (e: any) => {
-											if (e.target.files) {
-												const selectedFiles = Array.from(e.target.files);
-												const url = "http://localhost:8000/upload";
-
-												const uploadPromises = (selectedFiles as File[]).map(
-													async (file: File) => {
-														const formData = new FormData();
-														formData.append("file", file, file.name);
-														try {
-															const response = await axios.post(url, formData);
-															console.log(response);
-															return response.data.filename;
-														} catch (err) {
-															console.log("error", err);
-															return null;
-														}
-													}
-												);
-
-												Promise.all(uploadPromises).then((filenames) => {
-													console.log("filenames", filenames);
-													setImages((prevImages) => [
-														...prevImages,
-														...filenames.filter(
-															(filename) => filename !== null
-														),
-													]);
-												});
-											}
-										}}
-										multiple
-									/>
-								</Button>
-							</Stack>
-						</Stack>
+						{images.length > 0 ? (
+							<Box padding={4}>
+								<ImagesCarousel
+									images={images.map(
+										(image) => `http://localhost:8000${image}`
+									)}
+								/>
+							</Box>
+						) : (
+							<>
+								<AddPhotoAlternateOutlinedIcon
+									sx={{
+										color: mainTheme.palette.primary.main,
+										fontSize: "100px",
+									}}
+								/>
+							</>
+						)}
 					</Grid>
 					<Grid
 						item
-						flex={1}
+						height={{ xs: 1 / 2, md: 1, lg: 1, xl: 1 }}
+						width={{ xs: 1, md: 1, lg: 1 / 2, xl: 1 / 2 }}
 						display="flex"
 						alignItems="center"
 						justifyContent="center"
+						gap={6}
+						flexWrap="wrap"
 					>
 						<Box
 							component="form"
-							onSubmit={handleSubmit(onSubmit)}
+							onSubmit={(e) => onSubmit(e)}
 							flex={1}
 							display="flex"
 							flexDirection="column"
@@ -301,16 +237,27 @@ const NewCity = () => {
 								size="medium"
 								fullWidth
 								margin="normal"
-								{...register("description", {
-									required: {
-										value: true,
-										message: "Ce champ est obligatoire",
-									},
-								})}
 								onChange={(e) =>
 									setForm({ ...form, description: e.target.value })
 								}
 							/>
+							<Button
+								component="label"
+								sx={{
+									backgroundColor: mainTheme.palette.primary.light,
+									color: mainTheme.palette.primary.main,
+								}}
+								variant="contained"
+								tabIndex={-1}
+								startIcon={<CloudUploadIcon />}
+							>
+								Ajouter des images
+								<VisuallyHiddenInput
+									type="file"
+									onChange={(e) => handleFileChange(e)}
+									multiple
+								/>
+							</Button>
 							<Button
 								disabled={isDisabled}
 								type="submit"
@@ -323,6 +270,12 @@ const NewCity = () => {
 					</Grid>
 				</Grid>
 			</Paper>
+		</Stack>
+	) : (
+		<Stack>
+			<Typography>
+				Vous devez être connecté pour accéder à cette page.
+			</Typography>
 		</Stack>
 	);
 };

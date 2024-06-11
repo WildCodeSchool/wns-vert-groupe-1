@@ -16,6 +16,7 @@ export default function Footer() {
 				alignItems: "center",
 				position: "sticky",
 				boxShadow: "0px -2px 40px rgba(0, 0, 0, 0.05)",
+				height: mainTheme.spacing(10),
 			}}
 		>
 			<Link href="#">

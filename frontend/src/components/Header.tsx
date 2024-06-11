@@ -12,7 +12,7 @@ import Logo from "./Logo";
 
 export const Header = () => {
 	const { onLogout, isAuthenticated, user } = useAuth();
-	const { height, width } = useWindowDimensions();
+	const { width } = useWindowDimensions();
 	const router = useRouter();
 
 	return (
@@ -24,7 +24,7 @@ export const Header = () => {
 					boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
 					width: width,
 					backgroundColor: mainTheme.palette.primary.main,
-					height: (height * 2) / 100,
+					height: mainTheme.spacing(8),
 				}}
 			>
 				<Link href="/" passHref>
@@ -34,7 +34,7 @@ export const Header = () => {
 				</Link>
 				<Logo />
 				{isAuthenticated ? (
-					<Stack flexDirection="row" gap={4}>
+					<Stack flexDirection="row" gap={4} marginRight={3}>
 						{user?.role === "ADMIN" || user?.role === "CITYADMIN" ? (
 							<AdminPanelSettingsIcon
 								onClick={() => {
