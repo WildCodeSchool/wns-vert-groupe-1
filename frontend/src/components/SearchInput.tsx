@@ -33,4 +33,19 @@ export const SearchInput = ({
 				: "none",
 		}}
 	/>
+	// <Box display="flex">
+	// 	<InputBase
+	// 		type="text"
+	// 		fullWidth
+	// 		name={name}
+	// 		placeholder={placeholder}
+	// 		value={value}
+	// 		onChange={onChange}
+	// 		style={{
+	// 			outline: "none",
+	// 			fontSize: mainTheme.typography.h6.fontSize,
+	// 			color: mainTheme.palette.primary.main,
+	// 		}}
+	// 	/>
+	// </Box>
 );

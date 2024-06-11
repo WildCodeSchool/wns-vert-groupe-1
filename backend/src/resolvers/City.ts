@@ -2,6 +2,7 @@ import { City } from "../entities";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { CityUpdateInput, CityInput } from "../inputs";
 import { GeoCodingService } from "../services";
+import { redisClient } from "../index";
 
 @Resolver()
 export class CityResolver {
@@ -36,18 +37,24 @@ export class CityResolver {
   async getCityByName(@Arg("name") name: string): Promise<City> {
     try {
       const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
-      const result = await City.findOne({
-        where: {
-          name: capitalizedName,
-        },
-        relations: ["pois", "pois.category"],
-      });
+      const cacheResult = await redisClient.get(capitalizedName);
+      if (cacheResult !== null) {
+        console.log("from cache");
+        return JSON.parse(cacheResult);
+      } else {
+        const result = await City.findOne({
+          where: {
+            name: capitalizedName,
+          },
+          relations: ["pois", "pois.category"],
+        });
 
-      if (!result) {
-        throw new Error(`City with name ${name} not found`);
+        if (!result) {
+          throw new Error(`City with name ${name} not found`);
+        }
+        redisClient.set(capitalizedName, JSON.stringify(result), { EX: 30 });
+        return result;
       }
-
-      return result;
     } catch (err) {
       console.error("Error", err);
       throw new Error("An error occurred while searching for a city by name");
@@ -56,13 +63,11 @@ export class CityResolver {
 
   @Mutation(() => City)
   async createNewCity(@Arg("cityData") cityData: CityInput) {
-    console.log("cityData", cityData);
     const pois = cityData.pois ? cityData.pois.map((poi) => ({ id: poi })) : [];
 
     const coordinates = await GeoCodingService.getCoordinatesByCity(
       cityData.name
     );
-    console.log("coordinates", { coordinates });
 
     const city = await City.create({
       ...cityData,
@@ -71,7 +76,6 @@ export class CityResolver {
       pois: pois,
       images: cityData.images,
     }).save();
-    console.log("city", { city });
 
     return city;
   }
@@ -79,7 +83,7 @@ export class CityResolver {
   @Mutation(() => String)
   async deleteAllCities() {
     City.delete({});
-    return "all cities deleted";
+    return "All cities deleted";
   }
 
   @Mutation(() => String)
