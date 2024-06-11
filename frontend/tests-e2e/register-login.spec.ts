@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("test", async ({ page }) => {
+test("User subscription and authentification", async ({ page }) => {
 	await page.goto("http://localhost:3000/");
 
 	await page.getByRole("link").nth(1).click();
