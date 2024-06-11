@@ -37,3 +37,7 @@ next-env.d.ts
 
 #logs
 /logs
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
