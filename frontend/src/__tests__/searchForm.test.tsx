@@ -25,7 +25,7 @@ describe("SearchForm", () => {
 
 		const button = screen.getByRole("button");
 
-		const cityInput = screen.getByPlaceholderText("Où?");
+		const cityInput = screen.getByPlaceholderText("Cherchez une ville");
 		expect(cityInput).toBeInTheDocument();
 		expect(cityInput).toHaveValue("");
 
@@ -41,7 +41,7 @@ describe("SearchForm", () => {
 
 		const button = screen.getByRole("button");
 
-		const cityInput = screen.getByPlaceholderText("Où?");
+		const cityInput = screen.getByPlaceholderText("Cherchez une ville");
 		expect(cityInput).toBeInTheDocument();
 		expect(cityInput).toHaveValue("");
 

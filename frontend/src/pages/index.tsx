@@ -35,9 +35,9 @@ const Home = () => {
 				paddingLeft={{ xs: 4, sm: 6, md: 8, lg: 10 }}
 				gap={{ xs: 10, sm: 8, md: 6, lg: 6 }}
 			>
-				<Button color="primary" onClick={() => router.push("/city/new")}>
+				{/* <Button color="primary" onClick={() => router.push("/city/new")}>
 					GO CITY NEW FORM
-				</Button>
+				</Button> */}
 				<Typography
 					fontSize={{
 						xs: mainTheme.typography.h2.fontSize,

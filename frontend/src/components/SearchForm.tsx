@@ -5,11 +5,9 @@ import { mainTheme } from "@theme";
 import { SearchInput } from "./SearchInput";
 import { SearchButton } from "./SearchButton";
 import { toast } from "react-toastify";
-import useWindowDimensions from "utils/windowDimensions";
 
 export const SearchForm = () => {
 	const router = useRouter();
-	const { width } = useWindowDimensions();
 	const [error, setError] = useState(false);
 	const [city, setCity] = useState("");
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
