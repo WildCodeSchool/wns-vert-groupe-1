@@ -8,5 +8,31 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: Goto frontend and run tests
-        run: cd frontend && npm i && npx playwright install && npm run test && npm run test:e2e
+      # - name: Goto frontend and run tests
+      #   run: cd frontend && npm i && npx playwright install && npm run test && npm run test:e2e
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.17.0'
+      
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm i
+          npx playwright install
+      
+      - name: Start server
+        run: |
+          cd frontend
+          nohup npm start &
+          npx wait-on http://localhost:3000
+      
+      - name: Run tests
+        run: |
+          cd frontend
+          npm run test
+          npm run test:e2e
+      
+      - name: Stop server
+        run: |
+          pkill -f "npm start"
