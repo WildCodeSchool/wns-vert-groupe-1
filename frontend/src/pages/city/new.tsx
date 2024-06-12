@@ -28,6 +28,7 @@ const defaultState: CityInput = {
 	images: [],
 };
 
+//TODO : input validation
 const NewCity = () => {
 	const { height, width } = useWindowDimensions();
 	const { isAuthenticated } = useAuth();
@@ -137,8 +138,8 @@ const NewCity = () => {
 					width: width * 0.8,
 					alignItems: "center",
 					justifyContent: "center",
-					boxSizing: "border-box",
-					overflow: "hidden",
+					// boxSizing: "border-box",
+					// overflow: "hidden",
 				}}
 			>
 				<Grid
@@ -194,6 +195,7 @@ const NewCity = () => {
 						flexWrap="wrap"
 					>
 						<Box
+							data-testid="city-form"
 							component="form"
 							onSubmit={(e) => onSubmit(e)}
 							flex={1}
@@ -218,6 +220,7 @@ const NewCity = () => {
 								Création d&apos;une nouvelle ville
 							</Typography>
 							<TextField
+								data-testid="input_name"
 								id="name"
 								variant="standard"
 								placeholder="Nom de la ville"
@@ -228,6 +231,7 @@ const NewCity = () => {
 								onChange={(e) => setForm({ ...form, name: e.target.value })}
 							/>
 							<TextField
+								data-testid="input_description"
 								id="description"
 								variant="standard"
 								placeholder="Description"
@@ -272,7 +276,15 @@ const NewCity = () => {
 			</Paper>
 		</Stack>
 	) : (
-		<Stack>
+		<Stack
+			justifyContent="center"
+			alignContent="center"
+			flex={1}
+			display="flex"
+			width={width}
+			height={height - 120}
+			sx={{ backgroundColor: "red" }}
+		>
 			<Typography>
 				Vous devez être connecté pour accéder à cette page.
 			</Typography>

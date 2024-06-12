@@ -9,6 +9,7 @@ import { useAuth } from "../context";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import useWindowDimensions from "../utils/windowDimensions";
 import Logo from "./Logo";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 export const Header = () => {
 	const { onLogout, isAuthenticated, user } = useAuth();
@@ -64,15 +65,26 @@ export const Header = () => {
 					{isAuthenticated ? (
 						<Stack flexDirection="row" gap={4}>
 							{(user?.role === "ADMIN" || user?.role === "CITYADMIN") && (
-								<AdminPanelSettingsIcon
-									onClick={() => {
-										router.push("/admin");
-									}}
-									sx={{
-										fontSize: mainTheme.typography.h3,
-										cursor: "pointer",
-									}}
-								/>
+								<>
+									<AdminPanelSettingsIcon
+										onClick={() => {
+											router.push("/admin");
+										}}
+										sx={{
+											fontSize: mainTheme.typography.h3,
+											cursor: "pointer",
+										}}
+									/>
+									<SettingsIcon
+										onClick={() => {
+											router.push("/city/list");
+										}}
+										sx={{
+											fontSize: mainTheme.typography.h3,
+											cursor: "pointer",
+										}}
+									/>
+								</>
 							)}
 							<AccountCircleIcon
 								onClick={() => router.push("/profil")}

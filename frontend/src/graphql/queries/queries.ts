@@ -98,3 +98,34 @@ export const GET_USER = gql`
 		}
 	}
 `;
+
+export const GET_CITY_BY_ID = gql`
+	query GetCityById($getCityByIdId: Float!) {
+		getCityById(id: $getCityByIdId) {
+			id
+			name
+			description
+			lat
+			lon
+			# images
+			pois {
+				id
+				name
+				category {
+					id
+					name
+				}
+				address
+				description
+				latitude
+				longitude
+				postalCode
+				ratings {
+					id
+					rating
+					text
+				}
+			}
+		}
+	}
+`;

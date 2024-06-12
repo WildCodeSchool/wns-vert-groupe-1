@@ -22,3 +22,9 @@ export const CREATE_NEW_CITY = gql`
 		}
 	}
 `;
+
+export const DELETE_CITY_BY_ID = gql`
+	mutation DeleteCityById($deleteCityByIdId: Float!) {
+		deleteCityById(id: $deleteCityByIdId)
+	}
+`;

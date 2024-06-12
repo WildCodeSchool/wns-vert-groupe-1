@@ -45,7 +45,8 @@ function App({ Component, pageProps }: AppProps) {
 		<ApolloProvider client={client}>
 			<UserProvider>
 				<Layout>
-					<Component style={{ height: height - 120 }} {...pageProps} />
+					<Component {...pageProps} />
+					{/*  style={{ height: height - 120 }} */}
 				</Layout>
 				<ToastContainer />
 			</UserProvider>
