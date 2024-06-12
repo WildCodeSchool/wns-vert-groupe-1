@@ -16,5 +16,9 @@ jobs:
         run: cd frontend && npm i && npm run test
 
       - name: Run playwright tests e2e
-        run: npm run test:e2e
+        run: |
+          cd frontend
+          npm install
+          npx playwright install
+          npm run test:e2e
       
