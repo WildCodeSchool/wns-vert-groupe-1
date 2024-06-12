@@ -29,6 +29,6 @@
 			"@services": ["service"],
 		},
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../e2e/tests/poi-details.spec.ts", "../e2e/tests/register-login.spec.ts"],
 	"exclude": ["node_modules"],
 }
