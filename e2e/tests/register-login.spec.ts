@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("User tests", () => {
 	test("User subscription", async ({ page }) => {
 		await page.goto("http://frontend:3000/");
 
@@ -34,14 +33,6 @@ test.describe("User tests", () => {
 		await page.getByRole("button", { name: "Envoyer" }).click();
 
 		await expect(page).toHaveURL("http://frontend:3000/login");
-	});
-
-	test("User authentification", async ({ page }) => {
-		await page.goto("http://frontend:3000/");
-
-		await page.getByRole("link").nth(1).click();
-
-		await expect(page).toHaveURL("http://frontend:3000/login");
 
 		const emailLogin = await page.getByLabel("Email *");
 		await emailLogin.fill("adelina@gmail.com");
@@ -55,4 +46,3 @@ test.describe("User tests", () => {
 
 		await page.goto("http://frontend:3000/");
 	});
-});
