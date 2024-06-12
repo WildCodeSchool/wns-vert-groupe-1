@@ -12,26 +12,15 @@ test.describe("User tests", () => {
 
 		await expect(page).toHaveURL("http://frontend:3000/register");
 
-		await page.waitForSelector('[placeholder="Prénom"]');
-		await page.waitForSelector('[placeholder="Nom"]');
-		await page.waitForSelector('[placeholder="E-mail"]');
-		await page.waitForSelector('[placeholder="Mot de passe"]');
+		await page.getByTestId("name").fill("Adelina");
+		await page.getByTestId("surname").fill("Aubert");
+		await page.getByTestId("email").fill("adelina@gmail.copm");
+		await page.getByTestId("password").fill("adelina");
+		await page.getByTestId("name").fill("Adelina");
 
-		const prenom = await page.getByPlaceholder("Prénom");
-		await prenom.fill("Adelina");
-
-		const nom = await page.getByPlaceholder("Nom", { exact: true });
-		await nom.fill("Aubert");
-
-		const email = await page.getByPlaceholder("E-mail");
-		await email.fill("adelina@gmail.copm");
-
-		const password = await page.getByPlaceholder("Mot de passe");
-		await password.fill("adelina");
-
-		await page.getByLabel("").click();
+		await page.getByTestId("city-select").click();
 		await page.getByRole("option", { name: "Paris" }).click();
-		await page.getByRole("button", { name: "Envoyer" }).click();
+		await page.getByTestId("submit").click();
 
 		await expect(page).toHaveURL("http://frontend:3000/login");
 		
