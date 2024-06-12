@@ -90,6 +90,7 @@ const Register = () => {
 						</Typography>
 
 						<TextField
+							inputProps={{ "data-testid": "surname" }}
 							fullWidth
 							placeholder="Prénom"
 							variant="standard"
@@ -99,6 +100,7 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "name" }}
 							fullWidth
 							placeholder="Nom"
 							variant="standard"
@@ -108,6 +110,7 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "email" }}
 							fullWidth
 							placeholder="E-mail"
 							variant="standard"
@@ -120,6 +123,7 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "password" }}
 							fullWidth
 							placeholder="Mot de passe"
 							id="standard-basic"
@@ -132,6 +136,7 @@ const Register = () => {
 
 						<InputLabel id="city-label">Sélectionner une ville</InputLabel>
 						<Select
+							data-testid="city-select"
 							labelId="city-label"
 							id="city"
 							defaultValue=""
@@ -146,6 +151,7 @@ const Register = () => {
 						</Select>
 
 						<Button
+							data-testid="submit"
 							variant="contained"
 							color="primary"
 							type="submit"

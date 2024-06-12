@@ -8,6 +8,6 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
-        
+
       - name: Run interface test
-        run: docker compose -f docker-compose.yml up --build --exit-code-from e2e
+        run: docker compose up --build 

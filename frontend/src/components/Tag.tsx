@@ -11,7 +11,6 @@ type TagProps = {
 export const Tag: React.FC<TagProps> = ({ name, isActive, onClick }) => {
 	return (
 		<Paper
-			data-testid={name}
 			onClick={onClick}
 			sx={{
 				backgroundColor: mainTheme.palette.primary.light,
