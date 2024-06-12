@@ -144,6 +144,7 @@ const SearchResults = () => {
 							name={category.name}
 							isActive={activeCategories.includes(category.name)}
 							onClick={() => handleCategoryTagClick(category.name)}
+							data-testid={category.name}
 						/>
 					))}
 				</Box>

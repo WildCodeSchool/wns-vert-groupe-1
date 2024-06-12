@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 
+test.describe("User tests", () => {
 	test("User subscription", async ({ page }) => {
 		await page.goto("http://frontend:3000/");
 
@@ -33,6 +34,15 @@ import { test, expect } from "@playwright/test";
 		await page.getByRole("button", { name: "Envoyer" }).click();
 
 		await expect(page).toHaveURL("http://frontend:3000/login");
+		
+	});
+
+	test("User authentification", async ({ page }) => {
+		await page.goto("http://frontend:3000/");
+
+		await page.getByTestId("AccountCircleIcon").click();
+
+		await expect(page).toHaveURL("http://frontend:3000/login");
 
 		const emailLogin = await page.getByLabel("Email *");
 		await emailLogin.fill("adelina@gmail.com");
@@ -46,3 +56,4 @@ import { test, expect } from "@playwright/test";
 
 		await page.goto("http://frontend:3000/");
 	});
+});
