@@ -1,9 +1,7 @@
 import { test } from "@playwright/test";
 
 test("test", async ({ page }) => {
-    await page.goto("http://localhost:3000/");
-	await page.getByPlaceholder("Cherchez une ville").fill("Paris");
-	await page.getByLabel("search").click();
+	await page.goto("http://localhost:3000/city/search/paris");
 	await page
 		.locator("p.MuiTypography-root", { hasText: /^Monuments$/ })
 		.click();

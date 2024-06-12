@@ -19,6 +19,7 @@ jobs:
         run: |
           cd frontend
           npm install
+          npx playwright install-deps
           npx playwright install
           npm run test:e2e
       
