@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 
 test("test", async ({ page }) => {
-	await page.goto("http://localhost:3000/city/search/paris");
+  await page.goto("http://frontend:3000/city/search/paris");
 	await page
 		.locator("p.MuiTypography-root", { hasText: /^Monuments$/ })
 		.click();
