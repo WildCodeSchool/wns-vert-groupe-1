@@ -12,8 +12,8 @@ test.describe("User tests", () => {
 
 		await expect(page).toHaveURL("http://frontend:3000/register");
 
-		await page.getByTestId("name").fill("Adelina");
-		await page.getByTestId("surname").fill("Aubert");
+		await page.getByTestId("surname").fill("Adelina");
+		await page.getByTestId("name").fill("Aubert");
 		await page.getByTestId("email").fill("adelina@gmail.copm");
 		await page.getByTestId("password").fill("adelina");
 		await page.getByTestId("name").fill("Adelina");
