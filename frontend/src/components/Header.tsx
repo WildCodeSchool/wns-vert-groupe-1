@@ -7,13 +7,11 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { mainTheme } from "@theme";
 import { useAuth } from "../context";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import useWindowDimensions from "../utils/windowDimensions";
 import Logo from "./Logo";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 export const Header = () => {
 	const { onLogout, isAuthenticated, user } = useAuth();
-	const { height, width } = useWindowDimensions();
 	const router = useRouter();
 
 	return (
@@ -21,9 +19,8 @@ export const Header = () => {
 			<Toolbar
 				sx={{
 					boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-					width: width,
+					width: "100%",
 					backgroundColor: mainTheme.palette.primary.main,
-					// height: (height * 2) / 100,
 					height: mainTheme.spacing(8),
 					position: "relative",
 				}}

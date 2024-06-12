@@ -30,7 +30,6 @@ const defaultState: CityInput = {
 
 //TODO : input validation
 const NewCity = () => {
-	const { height, width } = useWindowDimensions();
 	const { isAuthenticated } = useAuth();
 	const [images, setImages] = React.useState<string[]>([]);
 	const router = useRouter();
@@ -118,177 +117,151 @@ const NewCity = () => {
 	});
 
 	return isAuthenticated ? (
-		<Stack
-			flex={1}
-			display="flex"
-			alignItems="center"
-			justifyContent="center"
-			width={width}
-			height={height - 120}
-			// sx={{ backgroundColor: "black" }}
+		<Paper
+			component={Box}
+			elevation={5}
+			square={false}
+			width="80%"
+			height={window.innerHeight * 0.7}
+			sx={{
+				display: "flex",
+				flexDirection: "row",
+				alignItems: "center",
+				justifyContent: "center",
+			}}
 		>
-			<Paper
-				component={Box}
-				elevation={5}
-				square={false}
-				sx={{
-					display: "flex",
-					flexDirection: "row",
-					height: (height - 120) * 0.8,
-					width: width * 0.8,
-					alignItems: "center",
-					justifyContent: "center",
-					// boxSizing: "border-box",
-					// overflow: "hidden",
+			<Grid
+				container
+				flex={1}
+				width="100%"
+				height="100%"
+				flexWrap="wrap"
+				flexDirection={{
+					xs: "column-reverse",
+					sm: "column-reverse",
+					md: "row",
+					lg: "row",
 				}}
 			>
 				<Grid
-					container
-					flex={1}
-					width="100%"
-					height="100%"
-					flexWrap="wrap"
-					flexDirection={{
-						xs: "column-reverse",
-						sm: "column-reverse",
-						md: "row",
-						lg: "row",
-					}}
+					item
+					display="flex"
+					alignItems="center"
+					justifyContent="center"
+					height={{ xs: 1 / 2, md: 1, lg: 1, xl: 1 }}
+					width={{ xs: 1, md: 1, lg: 1 / 2, xl: 1 / 2 }}
+					sx={{ backgroundColor: mainTheme.palette.primary.light }}
+					// mainTheme.palette.primary.light
 				>
-					<Grid
-						item
-						display="flex"
-						alignItems="center"
-						justifyContent="center"
-						height={{ xs: 1 / 2, md: 1, lg: 1, xl: 1 }}
-						width={{ xs: 1, md: 1, lg: 1 / 2, xl: 1 / 2 }}
-						sx={{ backgroundColor: mainTheme.palette.primary.light }}
-						// mainTheme.palette.primary.light
-					>
-						{images.length > 0 ? (
-							<Box padding={4}>
-								<ImagesCarousel
-									images={images.map(
-										(image) => `http://localhost:8000${image}`
-									)}
-								/>
-							</Box>
-						) : (
-							<>
-								<AddPhotoAlternateOutlinedIcon
-									sx={{
-										color: mainTheme.palette.primary.main,
-										fontSize: "100px",
-									}}
-								/>
-							</>
-						)}
-					</Grid>
-					<Grid
-						item
-						height={{ xs: 1 / 2, md: 1, lg: 1, xl: 1 }}
-						width={{ xs: 1, md: 1, lg: 1 / 2, xl: 1 / 2 }}
-						display="flex"
-						alignItems="center"
-						justifyContent="center"
-						gap={6}
-						flexWrap="wrap"
-					>
-						<Box
-							data-testid="city-form"
-							component="form"
-							onSubmit={(e) => onSubmit(e)}
-							flex={1}
-							display="flex"
-							flexDirection="column"
-							justifyContent="space-evenly"
-							alignItems="center"
-							height="100%"
-							padding={5}
-						>
-							<Typography
-								fontFamily={mainTheme.typography.fontFamily}
-								fontSize={{
-									sx: mainTheme.typography.h6.fontSize,
-									sm: mainTheme.typography.h5.fontSize,
-									md: mainTheme.typography.h4.fontSize,
-									lg: mainTheme.typography.h3.fontSize,
-								}}
-								color={mainTheme.palette.primary.main}
-								fontWeight={mainTheme.typography.fontWeightMedium}
-							>
-								Création d&apos;une nouvelle ville
-							</Typography>
-							<TextField
-								data-testid="input_name"
-								id="name"
-								variant="standard"
-								placeholder="Nom de la ville"
-								required
-								size="medium"
-								fullWidth
-								margin="normal"
-								onChange={(e) => setForm({ ...form, name: e.target.value })}
+					{images.length > 0 ? (
+						<Box padding={4}>
+							<ImagesCarousel
+								images={images.map((image) => `http://localhost:8000${image}`)}
 							/>
-							<TextField
-								data-testid="input_description"
-								id="description"
-								variant="standard"
-								placeholder="Description"
-								multiline
-								rows={5}
-								required
-								size="medium"
-								fullWidth
-								margin="normal"
-								onChange={(e) =>
-									setForm({ ...form, description: e.target.value })
-								}
-							/>
-							<Button
-								component="label"
-								sx={{
-									backgroundColor: mainTheme.palette.primary.light,
-									color: mainTheme.palette.primary.main,
-								}}
-								variant="contained"
-								tabIndex={-1}
-								startIcon={<CloudUploadIcon />}
-							>
-								Ajouter des images
-								<VisuallyHiddenInput
-									type="file"
-									onChange={(e) => handleFileChange(e)}
-									multiple
-								/>
-							</Button>
-							<Button
-								disabled={isDisabled}
-								type="submit"
-								variant="contained"
-								color="primary"
-							>
-								Créer
-							</Button>
 						</Box>
-					</Grid>
+					) : (
+						<>
+							<AddPhotoAlternateOutlinedIcon
+								sx={{
+									color: mainTheme.palette.primary.main,
+									fontSize: "100px",
+								}}
+							/>
+						</>
+					)}
 				</Grid>
-			</Paper>
-		</Stack>
+				<Grid
+					item
+					height={{ xs: 1 / 2, md: 1, lg: 1, xl: 1 }}
+					width={{ xs: 1, md: 1, lg: 1 / 2, xl: 1 / 2 }}
+					display="flex"
+					alignItems="center"
+					justifyContent="center"
+					gap={6}
+					flexWrap="wrap"
+				>
+					<Box
+						data-testid="city-form"
+						component="form"
+						onSubmit={(e) => onSubmit(e)}
+						flex={1}
+						display="flex"
+						flexDirection="column"
+						justifyContent="space-evenly"
+						alignItems="center"
+						height="100%"
+						padding={5}
+					>
+						<Typography
+							fontFamily={mainTheme.typography.fontFamily}
+							fontSize={{
+								sx: mainTheme.typography.h6.fontSize,
+								sm: mainTheme.typography.h5.fontSize,
+								md: mainTheme.typography.h4.fontSize,
+								lg: mainTheme.typography.h3.fontSize,
+							}}
+							color={mainTheme.palette.primary.main}
+							fontWeight={mainTheme.typography.fontWeightMedium}
+						>
+							Création d&apos;une nouvelle ville
+						</Typography>
+						<TextField
+							data-testid="input_name"
+							id="name"
+							variant="standard"
+							placeholder="Nom de la ville"
+							required
+							size="medium"
+							fullWidth
+							margin="normal"
+							onChange={(e) => setForm({ ...form, name: e.target.value })}
+						/>
+						<TextField
+							data-testid="input_description"
+							id="description"
+							variant="standard"
+							placeholder="Description"
+							multiline
+							rows={5}
+							required
+							size="medium"
+							fullWidth
+							margin="normal"
+							onChange={(e) =>
+								setForm({ ...form, description: e.target.value })
+							}
+						/>
+						<Button
+							component="label"
+							sx={{
+								backgroundColor: mainTheme.palette.primary.light,
+								color: mainTheme.palette.primary.main,
+							}}
+							variant="contained"
+							tabIndex={-1}
+							startIcon={<CloudUploadIcon />}
+						>
+							Ajouter des images
+							<VisuallyHiddenInput
+								type="file"
+								onChange={(e) => handleFileChange(e)}
+								multiple
+							/>
+						</Button>
+						<Button
+							disabled={isDisabled}
+							type="submit"
+							variant="contained"
+							color="primary"
+						>
+							Créer
+						</Button>
+					</Box>
+				</Grid>
+			</Grid>
+		</Paper>
 	) : (
-		<Stack
-			justifyContent="center"
-			alignContent="center"
-			flex={1}
-			display="flex"
-			width={width}
-			height={height - 120}
-			sx={{ backgroundColor: "red" }}
-		>
-			<Typography>
-				Vous devez être connecté pour accéder à cette page.
-			</Typography>
-		</Stack>
+		<Typography>Vous devez être connecté pour accéder à cette page.</Typography>
 	);
 };
 

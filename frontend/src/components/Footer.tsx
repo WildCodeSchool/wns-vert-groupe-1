@@ -1,15 +1,13 @@
 import { BottomNavigation, Typography } from "@mui/material";
 import { mainTheme } from "@theme";
 import Link from "next/link";
-import useWindowDimensions from "../utils/windowDimensions";
 
 export default function Footer() {
-	const { height, width } = useWindowDimensions();
 	return (
 		<BottomNavigation
 			sx={{
 				background: mainTheme.palette.primary.light,
-				width: width,
+				width: "100%",
 				display: "flex",
 				bottom: 0,
 				justifyContent: "flex-end",

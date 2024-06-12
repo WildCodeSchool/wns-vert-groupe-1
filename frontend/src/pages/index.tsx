@@ -1,14 +1,12 @@
 import { SearchForm } from "@components";
 import * as React from "react";
 import Typography from "@mui/material/Typography";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { mainTheme } from "@theme";
 import { ReactTyped } from "react-typed";
-import useWindowDimensions from "utils/windowDimensions";
 import { useRouter } from "next/router";
 
 const Home = () => {
-	const { height, width } = useWindowDimensions();
 	const router = useRouter();
 
 	return (
@@ -18,8 +16,7 @@ const Home = () => {
 			alignItems="center"
 			justifyContent="center"
 			flex="1"
-			height={height - 120}
-			width={width}
+			width="100%"
 		>
 			<Box
 				display="flex"
@@ -31,7 +28,7 @@ const Home = () => {
 					md: "space-around",
 					lg: "space-around",
 				}}
-				width={width * 0.5}
+				width="50%"
 				paddingLeft={{ xs: 4, sm: 6, md: 8, lg: 10 }}
 				gap={{ xs: 10, sm: 8, md: 6, lg: 6 }}
 			>
@@ -84,10 +81,10 @@ const Home = () => {
 				</Typography>
 				<Box
 					width={{
-						xs: width * 0.8,
-						sm: (width / 2) * 0.8,
-						md: (width / 2) * 1,
-						lg: (width / 2) * 0.6,
+						xs: "120%",
+						sm: "100%",
+						md: "90%",
+						lg: "80%",
 					}}
 				>
 					<SearchForm />
@@ -98,11 +95,11 @@ const Home = () => {
 				alignItems="center"
 				height="100%"
 				overflow="hidden"
-				width={width * 0.5}
+				width="50%"
 			>
 				<img
 					style={{
-						width: width * 1.5,
+						width: "150%",
 						height: "auto",
 						objectFit: "cover",
 						transform: "translateX(+5%)",
