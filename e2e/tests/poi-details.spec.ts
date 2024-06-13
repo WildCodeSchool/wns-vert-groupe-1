@@ -5,7 +5,10 @@ test("Filter Paris POIs and choose one", async ({ page }) => {
 		waitUntil: "networkidle",
 	});
 
-	await page.getByTestId("Monuments").click();
+	const filter = await page.waitForSelector('[data-testid="Monuments"]', {
+		state: "visible",
+	});
+	await filter.click();
 
 	const button = await page.waitForSelector('[data-testid="poi-9"]', {
 		state: "visible",
