@@ -2,15 +2,15 @@ import { test, expect } from "@playwright/test";
 
 test.describe("User tests", () => {
 	test("User subscription", async ({ page }) => {
-		await page.goto("http://localhost:3000/");
+		await page.goto("http://frontend:3000/");
 
 		await page.getByTestId("AccountCircleIcon").click();
 
-		await expect(page).toHaveURL("http://localhost:3000/login");
+		await expect(page).toHaveURL("http://frontend:3000/login");
 
 		await page.getByRole("link", { name: "S'inscrire" }).click();
 
-		await expect(page).toHaveURL("http://localhost:3000/register");
+		await expect(page).toHaveURL("http://frontend:3000/register");
 // to be in document puis  remplir
 		await page.pause();
 
@@ -37,16 +37,16 @@ test.describe("User tests", () => {
 		await page.getByRole("option", { name: "Paris" }).click();
 		await page.getByTestId("submit").click();
 
-		await expect(page).toHaveURL("http://localhost:3000/login");
+		await expect(page).toHaveURL("http://frontend:3000/login");
 		
 	});
 
 	test("User authentification", async ({ page }) => {
-		await page.goto("http://localhost:3000/");
+		await page.goto("http://frontend:3000/");
 
 		await page.getByTestId("AccountCircleIcon").click();
 
-		await expect(page).toHaveURL("http://localhost:3000/login");
+		await expect(page).toHaveURL("http://frontend:3000/login");
 		await page.pause();
 
 		const emailLogin = await page.getByLabel("Email *");
@@ -59,5 +59,5 @@ test.describe("User tests", () => {
 
 		await page.getByRole("button", { name: "Envoyer" }).click();
 
-		await expect(page).toHaveURL("http://localhost:3000/");	});
+		await expect(page).toHaveURL("http://frontend:3000/");	});
 });
