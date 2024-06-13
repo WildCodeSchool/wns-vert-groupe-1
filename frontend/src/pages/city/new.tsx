@@ -123,19 +123,24 @@ const NewCity = () => {
 			square={false}
 			width="80%"
 			height={window.innerHeight * 0.7}
-			sx={{
-				display: "flex",
-				flexDirection: "row",
-				alignItems: "center",
-				justifyContent: "center",
-			}}
+			overflow="auto"
+			maxHeight="100vh"
+			display="flex"
+			flexDirection="row"
+			alignItems="center"
+			justifyContent="center"
 		>
 			<Grid
 				container
 				flex={1}
 				width="100%"
 				height="100%"
-				flexWrap="wrap"
+				alignItems="stretch"
+				flexWrap="nowrap"
+				sx={{
+					overflowY: "auto",
+					maxHeight: "100vh",
+				}}
 				flexDirection={{
 					xs: "column-reverse",
 					sm: "column-reverse",
@@ -148,10 +153,9 @@ const NewCity = () => {
 					display="flex"
 					alignItems="center"
 					justifyContent="center"
-					height={{ xs: 1 / 2, md: 1, lg: 1, xl: 1 }}
-					width={{ xs: 1, md: 1, lg: 1 / 2, xl: 1 / 2 }}
+					width="100%"
+					height="100%"
 					sx={{ backgroundColor: mainTheme.palette.primary.light }}
-					// mainTheme.palette.primary.light
 				>
 					{images.length > 0 ? (
 						<Box padding={4}>
@@ -172,16 +176,14 @@ const NewCity = () => {
 				</Grid>
 				<Grid
 					item
-					height={{ xs: 1 / 2, md: 1, lg: 1, xl: 1 }}
-					width={{ xs: 1, md: 1, lg: 1 / 2, xl: 1 / 2 }}
+					width="100%"
+					height="100%"
 					display="flex"
 					alignItems="center"
 					justifyContent="center"
-					gap={6}
-					flexWrap="wrap"
+					flexWrap="nowrap"
 				>
 					<Box
-						data-testid="city-form"
 						component="form"
 						onSubmit={(e) => onSubmit(e)}
 						flex={1}
@@ -191,6 +193,7 @@ const NewCity = () => {
 						alignItems="center"
 						height="100%"
 						padding={5}
+						gap={6}
 					>
 						<Typography
 							fontFamily={mainTheme.typography.fontFamily}
