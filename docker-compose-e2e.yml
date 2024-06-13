@@ -52,13 +52,6 @@ services:
   redis:
     image: redis
 
-  redis-commander:
-    image: rediscommander/redis-commander
-    environment:
-      - REDIS_HOSTS=redis
-    ports:
-      - "8081:8081"
-
   imagesupload:
     build: ./imagesupload
     volumes:
@@ -66,11 +59,6 @@ services:
       - ./imagesupload/uploads:/app/uploads
     ports:
       - 8000:8000
-
-  adminer:
-    image: adminer
-    ports:
-      - 8080:8080
 
   gateway:
     image: nginx
@@ -81,6 +69,15 @@ services:
       - ./logs:/var/log/nginx
     depends_on:
       - frontend
+
+  e2e:
+    build: ./e2e
+    volumes:
+      - ./e2e/playwright-report:/app/playwright-report
+      - ./e2e/test-results:/app/test-results
+    depends_on:
+      frontend:
+        condition: service_healthy
 
 volumes:
   pgdata:

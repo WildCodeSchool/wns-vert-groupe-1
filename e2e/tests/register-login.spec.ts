@@ -2,36 +2,52 @@ import { test, expect } from "@playwright/test";
 
 test.describe("User tests", () => {
 	test("User subscription", async ({ page }) => {
-		await page.goto("http://frontend:3000/");
+		await page.goto("http://localhost:3000/");
 
 		await page.getByTestId("AccountCircleIcon").click();
 
-		await expect(page).toHaveURL("http://frontend:3000/login");
+		await expect(page).toHaveURL("http://localhost:3000/login");
 
 		await page.getByRole("link", { name: "S'inscrire" }).click();
 
-		await expect(page).toHaveURL("http://frontend:3000/register");
+		await expect(page).toHaveURL("http://localhost:3000/register");
+// to be in document puis  remplir
+		await page.pause();
 
-		await page.getByTestId("surname").fill("Adelina");
-		await page.getByTestId("name").fill("Aubert");
-		await page.getByTestId("email").fill("adelina@gmail.copm");
-		await page.getByTestId("password").fill("adelina");
-		await page.getByTestId("name").fill("Adelina");
+		const surname = page.getByTestId("surname");
+		expect(surname).toBeVisible();
+		await surname.fill("Adelina");
 
-		await page.getByTestId("city-select").click();
+		const name = page.getByTestId("name");
+		expect(name).toBeVisible();
+		await name.fill("Aubert");
+
+		const email = page.getByTestId("email");
+		expect(email).toBeVisible();
+		await email.fill("adelina@gmail.com");
+
+		const password = page.getByTestId("password");
+		expect(password).toBeVisible();
+		await password.fill("adelina");
+
+		const select = page.getByTestId("city-select");
+		expect(select).toBeVisible();
+		await select.click();
+
 		await page.getByRole("option", { name: "Paris" }).click();
 		await page.getByTestId("submit").click();
 
-		await expect(page).toHaveURL("http://frontend:3000/login");
+		await expect(page).toHaveURL("http://localhost:3000/login");
 		
 	});
 
 	test("User authentification", async ({ page }) => {
-		await page.goto("http://frontend:3000/");
+		await page.goto("http://localhost:3000/");
 
 		await page.getByTestId("AccountCircleIcon").click();
 
-		await expect(page).toHaveURL("http://frontend:3000/login");
+		await expect(page).toHaveURL("http://localhost:3000/login");
+		await page.pause();
 
 		const emailLogin = await page.getByLabel("Email *");
 		await emailLogin.fill("adelina@gmail.com");
@@ -43,6 +59,5 @@ test.describe("User tests", () => {
 
 		await page.getByRole("button", { name: "Envoyer" }).click();
 
-		await page.goto("http://frontend:3000/");
-	});
+		await expect(page).toHaveURL("http://localhost:3000/");	});
 });

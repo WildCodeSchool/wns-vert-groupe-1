@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Run interface test
-        run: docker compose -f docker-compose.yml up --build --exit-code-from e2e
+        run: docker compose -f docker-compose-e2e.yml up --build --exit-code-from e2e
       
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
