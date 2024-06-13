@@ -2,15 +2,15 @@ import { test, expect } from "@playwright/test";
 
 test.describe("User tests", () => {
 	test("User subscription", async ({ page }) => {
-		await page.goto("http://localhost:3000/", { waitUntil: "networkidle" });
+		await page.goto("http://frontend:3000/", { waitUntil: "networkidle" });
 
 		await page.getByTestId("AccountCircleIcon").click();
 
-		await expect(page).toHaveURL("http://localhost:3000/login");
+		await expect(page).toHaveURL("http://frontend:3000/login");
 
 		await page.getByRole("link", { name: "S'inscrire" }).click();
 
-		await expect(page).toHaveURL("http://localhost:3000/register");
+		await expect(page).toHaveURL("http://frontend:3000/register");
 
 		// Ensure elements are visible before interacting
 		const surname = await page.waitForSelector('[data-testid="surname"]', {
@@ -41,15 +41,15 @@ test.describe("User tests", () => {
 		await page.getByRole("option", { name: "Paris" }).click();
 		await page.getByTestId("submit").click();
 
-		await expect(page).toHaveURL("http://localhost:3000/login");
+		await expect(page).toHaveURL("http://frontend:3000/login");
 	});
 
 	test("User authentication", async ({ page }) => {
-		await page.goto("http://localhost:3000/", { waitUntil: "networkidle" });
+		await page.goto("http://frontend:3000/", { waitUntil: "networkidle" });
 
 		await page.getByTestId("AccountCircleIcon").click();
 
-		await expect(page).toHaveURL("http://localhost:3000/login");
+		await expect(page).toHaveURL("http://frontend:3000/login");
 
 		const emailLogin = await page.waitForSelector('label:has-text("Email *")', {
 			state: "visible",
@@ -66,7 +66,7 @@ test.describe("User tests", () => {
 
 		await page.getByRole("button", { name: "Envoyer" }).click();
 
-		await expect(page).toHaveURL("http://localhost:3000/");
+		await expect(page).toHaveURL("http://frontend:3000/");
 	});
 });
 
