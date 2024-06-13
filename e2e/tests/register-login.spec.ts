@@ -2,62 +2,72 @@ import { test, expect } from "@playwright/test";
 
 test.describe("User tests", () => {
 	test("User subscription", async ({ page }) => {
-		await page.goto("http://frontend:3000/");
+		await page.goto("http://localhost:3000/", { waitUntil: "networkidle" });
 
 		await page.getByTestId("AccountCircleIcon").click();
 
-		await expect(page).toHaveURL("http://frontend:3000/login");
+		await expect(page).toHaveURL("http://localhost:3000/login");
 
 		await page.getByRole("link", { name: "S'inscrire" }).click();
 
-		await expect(page).toHaveURL("http://frontend:3000/register");
-// to be in document puis  remplir
-		await page.pause();
+		await expect(page).toHaveURL("http://localhost:3000/register");
 
-		const surname = page.getByTestId("surname");
-		expect(surname).toBeVisible();
+		// Ensure elements are visible before interacting
+		const surname = await page.waitForSelector('[data-testid="surname"]', {
+			state: "visible",
+		});
 		await surname.fill("Adelina");
 
-		const name = page.getByTestId("name");
-		expect(name).toBeVisible();
+		const name = await page.waitForSelector('[data-testid="name"]', {
+			state: "visible",
+		});
 		await name.fill("Aubert");
 
-		const email = page.getByTestId("email");
-		expect(email).toBeVisible();
+		const email = await page.waitForSelector('[data-testid="email"]', {
+			state: "visible",
+		});
 		await email.fill("adelina@gmail.com");
 
-		const password = page.getByTestId("password");
-		expect(password).toBeVisible();
+		const password = await page.waitForSelector('[data-testid="password"]', {
+			state: "visible",
+		});
 		await password.fill("adelina");
 
-		const select = page.getByTestId("city-select");
-		expect(select).toBeVisible();
+		const select = await page.waitForSelector('[data-testid="city-select"]', {
+			state: "visible",
+		});
 		await select.click();
 
 		await page.getByRole("option", { name: "Paris" }).click();
 		await page.getByTestId("submit").click();
 
-		await expect(page).toHaveURL("http://frontend:3000/login");
-		
+		await expect(page).toHaveURL("http://localhost:3000/login");
 	});
 
-	test("User authentification", async ({ page }) => {
-		await page.goto("http://frontend:3000/");
+	test("User authentication", async ({ page }) => {
+		await page.goto("http://localhost:3000/", { waitUntil: "networkidle" });
 
 		await page.getByTestId("AccountCircleIcon").click();
 
-		await expect(page).toHaveURL("http://frontend:3000/login");
-		await page.pause();
+		await expect(page).toHaveURL("http://localhost:3000/login");
 
-		const emailLogin = await page.getByLabel("Email *");
+		const emailLogin = await page.waitForSelector('label:has-text("Email *")', {
+			state: "visible",
+		});
 		await emailLogin.fill("adelina@gmail.com");
 
-		const passwordLogin = await page.getByLabel("Mot de passe *");
+		const passwordLogin = await page.waitForSelector(
+			'label:has-text("Mot de passe *")',
+			{ state: "visible" }
+		);
 		await passwordLogin.fill("adelina");
 
 		await page.getByLabel("Se souvenir de moi").check();
 
 		await page.getByRole("button", { name: "Envoyer" }).click();
 
-		await expect(page).toHaveURL("http://frontend:3000/");	});
+		await expect(page).toHaveURL("http://localhost:3000/");
+	});
 });
+
+
