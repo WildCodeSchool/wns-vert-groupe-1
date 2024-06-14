@@ -8,7 +8,6 @@ import { mainTheme } from "@theme";
 import { useAuth } from "../context";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Logo from "./Logo";
-import SettingsIcon from "@mui/icons-material/Settings";
 
 export const Header = () => {
 	const { onLogout, isAuthenticated, user } = useAuth();
@@ -65,15 +64,7 @@ export const Header = () => {
 								<>
 									<AdminPanelSettingsIcon
 										onClick={() => {
-											router.push("/admin");
-										}}
-										sx={{
-											fontSize: mainTheme.typography.h3,
-											cursor: "pointer",
-										}}
-									/>
-									<SettingsIcon
-										onClick={() => {
+											// router.push("/admin");
 											router.push("/city/list");
 										}}
 										sx={{
