@@ -22,3 +22,20 @@ export const CREATE_NEW_CITY = gql`
 		}
 	}
 `;
+
+export const DELETE_USER = gql`
+	mutation DeleteUser($userId: String!) {
+		deleteUser(userId: $userId)
+	}
+`;
+export const UPDATE_USER = gql`
+	mutation UpdateUser($userId: Int!, $userData: UpdateUserInput!) {
+		updateUserById(id: $userId, newUserInput: $userData) {
+			id
+			firstName
+			lastName
+			email
+			role
+		}
+	}
+`;
