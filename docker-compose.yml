@@ -1,8 +1,10 @@
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
     build: ./backend
+    env_file:
+      - .env.dev
     ports:
       - 4000:4000
     volumes:
@@ -18,6 +20,8 @@ services:
 
   frontend:
     build: ./frontend
+    env_file:
+      - .env.dev
     restart: always
     environment:
       - NODE_ENV=development
@@ -31,7 +35,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: 'curl --fail http://localhost:3000 || exit 1'
+      test: "curl --fail http://localhost:3000 || exit 1"
       interval: 10s
       timeout: 5s
       retries: 5

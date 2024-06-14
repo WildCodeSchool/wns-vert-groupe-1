@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:dev": "cross-env NODE_ENV=development npx playwright test",
+    "test:test": "cross-env NODE_ENV=test npx playwright test"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@playwright/test": "^1.41.2",
-    "@types/node": "^20.11.16"
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "cross-env": "^7.0.3"
   }
 }

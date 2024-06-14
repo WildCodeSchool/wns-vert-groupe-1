@@ -1,15 +1,26 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
+import * as dotenv from "dotenv";
+import * as path from "path";
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// require('dotenv').config();
+// require("dotenv").config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+
+const envFilePath =
+  process.env.NODE_ENV === "test"
+    ? path.resolve(__dirname, "../.env.test")
+    : path.resolve(__dirname, "../.env.dev");
+
+// Charger les variables d'environnement
+dotenv.config({ path: envFilePath });
+
 const config: PlaywrightTestConfig = {
   testDir: "./tests",
   /* Maximum time one test can run for. */
@@ -37,6 +48,7 @@ const config: PlaywrightTestConfig = {
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://localhost:3000',
+    baseURL: process.env.NEXT_PUBLIC_FRONTEND_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on",
