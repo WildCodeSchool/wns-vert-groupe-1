@@ -8,9 +8,6 @@ export class CityInput {
   @Field()
   description: string;
 
-  @Field(() => [String])
-  images: string[];
-
   // a supprimer
   @Field(() => [Number], { nullable: true })
   pois?: [number];

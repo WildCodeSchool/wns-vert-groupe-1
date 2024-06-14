@@ -42,7 +42,4 @@ export class City extends BaseEntity {
   @Field(() => [User])
   @OneToMany(() => User, (User) => User.city)
   users: User[];
-
-  @Field(() => [String])
-  images: string[];
 }

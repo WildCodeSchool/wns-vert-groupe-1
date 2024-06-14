@@ -39,7 +39,6 @@ export class CityResolver {
       const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
       const cacheResult = await redisClient.get(capitalizedName);
       if (cacheResult !== null) {
-        console.log("from cache");
         return JSON.parse(cacheResult);
       } else {
         const result = await City.findOne({
@@ -74,7 +73,6 @@ export class CityResolver {
       lat: coordinates?.latitude,
       lon: coordinates?.longitude,
       pois: pois,
-      images: cityData.images,
     }).save();
 
     return city;
