@@ -53,7 +53,6 @@ const UsersAdminPage = () => {
 		setPage(0);
 	};
 
-	// Calcul des utilisateurs à afficher en fonction de la pagination
 	const paginatedUsers = data.getAllUsers.slice(
 		page * rowsPerPage,
 		page * rowsPerPage + rowsPerPage
