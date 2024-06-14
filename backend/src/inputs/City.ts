@@ -8,7 +8,6 @@ export class CityInput {
   @Field()
   description: string;
 
-  // a supprimer
   @Field(() => [Number], { nullable: true })
   pois?: [number];
 }

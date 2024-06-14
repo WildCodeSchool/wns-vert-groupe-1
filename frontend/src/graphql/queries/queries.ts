@@ -107,7 +107,6 @@ export const GET_CITY_BY_ID = gql`
 			description
 			lat
 			lon
-			# images
 			pois {
 				id
 				name
