@@ -11,6 +11,7 @@ import {
 } from "type-graphql";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
+import { UpdateUserInput } from "../inputs/UpdateUserInput";
 
 @ObjectType()
 class UserInfo {
@@ -54,12 +55,12 @@ export class UserResolver {
 	}
 
 	@Mutation(() => String)
-	async deleteUserById(@Arg("id") id: number) {
+	async deleteUser(@Arg("userId") userId: string) {
 		const userToDelete = await User.findOneByOrFail({
-			id: id,
+			id: Number.parseInt(userId),
 		});
-		userToDelete.remove();
-		return "User deleted";
+		await userToDelete.remove();
+		return "user removed";
 	}
 
 	@Mutation(() => String)
@@ -71,22 +72,23 @@ export class UserResolver {
 	@Mutation(() => String)
 	async updateUserById(
 		@Arg("id") id: number,
-		@Arg("newUserInput") newUserInput: UserInput
-		// @Arg("role") newUserRole?: UserRole,
-	) {
+		@Arg("newUserInput") newUserInput: UpdateUserInput
+	): Promise<string> {
 		try {
 			const oldUser = await User.findOne({ where: { id: id } });
 
 			if (!oldUser) {
-				throw new Error(`The user with ID : ${id} not found`);
+				throw new Error(`L'utilisateur avec l'ID : ${id} n'a pas été trouvé`);
 			}
 
 			Object.assign(oldUser, newUserInput);
 
 			await oldUser.save();
-			return "User updated";
+			return "Utilisateur mis à jour";
 		} catch (error) {
-			throw new Error(`Error when updating the user : ${error.message}`);
+			throw new Error(
+				`Erreur lors de la mise à jour de l'utilisateur : ${error.message}`
+			);
 		}
 	}
 
