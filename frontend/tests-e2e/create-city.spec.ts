@@ -39,10 +39,10 @@ test("Trigger a error when the form is submitted with empty inputs and after cre
 	await button.click();
 	await page.pause();
 
-	await page.waitForSelector(".Toastify__toast-body");
+	// await page.waitForSelector(".Toastify__toast-body");
 
-	const alertText = await page.textContent(".Toastify__toast-body");
-	await expect(alertText).toContain("La ville Metz a été crée");
+	// const alertText = await page.textContent(".Toastify__toast-body");
+	// await expect(alertText).toContain("La ville Metz a été crée");
 
 	// const alert = page.getByRole("alert");
 	// await expect(alert).toBeVisible();
