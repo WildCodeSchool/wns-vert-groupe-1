@@ -5,6 +5,8 @@ import { GET_USER } from "@queries";
 import { UPDATE_USER } from "@mutations";
 import AdminLayout from "../../components/AdminLayout";
 import { TextField, Button, Stack } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UserDetailsPage = () => {
 	const router = useRouter();
@@ -45,9 +47,10 @@ const UserDetailsPage = () => {
 					userData: { ...formData },
 				},
 			});
+			toast.success("Utilisateur mis à jour avec succès !");
 			router.push(`/admin`);
 		} catch (error) {
-			console.error("Erreur lors de la mise à jour de l'utilisateur :", error);
+			toast.error("Erreur lors de la mise à jour de l'utilisateur");
 		}
 	};
 
@@ -58,6 +61,7 @@ const UserDetailsPage = () => {
 	return (
 		<AdminLayout>
 			<Stack spacing={2}>
+				<ToastContainer />
 				<h1>Détails de l'utilisateur</h1>
 				<form onSubmit={handleSubmit}>
 					<TextField

@@ -16,6 +16,8 @@ import {
 	MenuItem,
 } from "@mui/material";
 import AdminLayout from "../../components/AdminLayout";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NewUser: React.FC = () => {
 	const router = useRouter();
@@ -34,7 +36,7 @@ const NewUser: React.FC = () => {
 
 	const onSubmit: SubmitHandler<UserInput> = async (formData) => {
 		try {
-			const { data } = await registerUser({
+			const { data: userData } = await registerUser({
 				variables: {
 					newUserData: {
 						firstName: formData.firstName,
@@ -47,8 +49,12 @@ const NewUser: React.FC = () => {
 			});
 			reset();
 			router.push("/admin/users");
+			toast.success("Utilisateur créé avec succès !");
 		} catch (error) {
 			console.error("Error creating new user:", error);
+			toast.error(
+				"Erreur lors de la création de l'utilisateur. Veuillez réessayer."
+			);
 		}
 	};
 

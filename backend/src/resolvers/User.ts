@@ -78,17 +78,15 @@ export class UserResolver {
 			const oldUser = await User.findOne({ where: { id: id } });
 
 			if (!oldUser) {
-				throw new Error(`L'utilisateur avec l'ID : ${id} n'a pas été trouvé`);
+				throw new Error(`The user with ID : ${id} not found`);
 			}
 
 			Object.assign(oldUser, newUserInput);
 
 			await oldUser.save();
-			return "Utilisateur mis à jour";
+			return "User updated";
 		} catch (error) {
-			throw new Error(
-				`Erreur lors de la mise à jour de l'utilisateur : ${error.message}`
-			);
+			throw new Error(`Error when updating the user : ${error.message}`);
 		}
 	}
 
