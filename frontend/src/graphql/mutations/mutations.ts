@@ -28,3 +28,15 @@ export const DELETE_CITY_BY_ID = gql`
 		deleteCityById(id: $deleteCityByIdId)
 	}
 `;
+
+export const EDIT_CITY_BY_ID = gql`
+	mutation UpdateCity($cityData: CityUpdateInput!, $updateCityId: Float!) {
+		updateCity(cityData: $cityData, id: $updateCityId) {
+			id
+			name
+			lon
+			lat
+			description
+		}
+	}
+`;

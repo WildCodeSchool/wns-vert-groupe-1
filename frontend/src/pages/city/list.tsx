@@ -1,14 +1,16 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
 	Box,
+	Button,
 	Grid,
+	Modal,
 	Paper,
-	Stack,
 	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
 	TableHead,
+	TablePagination,
 	TableRow,
 	Typography,
 } from "@mui/material";
@@ -23,16 +25,41 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DELETE_CITY_BY_ID } from "@mutations";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { CityType } from "@types";
+
+const style = {
+	position: "absolute" as "absolute",
+	top: "50%",
+	left: "50%",
+	transform: "translate(-50%, -50%)",
+	width: 400,
+	bgcolor: "background.paper",
+	border: "2px solid #000",
+	p: 4,
+};
 
 const CityList = () => {
 	const { isAuthenticated } = useAuth();
 	const router = useRouter();
 
+	const [open, setOpen] = React.useState<boolean>(false);
+	const [page, setPage] = React.useState<number>(0);
+	const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
+	const [offset, setOffset] = React.useState<number>(0);
+	const [limit, setLimit] = React.useState<number>(10);
+	const [city, setCity] = React.useState<CityType>();
+
 	const {
 		data: citiesData,
 		loading: citiesLoading,
 		error: citiesError,
-	} = useQuery(GET_ALL_CITIES);
+		refetch,
+	} = useQuery(GET_ALL_CITIES, {
+		variables: { offset, limit },
+		notifyOnNetworkStatusChange: true,
+		fetchPolicy: "cache-and-network",
+	});
+
 	const [
 		deleteCity,
 		{
@@ -47,6 +74,22 @@ const CityList = () => {
 			router.replace("/");
 		}
 	}, [isAuthenticated]);
+
+	const handleChangePage = (
+		event: React.MouseEvent<HTMLButtonElement> | null,
+		newPage: number
+	) => {
+		console.log("page", page, "newPage", newPage);
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		console.log("rowPerPage", rowsPerPage);
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
 
 	React.useEffect(() => {
 		if (citiesError) {
@@ -125,16 +168,12 @@ const CityList = () => {
 					</Box>
 				</Grid>
 				<Grid item width="95%" mx="auto">
-					<TableContainer component={Table}>
+					<TableContainer component={Paper}>
 						<Table
 							sx={{
 								minWidth: 650,
 								border: `2px solid ${mainTheme.palette.primary.main}`,
-								borderRadius: "3px",
-								"& .MuiTableCell-root": {
-									// Borders for each cell
-									border: `2px solid ${mainTheme.palette.primary.main}`,
-								},
+								borderRadius: "20rem",
 								"& .MuiTableHead-root": {
 									backgroundColor: ` ${mainTheme.palette.primary.light}`,
 								},
@@ -145,12 +184,13 @@ const CityList = () => {
 								<TableRow>
 									<TableCell align="center">Nom</TableCell>
 									<TableCell align="center">Description</TableCell>
-									<TableCell align="center">POI</TableCell>
+									<TableCell align="center">Latitude</TableCell>
+									<TableCell align="center">Longitude</TableCell>
 									<TableCell align="center">Actions</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{citiesData?.getAllCities?.map((city: any) => (
+								{citiesData?.getAllCities?.map((city: CityType) => (
 									<TableRow
 										key={city.name}
 										sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -167,12 +207,14 @@ const CityList = () => {
 										>
 											{city?.description}
 										</TableCell>
-										<TableCell align="center">{city?.users?.pois}</TableCell>
+										<TableCell align="center">{city?.lat}</TableCell>
+										<TableCell align="center">{city?.lon}</TableCell>
+
 										<TableCell align="center">
 											<Box
 												display="flex"
 												flexDirection="row"
-												justifyContent="center"
+												justifyContent="space-evenly"
 												alignContent="center"
 												gap={mainTheme.spacing(2)}
 											>
@@ -182,9 +224,12 @@ const CityList = () => {
 														fontSize: "25px",
 														cursor: "pointer",
 													}}
-													onClick={() => {
-														router.push(`/city/${city.id}`);
-													}}
+													onClick={() =>
+														router.push(`/city/search/${city.name}`)
+													}
+													// onClick={() => {
+													// 	router.push(`/city/${city.id}`);
+													// }}
 												/>
 												<EditIcon
 													sx={{
@@ -192,9 +237,7 @@ const CityList = () => {
 														fontSize: "25px",
 														cursor: "pointer",
 													}}
-													onClick={() => {
-														console.log("go to edit city page");
-													}}
+													onClick={() => router.push(`/city/edit/${city.id}`)}
 												/>
 												<DeleteIcon
 													sx={{
@@ -203,13 +246,8 @@ const CityList = () => {
 														cursor: "pointer",
 													}}
 													onClick={() => {
-														deleteCity({
-															variables: { deleteCityByIdId: city?.id },
-														}).then((res) => {
-															toast.success(
-																`La ville ${city.name} a bien été supprimé !`
-															);
-														});
+														setOpen(true);
+														setCity(city);
 													}}
 												/>
 											</Box>
@@ -219,6 +257,53 @@ const CityList = () => {
 							</TableBody>
 						</Table>
 					</TableContainer>
+					<TablePagination
+						component="div"
+						count={100}
+						page={page}
+						onPageChange={handleChangePage}
+						rowsPerPage={rowsPerPage}
+						onRowsPerPageChange={handleChangeRowsPerPage}
+					/>
+					<Modal
+						key={city?.id}
+						open={open}
+						onClose={() => setOpen(false)}
+						aria-labelledby="modal-modal-title"
+						aria-describedby="modal-modal-description"
+						// BackdropProps={{
+						// 	style: {
+						// 		backgroundColor: "rgba(0, 0, 0, 0.1)",
+						// 	},
+						// }}
+					>
+						<Box sx={style}>
+							<Typography id="modal-modal-title" variant="h6" component="h2">
+								{`Voulez vous vraiment supprimer ${city?.name} ?`}
+							</Typography>
+							<Button
+								onClick={() => {
+									deleteCity({
+										variables: { deleteCityByIdId: city?.id },
+									}).then((res) => {
+										refetch();
+										setOpen(false);
+										toast.success(
+											`La ville ${city?.name} a bien été supprimé !`
+										);
+									});
+								}}
+							>
+								Confirmer
+							</Button>
+							<Button
+								sx={{ color: mainTheme.palette.error.main }}
+								onClick={() => setOpen(false)}
+							>
+								Annuler
+							</Button>
+						</Box>
+					</Modal>
 				</Grid>
 			</Grid>
 		</Paper>

@@ -7,9 +7,24 @@ import { redisClient } from "../index";
 @Resolver()
 export class CityResolver {
   @Query(() => [City])
-  async getAllCities() {
-    const result = await City.find({ relations: ["pois"] });
-    return result;
+  async getAllCities(
+    @Arg("offset", () => Number, { nullable: true })
+    offset: number,
+    @Arg("limit", () => Number, { nullable: true })
+    limit: number
+  ): Promise<City[]> {
+    try {
+      const result = await City.find({
+        relations: ["pois"],
+        skip: offset,
+        take: limit,
+        order: { name: "ASC" },
+      });
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to fetch cities");
+    }
   }
 
   @Query(() => City)

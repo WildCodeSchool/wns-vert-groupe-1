@@ -32,12 +32,12 @@ const NewCity = () => {
 				},
 			},
 		})
-			.then((res) => {
+			.then((res: any) => {
 				console.log("res", res);
 				toast.success(`La ville ${form.name} a été crée`);
+				router.push(`/city/list`);
 			})
-			.catch((e) => {
-				console.log("Error : ", e);
+			.catch(() => {
 				toast.error("Une erreur est survenue lors de la création de la ville");
 			});
 	};
@@ -57,41 +57,19 @@ const NewCity = () => {
 			component={Box}
 			elevation={5}
 			square={false}
-			width="70%"
+			width={{ xs: "85%", lg: "60%" }}
 			height={window.innerHeight * 0.7}
-			overflow="auto"
-			maxHeight="100vh"
 			display="flex"
-			flexDirection="row"
 			alignItems="center"
 			justifyContent="center"
 		>
-			<Grid
-				container
-				flex={1}
-				width="100%"
-				height="100%"
-				alignItems="stretch"
-				flexWrap="nowrap"
-				sx={{
-					overflowY: "auto",
-					maxHeight: "100vh",
-				}}
-				flexDirection={{
-					xs: "column-reverse",
-					sm: "column-reverse",
-					md: "row",
-					lg: "row",
-				}}
-			>
+			<Grid container flex={1}>
 				<Grid
 					item
-					width="100%"
-					height="100%"
+					flex={1}
 					display="flex"
 					alignItems="center"
 					justifyContent="center"
-					flexWrap="nowrap"
 				>
 					<Box
 						component="form"

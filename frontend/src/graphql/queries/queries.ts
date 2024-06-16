@@ -1,11 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_CITIES = gql`
-	query getAllCities {
-		getAllCities {
+	query GetAllCities($limit: Float, $offset: Float) {
+		getAllCities(limit: $limit, offset: $offset) {
 			name
 			description
 			id
+			lat
+			lon
 			pois {
 				id
 				name
