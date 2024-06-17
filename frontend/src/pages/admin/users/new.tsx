@@ -15,9 +15,10 @@ import {
 	InputLabel,
 	MenuItem,
 } from "@mui/material";
-import AdminLayout from "../../components/AdminLayout";
+import AdminLayout from "../../../components/AdminLayout";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRefetch } from "../../../context/RefetchContext";
 
 const NewUser: React.FC = () => {
 	const router = useRouter();
@@ -32,11 +33,25 @@ const NewUser: React.FC = () => {
 
 	const [cities, setCities] = useState<CityType[]>([]);
 
-	const [registerUser, { error }] = useMutation(REGISTER);
+	const { refetchUsers } = useRefetch();
+
+	const [registerUser, { error }] = useMutation(REGISTER, {
+		onCompleted: () => {
+			refetchUsers();
+			router.push("/admin/users/users");
+			toast.success("Utilisateur créé avec succès !");
+		},
+		onError: (error) => {
+			console.error("Error creating new user:", error);
+			toast.error(
+				"Erreur lors de la création de l'utilisateur. Veuillez réessayer."
+			);
+		},
+	});
 
 	const onSubmit: SubmitHandler<UserInput> = async (formData) => {
 		try {
-			const { data: userData } = await registerUser({
+			await registerUser({
 				variables: {
 					newUserData: {
 						firstName: formData.firstName,
@@ -48,8 +63,6 @@ const NewUser: React.FC = () => {
 				},
 			});
 			reset();
-			router.push("/admin/users");
-			toast.success("Utilisateur créé avec succès !");
 		} catch (error) {
 			console.error("Error creating new user:", error);
 			toast.error(

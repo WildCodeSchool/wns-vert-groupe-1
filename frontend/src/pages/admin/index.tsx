@@ -18,7 +18,7 @@ export default function AdminHome() {
 	if (user?.role === "ADMIN") {
 		dashboardContent = (
 			<AdminLayout>
-				<Typography variant="h1">Admin Dashboard</Typography>
+				<Typography variant="h1">Espace administrateur</Typography>
 			</AdminLayout>
 		);
 	} else if (user?.role === "CITYADMIN") {

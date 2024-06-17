@@ -13,13 +13,14 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { useQuery, useMutation } from "@apollo/client";
-import AdminLayout from "../../components/AdminLayout";
+import AdminLayout from "../../../components/AdminLayout";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import { DELETE_USER } from "@mutations";
 import { GET_ALL_USERS } from "@queries";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRefetch } from "../../../context/RefetchContext";
 
 const UsersAdminPage = () => {
 	const router = useRouter();
@@ -28,6 +29,8 @@ const UsersAdminPage = () => {
 	const [loadingData, setLoadingData] = useState(true);
 	const [openModal, setOpenModal] = useState(false);
 	const [userIdToDelete, setUserIdToDelete] = useState(null);
+
+	const { refetchUsers } = useRefetch();
 
 	const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
 
@@ -47,11 +50,11 @@ const UsersAdminPage = () => {
 	}, [error]);
 
 	const handleCreateNewUser = () => {
-		router.push("/admin/new");
+		router.push("/admin/users/new");
 	};
 
 	const handleEditUser = (userId: any) => {
-		router.push(`/admin/${userId}`);
+		router.push(`/admin/users/${userId}`);
 	};
 
 	const openDeleteModal = (userId: React.SetStateAction<null>) => {
@@ -68,7 +71,7 @@ const UsersAdminPage = () => {
 		deleteUser({ variables: { userId: String(userId) } })
 			.then(() => {
 				toast.success("Utilisateur supprimé avec succès !");
-				refetch();
+				refetchUsers();
 			})
 			.catch((error) => {
 				console.error(

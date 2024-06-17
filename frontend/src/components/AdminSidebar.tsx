@@ -27,7 +27,7 @@ const AdminSidebar: React.FC = () => {
 				<ListItem
 					button
 					component={Link}
-					href="/admin/city"
+					href="/city/new"
 					sx={{
 						backgroundColor: mainTheme.palette.background.default,
 						marginBottom: "2rem",
@@ -49,7 +49,7 @@ const AdminSidebar: React.FC = () => {
 				<ListItem
 					button
 					component={Link}
-					href="/admin/poi"
+					href="/poi/new"
 					sx={{
 						backgroundColor: mainTheme.palette.background.default,
 						marginBottom: "2rem",
@@ -73,7 +73,7 @@ const AdminSidebar: React.FC = () => {
 				<ListItem
 					button
 					component={Link}
-					href="/admin/users"
+					href="/admin/users/users"
 					sx={{
 						backgroundColor: mainTheme.palette.background.default,
 						marginBottom: "2rem",
@@ -95,7 +95,7 @@ const AdminSidebar: React.FC = () => {
 				<ListItem
 					button
 					component={Link}
-					href="/admin/categories"
+					href="/admin/categories/categories"
 					sx={{
 						backgroundColor: mainTheme.palette.background.default,
 						marginBottom: "2rem",

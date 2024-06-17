@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER } from "@queries";
 import { UPDATE_USER } from "@mutations";
-import AdminLayout from "../../components/AdminLayout";
+import AdminLayout from "../../../components/AdminLayout";
 import { TextField, Button, Stack } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

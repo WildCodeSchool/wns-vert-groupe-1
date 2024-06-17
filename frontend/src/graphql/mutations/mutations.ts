@@ -39,3 +39,18 @@ export const UPDATE_USER = gql`
 		}
 	}
 `;
+
+export const CREATE_NEW_CATEGORY = gql`
+	mutation CreateNewCategory($categoryData: CategoryInput!) {
+		createNewCategory(categoryData: $categoryData) {
+			id
+			name
+		}
+	}
+`;
+
+export const DELETE_CATEGORY = gql`
+	mutation DeleteCategory($id: Int!) {
+		deleteCategoryById(id: $id)
+	}
+`;
