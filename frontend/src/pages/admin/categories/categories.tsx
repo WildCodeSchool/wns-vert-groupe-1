@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Table,
 	TableBody,
@@ -16,9 +16,9 @@ import { useQuery, useMutation } from "@apollo/client";
 import AdminLayout from "../../../components/AdminLayout";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { GET_ALL_CATEGORIES } from "@queries";
+import { DELETE_CATEGORY } from "@mutations";
 import { toast } from "react-toastify";
 import { useRefetch } from "../../../context/RefetchContext";
-import { DELETE_CATEGORY } from "@mutations";
 import "react-toastify/dist/ReactToastify.css";
 
 const PageCategorie = () => {
@@ -28,20 +28,17 @@ const PageCategorie = () => {
 	const [rowsPerPage, setRowsPerPage] = useState(4);
 	const [loadingData, setLoadingData] = useState(true);
 	const [openModal, setOpenModal] = useState(false);
-	const [categoryIdToDelete, setCategoryIdToDelete] = useState<number | null>(
-		null
-	);
+	const [categoryIdToDelete, setCategoryIdToDelete] = useState(null);
 
 	const { loading, error, data, refetch } = useQuery(GET_ALL_CATEGORIES);
-
 	const [deleteCategory] = useMutation(DELETE_CATEGORY, {
 		onCompleted: () => {
-			toast.success("Catégorie supprimée avec succès !");
-			refetchCategories();
+			toast.success("Category deleted successfully!");
+			refetch();
+			closeDeleteModal();
 		},
 		onError: (error) => {
-			console.error("Erreur lors de la suppression de la catégorie :", error);
-			toast.error("Erreur lors de la suppression de la catégorie.");
+			toast.error(`Error deleting category: ${error.message}`);
 		},
 	});
 
@@ -64,18 +61,7 @@ const PageCategorie = () => {
 		router.push("/admin/categories/new");
 	};
 
-	const handleChangePage = (event: any, newPage: number) => {
-		setPage(newPage);
-	};
-
-	const handleChangeRowsPerPage = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
-	};
-
-	const openDeleteModal = (categoryId: number) => {
+	const openDeleteModal = (categoryId: any) => {
 		setCategoryIdToDelete(categoryId);
 		setOpenModal(true);
 	};
@@ -85,9 +71,17 @@ const PageCategorie = () => {
 		setOpenModal(false);
 	};
 
-	const confirmDeleteCategory = (categoryId: number) => {
-		deleteCategory({ variables: { id: categoryId } });
-		closeDeleteModal();
+	const confirmDeleteCategory = () => {
+		deleteCategory({ variables: { id: categoryIdToDelete } });
+	};
+
+	const handleChangePage = (event: any, newPage: number) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
 	};
 
 	if (loadingData) {
@@ -137,7 +131,7 @@ const PageCategorie = () => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{paginatedCategories.map((category: any) => (
+					{paginatedCategories.map((category: { id: number; name: string }) => (
 						<TableRow key={category.id}>
 							<TableCell>{category.name}</TableCell>
 							<TableCell>
@@ -165,6 +159,14 @@ const PageCategorie = () => {
 				onRowsPerPageChange={handleChangeRowsPerPage}
 				labelRowsPerPage="Lignes par page"
 			/>
+			<Button
+				variant="contained"
+				color="primary"
+				onClick={handleCreateCategory}
+				style={{ marginTop: "1rem" }}
+			>
+				Créer une nouvelle catégorie
+			</Button>
 			<Modal
 				open={openModal}
 				onClose={closeDeleteModal}
@@ -192,10 +194,7 @@ const PageCategorie = () => {
 					<Button
 						variant="contained"
 						color="primary"
-						onClick={() =>
-							categoryIdToDelete !== null &&
-							confirmDeleteCategory(categoryIdToDelete)
-						}
+						onClick={confirmDeleteCategory}
 						style={{ marginTop: "1rem" }}
 					>
 						Confirmer la suppression
@@ -209,14 +208,6 @@ const PageCategorie = () => {
 					</Button>
 				</div>
 			</Modal>
-			<Button
-				variant="contained"
-				color="primary"
-				onClick={handleCreateCategory}
-				style={{ marginTop: "1rem" }}
-			>
-				Créer une nouvelle catégorie
-			</Button>
 		</AdminLayout>
 	);
 };

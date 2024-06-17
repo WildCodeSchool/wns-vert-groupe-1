@@ -28,6 +28,7 @@ export const DELETE_USER = gql`
 		deleteUser(userId: $userId)
 	}
 `;
+
 export const UPDATE_USER = gql`
 	mutation UpdateUser($userId: Int!, $userData: UpdateUserInput!) {
 		updateUserById(id: $userId, newUserInput: $userData) {
@@ -50,7 +51,7 @@ export const CREATE_NEW_CATEGORY = gql`
 `;
 
 export const DELETE_CATEGORY = gql`
-	mutation DeleteCategory($id: Int!) {
+	mutation deleteCategoryById($id: Float!) {
 		deleteCategoryById(id: $id)
 	}
 `;
