@@ -27,7 +27,7 @@ const AdminSidebar: React.FC = () => {
 				<ListItem
 					button
 					component={Link}
-					href="/city/new"
+					href="/admin/cities/cities"
 					sx={{
 						backgroundColor: mainTheme.palette.background.default,
 						marginBottom: "2rem",
@@ -49,7 +49,7 @@ const AdminSidebar: React.FC = () => {
 				<ListItem
 					button
 					component={Link}
-					href="/poi/new"
+					href="/admin/pois/pois"
 					sx={{
 						backgroundColor: mainTheme.palette.background.default,
 						marginBottom: "2rem",

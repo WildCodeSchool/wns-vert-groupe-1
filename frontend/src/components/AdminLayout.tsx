@@ -3,7 +3,7 @@ import { Layout } from "./Layout";
 import AdminSidebar from "./AdminSidebar";
 import { Box, Toolbar } from "@mui/material";
 
-const drawerWidth = 240;
+const drawerWidth = 100;
 
 const AdminLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
 	return (

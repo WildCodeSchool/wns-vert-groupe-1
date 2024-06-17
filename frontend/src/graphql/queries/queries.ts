@@ -113,3 +113,19 @@ export const GET_ALL_USERS = gql`
 		}
 	}
 `;
+
+export const GET_ALL_POIS = gql`
+	query getAllPois {
+		getAllPois {
+			name
+			address
+			postalCode
+			description
+			images
+			category {
+				id
+				name
+			}
+		}
+	}
+`;
