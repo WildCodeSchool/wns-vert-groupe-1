@@ -50,6 +50,7 @@ function UserProvider({ children }: PropsWithChildren) {
 	const [jwt, setJwt] = React.useState(defaultStore["jwt"]);
 	const [login] = useLazyQuery(LOGIN);
 	const [getUser] = useLazyQuery(GET_USER);
+	// const [rememberMe, setRememberMe] = React.useState<boolean>(false);
 
 	const onLogin = React.useCallback(
 		async (payload: LoginT) => {
@@ -63,12 +64,17 @@ function UserProvider({ children }: PropsWithChildren) {
 					getUser({ variables: { getUserByIdId: data.id } })
 						.then((res) => {
 							setJwt(data.token);
-							localStorage.setItem("jwt", data.token);
 							setUser(res?.data?.getUserById);
+							// setRememberMe(payload.checked);
+							// console.log("rememberMe", rememberMe);
+							// localStorage.setItem("rememberMe", rememberMe.toString());
+							// if (rememberMe) {
+							localStorage.setItem("jwt", data.token);
 							localStorage.setItem(
 								"user",
 								JSON.stringify(res?.data?.getUserById)
 							);
+							// }
 						})
 						.catch(() => {
 							setError(errors.getUser);
@@ -85,8 +91,9 @@ function UserProvider({ children }: PropsWithChildren) {
 
 	const onLogout = React.useCallback(() => {
 		router.push("/");
-		localStorage.removeItem("jwt");
-		localStorage.removeItem("user");
+		localStorage.clear();
+		// localStorage.removeItem("jwt");
+		// localStorage.removeItem("user");
 		setUser(undefined);
 		setJwt(undefined);
 	}, []);
@@ -106,16 +113,24 @@ function UserProvider({ children }: PropsWithChildren) {
 		async function restore() {
 			await checkSession()
 				.then((res) => {
+					console.log("res", res);
 					if (!res?.data?.checkSession) {
 						onLogout();
 					}
 				})
 				.catch(() => {
 					onLogout();
-					toast.error("Une erreur est survenue");
+					toast.error("Une erreur est survenue.");
 				});
 			const storedToken = window.localStorage.getItem("jwt");
 			const storedUser = window.localStorage.getItem("user");
+			// if (storedToken && storedUser) {
+			// 	setJwt(storedToken);
+			// 	setUser(JSON.parse(storedUser));
+			// } else {
+			// 	setJwt(defaultStore["jwt"]);
+			// 	setUser(defaultStore["user"]);
+			// }
 			setJwt(storedToken ? storedToken : defaultStore["jwt"]);
 			setUser(storedUser ? JSON.parse(storedUser) : defaultStore["user"]);
 		}

@@ -84,4 +84,5 @@ export type UserType = {
 export type LoginT = {
 	email: string;
 	password: string;
+	checked: boolean;
 };
