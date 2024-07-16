@@ -99,14 +99,14 @@ function UserProvider({ children }: PropsWithChildren) {
 	}, []);
 
 	React.useEffect(() => {
-		if (window) {
-			if (jwt) {
-				window.localStorage.setItem("jwt", jwt);
-			}
-			if (user) {
-				window.localStorage.setItem("user", JSON.stringify(user));
-			}
+		// if (window && rememberMe) {
+		if (jwt) {
+			window.localStorage.setItem("jwt", jwt);
 		}
+		if (user) {
+			window.localStorage.setItem("user", JSON.stringify(user));
+		}
+		// }
 	}, [jwt, user]);
 
 	React.useEffect(() => {
@@ -124,6 +124,8 @@ function UserProvider({ children }: PropsWithChildren) {
 				});
 			const storedToken = window.localStorage.getItem("jwt");
 			const storedUser = window.localStorage.getItem("user");
+			// const storeRememberMe = window.localStorage.getItem("rememberMe");
+
 			// if (storedToken && storedUser) {
 			// 	setJwt(storedToken);
 			// 	setUser(JSON.parse(storedUser));
@@ -131,8 +133,13 @@ function UserProvider({ children }: PropsWithChildren) {
 			// 	setJwt(defaultStore["jwt"]);
 			// 	setUser(defaultStore["user"]);
 			// }
+			// console.log("storeRememberMe", storeRememberMe);
+			// if (storeRememberMe === "true") {
 			setJwt(storedToken ? storedToken : defaultStore["jwt"]);
 			setUser(storedUser ? JSON.parse(storedUser) : defaultStore["user"]);
+			// } else if (storeRememberMe === "false") {
+			// 	localStorage.clear();
+			// }
 		}
 
 		restore();
