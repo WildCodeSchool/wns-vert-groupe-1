@@ -65,7 +65,7 @@ const NewCity = () => {
 						description: form.description,
 						lat: coordinates?.latitude,
 						lon: coordinates?.longitude,
-						images: images.map((image) => "http://localhost:8000" + image),
+						images: images.map((image) => "files/" + image),
 					},
 				},
 			});
@@ -148,7 +148,7 @@ const NewCity = () => {
 										{images.map((image, i) => (
 											<img
 												key={i}
-												src={"http://localhost:8000" + image}
+												src={"files/" + image}
 												style={{
 													width: "100%",
 													height: "50%",
@@ -170,7 +170,7 @@ const NewCity = () => {
 												// onClick={() => setSelectedImageIndex(i)}
 											>
 												<img
-													src={"http://localhost:8000" + image}
+													src={"files/" + image}
 													loading="lazy"
 													style={{ borderRadius: "20px" }}
 												/>
@@ -198,7 +198,7 @@ const NewCity = () => {
 									onChange={async (e: any) => {
 										if (e.target.files) {
 											const selectedFiles = Array.from(e.target.files);
-											const url = "http://localhost:8000/upload";
+											const url = "/upload";
 
 											const uploadPromises = (selectedFiles as File[]).map(
 												async (file: File) => {
