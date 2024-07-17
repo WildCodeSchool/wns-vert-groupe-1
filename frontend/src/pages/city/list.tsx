@@ -44,9 +44,8 @@ const CityList = () => {
 
 	const [open, setOpen] = React.useState<boolean>(false);
 	const [page, setPage] = React.useState<number>(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
-	const [offset, setOffset] = React.useState<number>(0);
-	const [limit, setLimit] = React.useState<number>(10);
+	const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
+	const [count, setCount] = React.useState<number>(0);
 	const [city, setCity] = React.useState<CityType>();
 
 	const {
@@ -55,7 +54,7 @@ const CityList = () => {
 		error: citiesError,
 		refetch,
 	} = useQuery(GET_ALL_CITIES, {
-		variables: { offset, limit },
+		variables: { offset: page * rowsPerPage, limit: rowsPerPage },
 		notifyOnNetworkStatusChange: true,
 		fetchPolicy: "cache-and-network",
 	});
@@ -68,6 +67,12 @@ const CityList = () => {
 			error: deleteCityError,
 		},
 	] = useMutation(DELETE_CITY_BY_ID);
+
+	React.useEffect(() => {
+		if (citiesData?.getAllCities) {
+			setCount(citiesData?.getAllCities.length + 1);
+		}
+	}, [citiesData]);
 
 	React.useLayoutEffect(() => {
 		if (!isAuthenticated) {
@@ -167,144 +172,170 @@ const CityList = () => {
 						/>
 					</Box>
 				</Grid>
-				<Grid item width="95%" mx="auto">
-					<TableContainer component={Paper}>
-						<Table
-							sx={{
-								minWidth: 650,
-								border: `2px solid ${mainTheme.palette.primary.main}`,
-								borderRadius: "20rem",
-								"& .MuiTableHead-root": {
-									backgroundColor: ` ${mainTheme.palette.primary.light}`,
-								},
-							}}
-							aria-label="simple table"
-						>
-							<TableHead>
-								<TableRow>
-									<TableCell align="center">Nom</TableCell>
-									<TableCell align="center">Description</TableCell>
-									<TableCell align="center">Latitude</TableCell>
-									<TableCell align="center">Longitude</TableCell>
-									<TableCell align="center">Actions</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{citiesData?.getAllCities?.map((city: CityType) => (
-									<TableRow
-										key={city.name}
-										sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-									>
-										<TableCell align="center">{city.name}</TableCell>
-										<TableCell
-											sx={{
-												maxWidth: 300,
-												whiteSpace: "nowrap",
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-											}}
-											align="center"
-										>
-											{city?.description}
-										</TableCell>
-										<TableCell align="center">{city?.lat}</TableCell>
-										<TableCell align="center">{city?.lon}</TableCell>
+				{citiesData?.getAllCities?.length > 0 ? (
+					<>
+						<Grid item width="95%" mx="auto">
+							<TableContainer component={Paper}>
+								<Table
+									sx={{
+										minWidth: 650,
+										border: `2px solid ${mainTheme.palette.primary.main}`,
+										borderRadius: "20rem",
+										"& .MuiTableHead-root": {
+											backgroundColor: ` ${mainTheme.palette.primary.light}`,
+										},
+									}}
+									aria-label="simple table"
+								>
+									<TableHead>
+										<TableRow>
+											<TableCell align="center">Nom</TableCell>
+											<TableCell align="center">Description</TableCell>
+											<TableCell align="center">Latitude</TableCell>
+											<TableCell align="center">Longitude</TableCell>
+											<TableCell align="center">Actions</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{citiesData?.getAllCities?.map(
+											(city: CityType, index: number) => {
+												if (index < rowsPerPage) {
+													return (
+														<TableRow
+															key={city.name}
+															sx={{
+																"&:last-child td, &:last-child th": {
+																	border: 0,
+																},
+															}}
+														>
+															<TableCell align="center">{city.name}</TableCell>
+															<TableCell
+																sx={{
+																	maxWidth: 300,
+																	whiteSpace: "nowrap",
+																	overflow: "hidden",
+																	textOverflow: "ellipsis",
+																}}
+																align="center"
+															>
+																{city?.description}
+															</TableCell>
+															<TableCell align="center">{city?.lat}</TableCell>
+															<TableCell align="center">{city?.lon}</TableCell>
 
-										<TableCell align="center">
-											<Box
-												display="flex"
-												flexDirection="row"
-												justifyContent="space-evenly"
-												alignContent="center"
-												gap={mainTheme.spacing(2)}
-											>
-												<RemoveRedEyeIcon
-													sx={{
-														color: mainTheme.palette.primary.main,
-														fontSize: "25px",
-														cursor: "pointer",
-													}}
-													onClick={() =>
-														router.push(`/city/search/${city.name}`)
-													}
-													// onClick={() => {
-													// 	router.push(`/city/${city.id}`);
-													// }}
-												/>
-												<EditIcon
-													sx={{
-														color: mainTheme.palette.primary.main,
-														fontSize: "25px",
-														cursor: "pointer",
-													}}
-													onClick={() => router.push(`/city/edit/${city.id}`)}
-												/>
-												<DeleteIcon
-													sx={{
-														color: mainTheme.palette.primary.main,
-														fontSize: "25px",
-														cursor: "pointer",
-													}}
-													onClick={() => {
-														setOpen(true);
-														setCity(city);
-													}}
-												/>
-											</Box>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					</TableContainer>
-					<TablePagination
-						component="div"
-						count={100}
-						page={page}
-						onPageChange={handleChangePage}
-						rowsPerPage={rowsPerPage}
-						onRowsPerPageChange={handleChangeRowsPerPage}
-					/>
-					<Modal
-						key={city?.id}
-						open={open}
-						onClose={() => setOpen(false)}
-						aria-labelledby="modal-modal-title"
-						aria-describedby="modal-modal-description"
-						// BackdropProps={{
-						// 	style: {
-						// 		backgroundColor: "rgba(0, 0, 0, 0.1)",
-						// 	},
-						// }}
-					>
-						<Box sx={style}>
-							<Typography id="modal-modal-title" variant="h6" component="h2">
-								{`Voulez vous vraiment supprimer ${city?.name} ?`}
-							</Typography>
-							<Button
-								onClick={() => {
-									deleteCity({
-										variables: { deleteCityByIdId: city?.id },
-									}).then((res) => {
-										refetch();
-										setOpen(false);
-										toast.success(
-											`La ville ${city?.name} a bien été supprimé !`
-										);
-									});
-								}}
+															<TableCell align="center">
+																<Box
+																	display="flex"
+																	flexDirection="row"
+																	justifyContent="space-evenly"
+																	alignContent="center"
+																	gap={mainTheme.spacing(2)}
+																>
+																	<RemoveRedEyeIcon
+																		sx={{
+																			color: mainTheme.palette.primary.main,
+																			fontSize: "25px",
+																			cursor: "pointer",
+																		}}
+																		onClick={() =>
+																			router.push(`/city/search/${city.name}`)
+																		}
+																		// onClick={() => {
+																		// 	router.push(`/city/${city.id}`);
+																		// }}
+																	/>
+																	<EditIcon
+																		sx={{
+																			color: mainTheme.palette.primary.main,
+																			fontSize: "25px",
+																			cursor: "pointer",
+																		}}
+																		onClick={() =>
+																			router.push(`/city/edit/${city.id}`)
+																		}
+																	/>
+																	<DeleteIcon
+																		sx={{
+																			color: mainTheme.palette.primary.main,
+																			fontSize: "25px",
+																			cursor: "pointer",
+																		}}
+																		onClick={() => {
+																			setOpen(true);
+																			setCity(city);
+																		}}
+																	/>
+																</Box>
+															</TableCell>
+														</TableRow>
+													);
+												} else {
+													return <></>;
+												}
+											}
+										)}
+									</TableBody>
+								</Table>
+							</TableContainer>
+							<TablePagination
+								component="div"
+								count={count}
+								page={page}
+								onPageChange={handleChangePage}
+								rowsPerPage={rowsPerPage}
+								onRowsPerPageChange={handleChangeRowsPerPage}
+								labelRowsPerPage="Lignes par page"
+								rowsPerPageOptions={[1, 2, 3, 4, 5, 6]}
+							/>
+							<Modal
+								key={city?.id}
+								open={open}
+								onClose={() => setOpen(false)}
+								aria-labelledby="modal-modal-title"
+								aria-describedby="modal-modal-description"
+								// BackdropProps={{
+								// 	style: {
+								// 		backgroundColor: "rgba(0, 0, 0, 0.1)",
+								// 	},
+								// }}
 							>
-								Confirmer
-							</Button>
-							<Button
-								sx={{ color: mainTheme.palette.error.main }}
-								onClick={() => setOpen(false)}
-							>
-								Annuler
-							</Button>
-						</Box>
-					</Modal>
-				</Grid>
+								<Box sx={style}>
+									<Typography
+										id="modal-modal-title"
+										variant="h6"
+										component="h2"
+									>
+										{`Voulez vous vraiment supprimer ${city?.name} ?`}
+									</Typography>
+									<Button
+										onClick={() => {
+											deleteCity({
+												variables: { deleteCityByIdId: city?.id },
+											}).then((res) => {
+												refetch();
+												setOpen(false);
+												toast.success(
+													`La ville ${city?.name} a bien été supprimé !`
+												);
+											});
+										}}
+									>
+										Confirmer
+									</Button>
+									<Button
+										sx={{ color: mainTheme.palette.error.main }}
+										onClick={() => setOpen(false)}
+									>
+										Annuler
+									</Button>
+								</Box>
+							</Modal>
+						</Grid>
+					</>
+				) : (
+					<></>
+				)}
 			</Grid>
 		</Paper>
 	);
