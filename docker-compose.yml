@@ -1,6 +1,10 @@
 services:
   backend:
     build: ./backend
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     ports:
       - 4000:4000
     volumes:
@@ -46,7 +50,7 @@ services:
     environment:
       - REDIS_HOSTS=redis
     ports:
-      - "8081:8081"
+      - 8081:8081
   imagesupload:
     build: ./imagesupload
     volumes:

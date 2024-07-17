@@ -16,6 +16,7 @@ import useWindowDimensions from "utils/windowDimensions";
 import { mainTheme } from "@theme";
 
 const LoginPage = () => {
+	const [checked, setIsChecked] = React.useState<boolean>(false);
 	const router = useRouter();
 	const { onLogin, user } = useAuth();
 	const { height } = useWindowDimensions();
@@ -84,13 +85,17 @@ const LoginPage = () => {
 								// const formJson = Object.fromEntries(formData.entries());
 								const email = formData.get("email") as string;
 								const password = formData.get("password") as string;
+								const rememberMe = formData.get("rememberMe");
+								console.log("rememberMe", rememberMe);
 								onLogin({
 									email: email,
 									password: password,
+									checked: rememberMe ? true : false,
 								});
 							}}
 						>
 							<TextField
+								value="duygu@gmail.com"
 								name="email"
 								fullWidth
 								label="Email"
@@ -100,6 +105,7 @@ const LoginPage = () => {
 								margin="normal"
 							/>
 							<TextField
+								value="password"
 								name="password"
 								fullWidth
 								label="Mot de passe"
@@ -110,7 +116,15 @@ const LoginPage = () => {
 								margin="normal"
 							/>
 							<FormControlLabel
-								control={<Checkbox name="rememberMe" />}
+								control={
+									<Checkbox
+										name="rememberMe"
+										checked={checked}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+											setIsChecked(event?.target.checked)
+										}
+									/>
+								}
 								label="Se souvenir de moi"
 							/>
 							<Button
