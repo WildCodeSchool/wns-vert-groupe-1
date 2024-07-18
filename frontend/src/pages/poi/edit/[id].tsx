@@ -270,7 +270,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 												<img
 													src={image}
 													alt={`Image ${index}`}
-													style={{ maxWidth: "100px", maxHeight: "100px" }}
+													style={{ maxWidth: "200px", maxHeight: "200px" }}
 												/>
 												<Button
 													variant="contained"
