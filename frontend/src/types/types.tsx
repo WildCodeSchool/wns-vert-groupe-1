@@ -7,6 +7,7 @@ export type PoiType = {
 	latitude?: number;
 	longitude?: number;
 	images: string[];
+	city?: CityType;
 	category: CategoryType;
 	ratings?: RatingType[];
 };
@@ -21,6 +22,7 @@ export type CityType = {
 };
 
 export type CityInput = {
+	id?: number;
 	name: string;
 	description: string;
 	lat?: number;

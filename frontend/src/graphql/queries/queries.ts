@@ -18,6 +18,28 @@ export const GET_ALL_CITIES = gql`
 	}
 `;
 
+export const GET_ALL_POIS = gql`
+	query GetAllPois($limit: Float, $offset: Float) {
+		getAllPois(limit: $limit, offset: $offset) {
+			description
+			address
+			name
+			latitude
+			longitude
+			postalCode
+			city {
+				id
+				name
+			}
+			category {
+				id
+				name
+			}
+			images
+		}
+	}
+`;
+
 export const GET_ALL_CATEGORIES = gql`
 	query getAllCategories {
 		getAllCategories {

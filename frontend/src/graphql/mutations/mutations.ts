@@ -23,6 +23,12 @@ export const EDIT_POI_BY_ID = gql`
 	}
 `;
 
+export const DELETE_POI_BY_ID = gql`
+	mutation DeletePoiById($id: Float!) {
+		deletePoiById(id: $id)
+	}
+`;
+
 export const REGISTER = gql`
 	mutation Register($newUserData: UserInput!) {
 		register(newUserData: $newUserData)
