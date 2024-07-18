@@ -71,7 +71,7 @@ const POIList = () => {
 			component={Box}
 			elevation={5}
 			square={false}
-			width="80%"
+			width="90%"
 			height="auto"
 			mx="auto"
 			sx={{
@@ -154,6 +154,8 @@ const POIList = () => {
 											<TableCell align="center">Ville</TableCell>
 											<TableCell align="center">Catégorie</TableCell>
 											<TableCell align="center">Actions</TableCell>
+											<TableCell align="center">Latitude</TableCell>
+											<TableCell align="center">Longitude</TableCell>
 										</TableRow>
 									</TableHead>
 									<TableBody>
@@ -189,6 +191,12 @@ const POIList = () => {
 														</TableCell>
 														<TableCell align="center">
 															{poi?.category.name}
+														</TableCell>
+														<TableCell align="center">
+															{poi?.latitude}
+														</TableCell>
+														<TableCell align="center">
+															{poi?.longitude}
 														</TableCell>
 														<TableCell align="center">
 															<Box
