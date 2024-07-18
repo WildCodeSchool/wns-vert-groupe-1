@@ -126,7 +126,18 @@ export const GET_CITY_BY_ID = gql`
 					rating
 					text
 				}
-			}
+export const GET_REVIEWS_FOR_USER = gql`
+	query GetReviewsForUser($userId: Int!) {
+	reviewsForUser(userId: $userId) {
+		id
+		rating
+		comment
+			user {
+			firstname
+			lastname
+			id
+			email
 		}
 	}
+}
 `;

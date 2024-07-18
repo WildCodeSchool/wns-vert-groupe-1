@@ -8,8 +8,8 @@ export class RatingInput {
   @Field(() => Float)
   rating: number;
 
-  @Field({ nullable: true })
-  user?: string;
+  @Field()
+  user: number;
 
   @Field()
   poi: number;
