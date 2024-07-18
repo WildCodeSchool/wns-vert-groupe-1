@@ -69,17 +69,6 @@ const EditPoiByID = () => {
 		}
 	}, [poiData]);
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-	) => {
-		const { name, value } = e.target;
-		setForm((prev) => ({
-			...prev,
-			[name]:
-				name === "latitude" || name === "longitude" ? parseFloat(value) : value,
-		}));
-	};
-
 	const handleImageDelete = (index: number) => {
 		const updatedImages = [...form.images];
 		updatedImages.splice(index, 1);
@@ -118,24 +107,33 @@ const EditPoiByID = () => {
 		}
 	};
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		try {
-			await editPoi({
-				variables: {
-					input: {
-						...form,
-						latitude: form.latitude,
-						longitude: form.longitude,
-					},
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	e.preventDefault();
+	try {
+		await editPoi({
+			variables: {
+				newPoiInput: {
+					name: form.name,
+					address: form.address,
+					postalCode: form.postalCode,
+					description: form.description,
+					city: Number(form.city), // Ensure it's converted to a number if needed
+					latitude: form.latitude,
+					longitude: form.longitude,
+					images: form.images,
+					category: Number(form.category), // Ensure it's converted to a number if needed
 				},
-			});
-			toast.success("POI updated successfully");
-			router.push(`/poi/${id}`);
-		} catch (error) {
-			toast.error("Error updating POI");
-		}
-	};
+				id: Number(id),
+			},
+		});
+		toast.success("POI updated successfully");
+		router.push(`/poi/${id}`);
+	} catch (error) {
+		console.error("Error updating POI: ", error);
+		toast.error("Error updating POI");
+	}
+};
+    console.log(form)
 
 	if (poiLoading || !cityData || !categoryData) return <p>Loading...</p>;
 	if (poiError) return <p>Error loading POI data</p>;

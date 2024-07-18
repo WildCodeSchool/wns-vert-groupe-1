@@ -9,17 +9,8 @@ export const CREATE_NEW_POI = gql`
 `;
 
 export const EDIT_POI_BY_ID = gql`
-	mutation UpdatePoi($newPoiInput: PoiUpdateInput!, $id: Float!) {
-		updatePoiById(newPoiInput: $newPoiInput, id: $id) {
-			id
-			address
-			postalCode
-			city
-			longitude
-			latitude
-			description
-			category
-		}
+	mutation UpdatePoi($newPoiInput: PoiInput!, $id: Float!) {
+		updatePoiById(newPoiInput: $newPoiInput, id: $id)
 	}
 `;
 
