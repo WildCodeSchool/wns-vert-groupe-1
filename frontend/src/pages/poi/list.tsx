@@ -48,16 +48,9 @@ const POIList = () => {
 	const [count, setCount] = React.useState<number>(0);
 	const [poi, setPOI] = React.useState<PoiType>();
 
-	const {
-		data: poisData,
-		loading: poisLoading,
-		error: poisError,
-		refetch,
-	} = useQuery(GET_ALL_POIS, {
-		variables: { offset: page * rowsPerPage, limit: rowsPerPage },
-		notifyOnNetworkStatusChange: true,
-		fetchPolicy: "cache-and-network",
-	});
+	const { data: poisData, loading, error } = useQuery(GET_ALL_POIS);
+
+	console.log(poisData);
 
 	const [
 		deletePOI,
@@ -65,44 +58,13 @@ const POIList = () => {
 	] = useMutation(DELETE_POI_BY_ID);
 
 	React.useEffect(() => {
-		if (poisData?.getAllPOIs) {
-			setCount(poisData?.getAllPOIs.length + 1);
+		if (poisData?.getAllPois) {
+			setCount(poisData?.getAllPois.length + 1);
 		}
 	}, [poisData]);
 
-	React.useLayoutEffect(() => {
-		if (!isAuthenticated) {
-			router.replace("/");
-		}
-	}, [isAuthenticated]);
-
-	const handleChangePage = (
-		event: React.MouseEvent<HTMLButtonElement> | null,
-		newPage: number
-	) => {
-		console.log("page", page, "newPage", newPage);
-		setPage(newPage);
-	};
-
-	const handleChangeRowsPerPage = (
-		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		console.log("rowPerPage", rowsPerPage);
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
-	};
-
-	React.useEffect(() => {
-		if (poisError) {
-			toast.error(
-				"Une erreur est survenue lors de la récupération des données."
-			);
-		}
-
-		if (deletePOIError) {
-			toast.error("Une erreur est survenue lors de la suppression du POI.");
-		}
-	}, [poisError, deletePOIError]);
+	if (loading) return <p>Loading...</p>;
+	if (error) return <p>Error :</p>;
 
 	return (
 		<Paper
@@ -165,7 +127,7 @@ const POIList = () => {
 						/>
 					</Box>
 				</Grid>
-				{poisData?.getAllPOIs?.length > 0 ? (
+				{ !loading && poisData?.getAllPois && poisData?.getAllPois?.length > 0 ? (
 					<>
 						<Grid item width="95%" mx="auto">
 							<TableContainer component={Paper}>
@@ -192,103 +154,89 @@ const POIList = () => {
 										</TableRow>
 									</TableHead>
 									<TableBody>
-										{poisData?.getAllPOIs?.map(
+										{poisData?.getAllPois?.map(
 											(poi: PoiType, index: number) => {
-												if (index < rowsPerPage) {
-													return (
-														<TableRow
-															key={poi.name}
+                                                
+												return (
+													<TableRow
+														key={poi.name}
+														sx={{
+															"&:last-child td, &:last-child th": {
+																border: 0,
+															},
+														}}
+													>
+														<TableCell align="center">{poi.name}</TableCell>
+														<TableCell
 															sx={{
-																"&:last-child td, &:last-child th": {
-																	border: 0,
-																},
+																maxWidth: 300,
+																whiteSpace: "nowrap",
+																overflow: "hidden",
+																textOverflow: "ellipsis",
 															}}
+															align="center"
 														>
-															<TableCell align="center">{poi.name}</TableCell>
-															<TableCell
-																sx={{
-																	maxWidth: 300,
-																	whiteSpace: "nowrap",
-																	overflow: "hidden",
-																	textOverflow: "ellipsis",
-																}}
-																align="center"
+															{poi?.description}
+														</TableCell>
+														<TableCell align="center">{poi?.address}</TableCell>
+														<TableCell align="center">
+															{poi?.postalCode}
+														</TableCell>
+														<TableCell align="center">
+															{poi?.city?.name}
+														</TableCell>
+														<TableCell align="center">
+															{poi?.category.name}
+														</TableCell>
+														<TableCell align="center">
+															<Box
+																display="flex"
+																flexDirection="row"
+																justifyContent="space-evenly"
+																alignContent="center"
+																gap={mainTheme.spacing(2)}
 															>
-																{poi?.description}
-															</TableCell>
-															<TableCell align="center">
-																{poi?.address}
-															</TableCell>
-															<TableCell align="center">
-																{poi?.postalCode}
-															</TableCell>
-															<TableCell align="center">
-																{poi?.city?.name}
-															</TableCell>
-															<TableCell align="center">
-																{poi?.category.name}
-															</TableCell>
-															<TableCell align="center">
-																<Box
-																	display="flex"
-																	flexDirection="row"
-																	justifyContent="space-evenly"
-																	alignContent="center"
-																	gap={mainTheme.spacing(2)}
-																>
-																	<RemoveRedEyeIcon
-																		sx={{
-																			color: mainTheme.palette.primary.main,
-																			fontSize: "25px",
-																			cursor: "pointer",
-																		}}
-																		onClick={() =>
-																			router.push(`/poi/search/${poi.name}`)
-																		}
-																	/>
-																	<EditIcon
-																		sx={{
-																			color: mainTheme.palette.primary.main,
-																			fontSize: "25px",
-																			cursor: "pointer",
-																		}}
-																		onClick={() =>
-																			router.push(`/poi/edit/${poi.id}`)
-																		}
-																	/>
-																	<DeleteIcon
-																		sx={{
-																			color: mainTheme.palette.primary.main,
-																			fontSize: "25px",
-																			cursor: "pointer",
-																		}}
-																		onClick={() => {
-																			setOpen(true);
-																			setPOI(poi);
-																		}}
-																	/>
-																</Box>
-															</TableCell>
-														</TableRow>
-													);
-												} else {
-													return <></>;
-												}
+																<RemoveRedEyeIcon
+																	sx={{
+																		color: mainTheme.palette.primary.main,
+																		fontSize: "25px",
+																		cursor: "pointer",
+																	}}
+																	onClick={() =>
+																		router.push(`/poi/search/${poi.name}`)
+																	}
+																/>
+																<EditIcon
+																	sx={{
+																		color: mainTheme.palette.primary.main,
+																		fontSize: "25px",
+																		cursor: "pointer",
+																	}}
+																	onClick={() =>
+																		router.push(`/poi/edit/${poi.id}`)
+																	}
+																/>
+																<DeleteIcon
+																	sx={{
+																		color: mainTheme.palette.primary.main,
+																		fontSize: "25px",
+																		cursor: "pointer",
+																	}}
+																	onClick={() => {
+																		setOpen(true);
+																		setPOI(poi);
+																	}}
+																/>
+															</Box>
+														</TableCell>
+													</TableRow>
+												);
 											}
 										)}
 									</TableBody>
 								</Table>
 							</TableContainer>
-							<TablePagination
-								component="div"
-								count={count}
-								page={page}
-								onPageChange={handleChangePage}
-								rowsPerPage={rowsPerPage}
-								onRowsPerPageChange={handleChangeRowsPerPage}
-								labelRowsPerPage="Lignes par page"
-								rowsPerPageOptions={[1, 2, 3, 4, 5, 6]}
-							/>
+
 							<Modal
 								key={poi?.id}
 								open={open}
@@ -309,7 +257,6 @@ const POIList = () => {
 											deletePOI({
 												variables: { deletePoiByIdId: poi?.id },
 											}).then((res) => {
-												refetch();
 												setOpen(false);
 												toast.success(
 													`Le POI ${poi?.name} a bien été supprimé !`
@@ -330,7 +277,21 @@ const POIList = () => {
 						</Grid>
 					</>
 				) : (
-					<></>
+					<Typography
+						fontFamily={mainTheme.typography.fontFamily}
+						fontSize={{
+							sx: mainTheme.typography.h6.fontSize,
+							sm: mainTheme.typography.h5.fontSize,
+							md: mainTheme.typography.h4.fontSize,
+							lg: mainTheme.typography.h3.fontSize,
+						}}
+						color={mainTheme.palette.primary.main}
+						fontWeight={mainTheme.typography.fontWeightMedium}
+						alignContent="center"
+						sx={{ mt: 4 }}
+					>
+						Aucun POI trouvé.
+					</Typography>
 				)}
 			</Grid>
 		</Paper>

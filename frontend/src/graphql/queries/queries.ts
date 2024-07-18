@@ -19,8 +19,8 @@ export const GET_ALL_CITIES = gql`
 `;
 
 export const GET_ALL_POIS = gql`
-	query GetAllPois($limit: Float, $offset: Float) {
-		getAllPois(limit: $limit, offset: $offset) {
+	query GetAllPois {
+		getAllPois {
 			description
 			address
 			name
