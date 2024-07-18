@@ -92,60 +92,8 @@ const POIDetails = () => {
 						{POI.name}
 					</Link>
 				</Breadcrumbs>
-				<Grid container spacing={6} sx={{ padding: "1rem" }}>
-					<Grid item xs={6}>
-						<ImagesCarousel images={POI.images} />
-					</Grid>
-					<Grid item xs sx={{ padding: "1rem" }}>
-						<Typography
-							color={mainTheme.palette.primary.main}
-							align="center"
-							sx={{ fontSize: mainTheme.typography.h3, fontWeight: "bold" }}
-						>
-							{POI.name}
-						</Typography>
-						<Typography
-							align="justify"
-							sx={{ fontSize: mainTheme.typography.h6, marginTop: "3rem" }}
-						>
-							{POI.description}
-						</Typography>
-						<div
-							style={{
-								display: "flex",
-								alignItems: "center",
-								marginTop: "3rem",
-							}}
-						>
-							<PlaceIcon color="primary" />
-							<Typography sx={{ fontSize: mainTheme.typography.h6 }}>
-								{POI.address}
-							</Typography>
-						</div>
-						<Typography
-							color={mainTheme.palette.primary.main}
-							align="left"
-							sx={{
-								fontSize: mainTheme.typography.h4,
-								fontWeight: "bold",
-								marginTop: "3rem",
-							}}
-						>
-							NOTE
-						</Typography>
-						<Typography
-							color={mainTheme.palette.primary.main}
-							align="left"
-							sx={{
-								fontSize: mainTheme.typography.h4,
-								fontWeight: "bold",
-								marginTop: "3rem",
-							}}
-						>
-							COMMENTAIRES
-						</Typography>
-					</Grid>
-				</Grid>
+				return (
+			<div>
 			</div>
 		);
 }

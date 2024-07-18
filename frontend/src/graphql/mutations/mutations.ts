@@ -8,6 +8,21 @@ export const CREATE_NEW_POI = gql`
 	}
 `;
 
+export const EDIT_POI_BY_ID = gql`
+	mutation UpdatePoi($newPoiInput: PoiUpdateInput!, $id: Float!) {
+		updatePoiById(newPoiInput: $newPoiInput, id: $id) {
+			id
+			address
+			postalCode
+			city
+			longitude
+			latitude
+			description
+			category
+		}
+	}
+`;
+
 export const REGISTER = gql`
 	mutation Register($newUserData: UserInput!) {
 		register(newUserData: $newUserData)
@@ -40,3 +55,5 @@ export const EDIT_CITY_BY_ID = gql`
 		}
 	}
 `;
+
+
