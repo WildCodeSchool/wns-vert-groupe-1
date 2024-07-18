@@ -107,33 +107,33 @@ const EditPoiByID = () => {
 		}
 	};
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-	e.preventDefault();
-	try {
-		await editPoi({
-			variables: {
-				newPoiInput: {
-					name: form.name,
-					address: form.address,
-					postalCode: form.postalCode,
-					description: form.description,
-					city: Number(form.city), 
-					latitude: form.latitude,
-					longitude: form.longitude,
-					images: form.images,
-					category: Number(form.category), 				
-                },
-				id: Number(id),
-			},
-		});
-		toast.success("POI updated successfully");
-		router.push(`/poi/${id}`);
-	} catch (error) {
-		console.error("Error updating POI: ", error);
-		toast.error("Error updating POI");
-	}
-};
-    console.log(form)
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		try {
+			await editPoi({
+				variables: {
+					newPoiInput: {
+						name: form.name,
+						address: form.address,
+						postalCode: form.postalCode,
+						description: form.description,
+						city: Number(form.city),
+						latitude: form.latitude,
+						longitude: form.longitude,
+						images: form.images,
+						category: Number(form.category),
+					},
+					id: Number(id),
+				},
+			});
+			toast.success("POI updated successfully");
+			router.push(`/poi/${id}`);
+		} catch (error) {
+			console.error("Error updating POI: ", error);
+			toast.error("Error updating POI");
+		}
+	};
+	console.log(form);
 
 	if (poiLoading || !cityData || !categoryData) return <p>Loading...</p>;
 	if (poiError) return <p>Error loading POI data</p>;
@@ -149,7 +149,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 			justifyContent="center"
 		>
 			<Grid container spacing={6}>
-				<Grid item >
+				<Grid item>
 					<Paper sx={{ padding: "1rem" }}>
 						<Typography
 							color={mainTheme.palette.primary.main}
@@ -191,8 +191,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 								label="Description"
 								name="description"
 								value={form.description}
-                                multiline
-                                minRows={4}
+								multiline
+								minRows={4}
 								onChange={(e) =>
 									setForm({ ...form, description: e.target.value })
 								}

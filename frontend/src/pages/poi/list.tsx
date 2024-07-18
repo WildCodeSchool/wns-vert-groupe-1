@@ -127,14 +127,16 @@ const POIList = () => {
 						/>
 					</Box>
 				</Grid>
-				{ !loading && poisData?.getAllPois && poisData?.getAllPois?.length > 0 ? (
+				{!loading &&
+				poisData?.getAllPois &&
+				poisData?.getAllPois?.length > 0 ? (
 					<>
 						<Grid item width="95%" mx="auto">
 							<TableContainer component={Paper}>
 								<Table
 									sx={{
 										minWidth: 650,
-                                        marginY: "2rem",
+										marginY: "2rem",
 										border: `2px solid ${mainTheme.palette.primary.main}`,
 										borderRadius: "20rem",
 										"& .MuiTableHead-root": {
@@ -157,7 +159,6 @@ const POIList = () => {
 									<TableBody>
 										{poisData?.getAllPois?.map(
 											(poi: PoiType, index: number) => {
-                                                
 												return (
 													<TableRow
 														key={poi.name}
@@ -203,9 +204,7 @@ const POIList = () => {
 																		fontSize: "25px",
 																		cursor: "pointer",
 																	}}
-																	onClick={() =>
-																		router.push(`/poi/${poi.id}`)
-																	}
+																	onClick={() => router.push(`/poi/${poi.id}`)}
 																/>
 																<EditIcon
 																	sx={{
@@ -256,7 +255,7 @@ const POIList = () => {
 									<Button
 										onClick={() => {
 											deletePOI({
-												variables: { deletePoiByIdId: poi?.id },
+												variables: { id: poi?.id },
 											}).then((res) => {
 												setOpen(false);
 												toast.success(
