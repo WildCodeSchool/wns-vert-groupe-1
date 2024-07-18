@@ -24,12 +24,14 @@ import { toast } from "react-toastify";
 const EditPoiByID = () => {
 	// const { isAuthenticated } = useAuth();
 	const router = useRouter();
+    const id = router.query.id;
+
 	const {
 		data: poiData,
 		error: poiError,
 		loading: poiLoading,
 	} = useQuery(GET_POI_BY_ID, {
-		variables: { id: Number(router.query.id) },
+		variables: { id: Number(id) },
 	});
 
 	const { data: cityData } = useQuery(GET_ALL_CITIES);
@@ -50,21 +52,21 @@ const EditPoiByID = () => {
 	});
 
 	useEffect(() => {
-		if (poiData) {
+		if (poiData?.getPoiById) {
 			setForm({
-				name: poiData.name || "",
-				address: poiData.address || "",
-				postalCode: poiData.postalCode || "",
-				description: poiData.description || "",
-				city: poiData.city || "",
-				latitude: poiData.latitude || 0,
-				longitude: poiData.longitude || 0,
-				images: poiData.images || "",
-				category: poiData.category || "",
+				name: poiData.getPoiById.name || "",
+				address: poiData.getPoiById.address || "",
+				postalCode: poiData.getPoiById.postalCode || "",
+				description: poiData.getPoiById.description || "",
+				city: poiData.getPoiById.city.id || "",
+				latitude: poiData.getPoiById.latitude || 0,
+				longitude: poiData.getPoiById.longitude || 0,
+				images: poiData.getPoiById.images || "",
+				category: poiData.getPoiById.category.id || "",
 			});
 		}
 	}, [poiData]);
-
+console.log(poiData)
 	const handleChange = (e: any) => {
 		const { name, value } = e.target;
 		setForm((prev) => ({
@@ -113,7 +115,7 @@ console.log(poiData)
 							<TextField
 								fullWidth
 								margin="normal"
-								label="Name"
+								label="Nom"
 								name="name"
 								value={form.name}
 								onChange={handleChange}
@@ -121,7 +123,7 @@ console.log(poiData)
 							<TextField
 								fullWidth
 								margin="normal"
-								label="Address"
+								label="Addresse"
 								name="address"
 								value={form.address}
 								onChange={handleChange}
@@ -129,7 +131,7 @@ console.log(poiData)
 							<TextField
 								fullWidth
 								margin="normal"
-								label="Postal Code"
+								label="Code Postal"
 								name="postalCode"
 								value={form.postalCode}
 								onChange={handleChange}
@@ -149,7 +151,7 @@ console.log(poiData)
 									name="city"
 									value={form.city}
 									onChange={handleChange}
-									label="City"
+									label="Ville"
 								>
 									{cityData?.getAllCities.map((city: CityInput) => (
 										<MenuItem key={city.id} value={city.id}>
@@ -183,7 +185,7 @@ console.log(poiData)
 									name="category"
 									value={form.category}
 									onChange={handleChange}
-									label="Category"
+									label="Catégorie"
 								>
 									{categoryData?.getAllCategories.map((category: CategoryType) => (
 										<MenuItem key={category.id} value={category.id}>
@@ -213,7 +215,7 @@ console.log(poiData)
 									type="submit"
 									disabled={loading}
 								>
-									{loading ? "Updating..." : "Update POI"}
+									{loading ? "Updating..." : "Modifier"}
 								</Button>
 							</Box>
 						</form>
