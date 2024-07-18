@@ -156,7 +156,7 @@ const EditPoiByID = () => {
 							align="center"
 							sx={{ fontSize: mainTheme.typography.h3, fontWeight: "bold" }}
 						>
-							Modifiier un POI
+							Modifier un POI
 						</Typography>
 						<form onSubmit={handleSubmit}>
 							<TextField
