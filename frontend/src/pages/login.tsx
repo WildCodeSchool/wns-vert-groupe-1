@@ -95,7 +95,6 @@ const LoginPage = () => {
 							}}
 						>
 							<TextField
-								value="duygu@gmail.com"
 								name="email"
 								fullWidth
 								label="Email"
@@ -105,7 +104,6 @@ const LoginPage = () => {
 								margin="normal"
 							/>
 							<TextField
-								value="password"
 								name="password"
 								fullWidth
 								label="Mot de passe"

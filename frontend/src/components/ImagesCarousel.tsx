@@ -15,7 +15,7 @@ export const ImagesCarousel: React.FC<ImagesCarouselProps> = ({ images }) => {
 		setSelectedImageIndex(index);
 	};
 
-	  return (
+	return (
 		<>
 			<Carousel
 				autoPlay={true}

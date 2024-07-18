@@ -59,7 +59,7 @@ const NewPoi = () => {
 						address: formData.address,
 						postalCode: formData.postalCode,
 						description: formData.description,
-						images: imageURLs.map((image) => "http://localhost:8000" + image),
+						images: imageURLs.map((image) => image),
 						city: Number.parseInt(formData.city),
 						category: Number.parseInt(formData.category),
 					},
@@ -109,11 +109,7 @@ const NewPoi = () => {
 								height: "70vh",
 							}}
 						>
-							<ImagesCarousel
-								images={imageURLs.map(
-									(image) => `http://localhost:8000${image}`
-								)}
-							/>
+							<ImagesCarousel images={imageURLs.map((image) => `${image}`)} />
 						</Paper>
 					) : (
 						<Paper
@@ -289,7 +285,7 @@ const NewPoi = () => {
 										onChange={async (e: any) => {
 											if (e.target.files) {
 												const selectedFiles = Array.from(e.target.files);
-												const url = "http://localhost:8000/upload";
+												const url = "/upload";
 												const uploadPromises = (selectedFiles as File[]).map(
 													async (file: File) => {
 														const formData = new FormData();
