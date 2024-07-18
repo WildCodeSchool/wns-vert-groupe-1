@@ -24,14 +24,12 @@ import { toast } from "react-toastify";
 const EditPoiByID = () => {
 	// const { isAuthenticated } = useAuth();
 	const router = useRouter();
-	const { id } = router.query;
-console.log (router)
 	const {
 		data: poiData,
 		error: poiError,
 		loading: poiLoading,
 	} = useQuery(GET_POI_BY_ID, {
-		variables: { getPoiById: Number(id) },
+		variables: { id: Number(router.query.id) },
 	});
 
 	const { data: cityData } = useQuery(GET_ALL_CITIES);
@@ -153,7 +151,7 @@ console.log(poiData)
 									onChange={handleChange}
 									label="City"
 								>
-									{cityData.getAllCities.map((city: CityInput) => (
+									{cityData?.getAllCities.map((city: CityInput) => (
 										<MenuItem key={city.id} value={city.id}>
 											{city.name}
 										</MenuItem>
@@ -187,7 +185,7 @@ console.log(poiData)
 									onChange={handleChange}
 									label="Category"
 								>
-									{categoryData.getAllCategories.map((category: CategoryType) => (
+									{categoryData?.getAllCategories.map((category: CategoryType) => (
 										<MenuItem key={category.id} value={category.id}>
 											{category.name}
 										</MenuItem>

@@ -134,6 +134,7 @@ const POIList = () => {
 								<Table
 									sx={{
 										minWidth: 650,
+                                        marginY: "2rem",
 										border: `2px solid ${mainTheme.palette.primary.main}`,
 										borderRadius: "20rem",
 										"& .MuiTableHead-root": {
