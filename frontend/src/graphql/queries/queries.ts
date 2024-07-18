@@ -82,6 +82,7 @@ export const GET_POI_BY_ID = gql`
 			name
 			latitude
 			longitude
+			postalCode
 			city {
 				id
 				name

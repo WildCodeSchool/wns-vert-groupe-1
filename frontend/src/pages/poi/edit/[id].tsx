@@ -12,7 +12,10 @@ import {
 	Select,
 	MenuItem,
 } from "@mui/material";
-import { ImagesCarousel } from "@components";
+import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
+import styled from "@emotion/styled";
+import axios from "axios";
+
 import { EDIT_POI_BY_ID } from "@mutations";
 import { GET_POI_BY_ID, GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { mainTheme } from "@theme";
@@ -22,9 +25,8 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
 const EditPoiByID = () => {
-	// const { isAuthenticated } = useAuth();
 	const router = useRouter();
-    const id = router.query.id;
+	const id = router.query.id;
 
 	const {
 		data: poiData,
@@ -61,13 +63,15 @@ const EditPoiByID = () => {
 				city: poiData.getPoiById.city.id || "",
 				latitude: poiData.getPoiById.latitude || 0,
 				longitude: poiData.getPoiById.longitude || 0,
-				images: poiData.getPoiById.images || "",
+				images: poiData.getPoiById.images || [],
 				category: poiData.getPoiById.category.id || "",
 			});
 		}
 	}, [poiData]);
-console.log(poiData)
-	const handleChange = (e: any) => {
+
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
 		const { name, value } = e.target;
 		setForm((prev) => ({
 			...prev,
@@ -76,7 +80,45 @@ console.log(poiData)
 		}));
 	};
 
-	const handleSubmit = async (e: any) => {
+	const handleImageDelete = (index: number) => {
+		const updatedImages = [...form.images];
+		updatedImages.splice(index, 1);
+		setForm((prev) => ({
+			...prev,
+			images: updatedImages,
+		}));
+	};
+
+	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.files) {
+			const selectedFiles = Array.from(e.target.files);
+			const url = "/upload";
+			const uploadPromises = selectedFiles.map(async (file: File) => {
+				const formData = new FormData();
+				formData.append("file", file, file.name);
+				try {
+					const response = await axios.post(url, formData);
+					console.log(response);
+					return response.data.filename;
+				} catch (err) {
+					console.log("error", err);
+					return null;
+				}
+			});
+
+			Promise.all(uploadPromises).then((filenames) => {
+				setForm((prev) => ({
+					...prev,
+					images: [
+						...prev.images,
+						...filenames.filter((filename) => filename !== null),
+					],
+				}));
+			});
+		}
+	};
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
 			await editPoi({
@@ -94,14 +136,13 @@ console.log(poiData)
 			toast.error("Error updating POI");
 		}
 	};
-console.log(poiData)
-	// if (poiLoading || !cityData || !categoryData) return <p>Loading...</p>;
+
+	if (poiLoading || !cityData || !categoryData) return <p>Loading...</p>;
 	if (poiError) return <p>Error loading POI data</p>;
 
 	return (
 		<Box sx={{ padding: "1rem" }}>
 			<Grid container spacing={6}>
-			
 				<Grid item xs={6}>
 					<Paper sx={{ padding: "1rem" }}>
 						<Typography
@@ -118,15 +159,17 @@ console.log(poiData)
 								label="Nom"
 								name="name"
 								value={form.name}
-								onChange={handleChange}
+								onChange={(e) =>
+									setForm({ ...form, name: e.target.value })
+								}
 							/>
 							<TextField
 								fullWidth
 								margin="normal"
-								label="Addresse"
+								label="Adresse"
 								name="address"
 								value={form.address}
-								onChange={handleChange}
+								onChange={(e) => setForm({ ...form, address: e.target.value })}
 							/>
 							<TextField
 								fullWidth
@@ -134,7 +177,9 @@ console.log(poiData)
 								label="Code Postal"
 								name="postalCode"
 								value={form.postalCode}
-								onChange={handleChange}
+								onChange={(e) =>
+									setForm({ ...form, postalCode: e.target.value })
+								}
 							/>
 							<TextField
 								fullWidth
@@ -142,18 +187,20 @@ console.log(poiData)
 								label="Description"
 								name="description"
 								value={form.description}
-								onChange={handleChange}
+								onChange={(e) =>
+									setForm({ ...form, description: e.target.value })
+								}
 							/>
 							<FormControl fullWidth margin="normal">
-								<InputLabel id="city-label">City</InputLabel>
+								<InputLabel id="city-label">Ville</InputLabel>
 								<Select
 									labelId="city-label"
 									name="city"
 									value={form.city}
-									onChange={handleChange}
+									onChange={(e) => setForm({ ...form, city: e.target.value })}
 									label="Ville"
 								>
-									{cityData?.getAllCities.map((city: CityInput) => (
+									{cityData.getAllCities.map((city: CityInput) => (
 										<MenuItem key={city.id} value={city.id}>
 											{city.name}
 										</MenuItem>
@@ -167,7 +214,9 @@ console.log(poiData)
 								name="latitude"
 								type="number"
 								value={form.latitude}
-								onChange={handleChange}
+								onChange={(e) =>
+									setForm({ ...form, latitude: Number(e.target.value) })
+								}
 							/>
 							<TextField
 								fullWidth
@@ -176,32 +225,88 @@ console.log(poiData)
 								name="longitude"
 								type="number"
 								value={form.longitude}
-								onChange={handleChange}
+								onChange={(e) =>
+									setForm({ ...form, longitude: Number(e.target.value) })
+								}
 							/>
 							<FormControl fullWidth margin="normal">
-								<InputLabel id="category-label">Category</InputLabel>
+								<InputLabel id="category-label">Catégorie</InputLabel>
 								<Select
 									labelId="category-label"
 									name="category"
 									value={form.category}
-									onChange={handleChange}
+									onChange={(e) =>
+										setForm({ ...form, category: e.target.value })
+									}
 									label="Catégorie"
 								>
-									{categoryData?.getAllCategories.map((category: CategoryType) => (
-										<MenuItem key={category.id} value={category.id}>
-											{category.name}
-										</MenuItem>
-									))}
+									{categoryData.getAllCategories.map(
+										(category: CategoryType) => (
+											<MenuItem key={category.id} value={category.id}>
+												{category.name}
+											</MenuItem>
+										)
+									)}
 								</Select>
 							</FormControl>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Images"
-								name="images"
-								value={form.images}
-								onChange={handleChange}
-							/>
+							<Box
+								sx={{
+									display: "flex",
+									flexDirection: "column",
+									marginTop: "1rem",
+								}}
+							>
+								<Typography variant="subtitle1">Images :</Typography>
+								<Grid container spacing={2}>
+									{form.images.map((image, index) => (
+										<Grid item key={index}>
+											<Box sx={{ position: "relative" }}>
+												<img
+													src={image}
+													alt={`Image ${index}`}
+													style={{ maxWidth: "100px", maxHeight: "100px" }}
+												/>
+												<Button
+													variant="contained"
+													color="secondary"
+													size="small"
+													sx={{ position: "absolute", top: 0, right: 0 }}
+													onClick={() => handleImageDelete(index)}
+												>
+													X
+												</Button>
+											</Box>
+										</Grid>
+									))}
+								</Grid>
+							</Box>
+							<Grid
+								item
+								xs={12}
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									marginTop: "1rem",
+								}}
+							>
+								<Button
+									component="label"
+									color="primary"
+									role={undefined}
+									variant="contained"
+									tabIndex={-1}
+									startIcon={<AddPhotoAlternateOutlinedIcon />}
+								>
+									Ajouter des images
+									<input
+										type="file"
+										style={{ display: "none" }}
+										onChange={handleImageUpload}
+										multiple
+									/>
+								</Button>
+							</Grid>
 							<Box
 								sx={{
 									display: "flex",
@@ -215,7 +320,7 @@ console.log(poiData)
 									type="submit"
 									disabled={loading}
 								>
-									{loading ? "Updating..." : "Modifier"}
+									{loading ? "Mise à jour en cours..." : "Modifier"}
 								</Button>
 							</Box>
 						</form>
