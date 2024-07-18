@@ -11,16 +11,15 @@ import {
 	InputLabel,
 	Select,
 	MenuItem,
+    CircularProgress,
 } from "@mui/material";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
-import styled from "@emotion/styled";
 import axios from "axios";
 
 import { EDIT_POI_BY_ID } from "@mutations";
 import { GET_POI_BY_ID, GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { mainTheme } from "@theme";
 import { CategoryType, CityInput, POIInput } from "@types";
-import { useAuth } from "context";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
@@ -135,11 +134,12 @@ const EditPoiByID = () => {
 	};
 	console.log(form);
 
-	if (poiLoading || !cityData || !categoryData) return <p>Loading...</p>;
 	if (poiError) return <p>Error loading POI data</p>;
 
-	return (
-		<Paper
+return poiLoading || !cityData || !categoryData ? (
+		<CircularProgress />
+	) :	(
+    	<Paper
 			component={Box}
 			elevation={5}
 			square={false}
@@ -334,6 +334,7 @@ const EditPoiByID = () => {
 				</Grid>
 			</Grid>
 		</Paper>
+    
 	);
 };
 
