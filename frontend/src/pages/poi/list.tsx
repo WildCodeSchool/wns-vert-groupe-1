@@ -72,7 +72,7 @@ const POIList = () => {
 			elevation={5}
 			square={false}
 			width="80%"
-			height={window.innerHeight * 0.7}
+			height="auto"
 			mx="auto"
 			sx={{
 				display: "flex",
@@ -203,7 +203,7 @@ const POIList = () => {
 																		cursor: "pointer",
 																	}}
 																	onClick={() =>
-																		router.push(`/poi/search/${poi.name}`)
+																		router.push(`/poi/${poi.id}`)
 																	}
 																/>
 																<EditIcon

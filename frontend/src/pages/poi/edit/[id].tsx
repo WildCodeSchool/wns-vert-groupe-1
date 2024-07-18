@@ -101,9 +101,7 @@ console.log(poiData)
 	return (
 		<Box sx={{ padding: "1rem" }}>
 			<Grid container spacing={6}>
-				<Grid item xs={6}>
-					<ImagesCarousel images={poiData.images} />
-				</Grid>
+			
 				<Grid item xs={6}>
 					<Paper sx={{ padding: "1rem" }}>
 						<Typography

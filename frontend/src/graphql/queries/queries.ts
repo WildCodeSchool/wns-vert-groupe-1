@@ -21,6 +21,7 @@ export const GET_ALL_CITIES = gql`
 export const GET_ALL_POIS = gql`
 	query GetAllPois {
 		getAllPois {
+			id
 			description
 			address
 			name
