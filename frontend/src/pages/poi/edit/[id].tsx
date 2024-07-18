@@ -117,12 +117,12 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 					address: form.address,
 					postalCode: form.postalCode,
 					description: form.description,
-					city: Number(form.city), // Ensure it's converted to a number if needed
+					city: Number(form.city), 
 					latitude: form.latitude,
 					longitude: form.longitude,
 					images: form.images,
-					category: Number(form.category), // Ensure it's converted to a number if needed
-				},
+					category: Number(form.category), 				
+                },
 				id: Number(id),
 			},
 		});
@@ -139,16 +139,24 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 	if (poiError) return <p>Error loading POI data</p>;
 
 	return (
-		<Box sx={{ padding: "1rem" }}>
+		<Paper
+			component={Box}
+			elevation={5}
+			square={false}
+			width={{ xs: "85%", lg: "60%" }}
+			display="flex"
+			alignItems="center"
+			justifyContent="center"
+		>
 			<Grid container spacing={6}>
-				<Grid item xs={6}>
+				<Grid item >
 					<Paper sx={{ padding: "1rem" }}>
 						<Typography
 							color={mainTheme.palette.primary.main}
 							align="center"
 							sx={{ fontSize: mainTheme.typography.h3, fontWeight: "bold" }}
 						>
-							Edit POI
+							Modifiier un POI
 						</Typography>
 						<form onSubmit={handleSubmit}>
 							<TextField
@@ -157,9 +165,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 								label="Nom"
 								name="name"
 								value={form.name}
-								onChange={(e) =>
-									setForm({ ...form, name: e.target.value })
-								}
+								onChange={(e) => setForm({ ...form, name: e.target.value })}
 							/>
 							<TextField
 								fullWidth
@@ -185,6 +191,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 								label="Description"
 								name="description"
 								value={form.description}
+                                multiline
+                                minRows={4}
 								onChange={(e) =>
 									setForm({ ...form, description: e.target.value })
 								}
@@ -325,7 +333,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 					</Paper>
 				</Grid>
 			</Grid>
-		</Box>
+		</Paper>
 	);
 };
 
