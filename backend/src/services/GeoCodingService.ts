@@ -6,7 +6,7 @@ export class GeoCodingService {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
           address
-        )}&key=${process.env.SECRET_KEY}`
+        )}&key=${process.env.GOOGLE_API_KEY}`
       );
       const data = await response.json();
 
@@ -25,7 +25,7 @@ export class GeoCodingService {
   ): Promise<{ latitude: number; longitude: number } | null> {
     try {
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${city}.json?access_token=${process.env.GOOGLE_API_KEY}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${city}.json?access_token=${process.env.MAPBOX_API_KEY}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -35,8 +35,6 @@ export class GeoCodingService {
           const firstResult = data.features[0];
           const latitude = firstResult.center[1];
           const longitude = firstResult.center[0];
-          console.log("latitude", latitude);
-          console.log("longitude", longitude);
           return { latitude, longitude };
         } else {
           console.log("Aucune caractéristique trouvée pour la ville:", city);
