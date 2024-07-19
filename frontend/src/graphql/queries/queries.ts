@@ -19,7 +19,7 @@ export const GET_ALL_CITIES = gql`
 `;
 
 export const GET_ALL_CATEGORIES = gql`
-	query getAllCategories {
+	query GetAllCategories {
 		getAllCategories {
 			name
 			id
@@ -28,7 +28,7 @@ export const GET_ALL_CATEGORIES = gql`
 `;
 
 export const GET_CITY_BY_NAME = gql`
-	query getCityByName($name: String!) {
+	query GetCityByName($name: String!) {
 		getCityByName(name: $name) {
 			name
 			description
@@ -52,7 +52,7 @@ export const GET_CITY_BY_NAME = gql`
 `;
 
 export const GET_POI_BY_ID = gql`
-	query getPoiById($id: Float!) {
+	query GetPoiById($id: Float!) {
 		getPoiById(id: $id) {
 			description
 			address
@@ -87,8 +87,8 @@ export const CHECK_INFO = gql`
 `;
 
 export const GET_USER = gql`
-	query GetUserById($getUserByIdId: Float!) {
-		getUserById(id: $getUserByIdId) {
+	query GetUserById($id: Float!) {
+		getUserById(id: $id) {
 			id
 			lastName
 			firstName
@@ -102,8 +102,8 @@ export const GET_USER = gql`
 `;
 
 export const GET_CITY_BY_ID = gql`
-	query GetCityById($getCityByIdId: Float!) {
-		getCityById(id: $getCityByIdId) {
+	query GetCityById($id: Float!) {
+		getCityById(id: $id) {
 			id
 			name
 			description
@@ -126,18 +126,23 @@ export const GET_CITY_BY_ID = gql`
 					rating
 					text
 				}
-export const GET_REVIEWS_FOR_USER = gql`
-	query GetReviewsForUser($userId: Int!) {
-	reviewsForUser(userId: $userId) {
-		id
-		rating
-		comment
-			user {
-			firstname
-			lastname
-			id
-			email
+			}
 		}
 	}
-}
+`;
+
+export const GET_REVIEWS_FOR_USER = gql`
+	query GetReviewsForUser($userId: Int!) {
+		reviewsForUser(userId: $userId) {
+			id
+			rating
+			comment
+			user {
+				firstname
+				lastname
+				id
+				email
+			}
+		}
+	}
 `;
