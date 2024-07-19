@@ -110,7 +110,7 @@ const SearchResults = () => {
 		<CircularProgress />
 	) : (
 		<>
-			<title>Liste des POIs de {searchedCity.name}</title>
+			<title>Liste des lieux d&#39;intérêts de la ville de {searchedCity.name}</title>
 			<Grid
 				container
 				display="flex"
