@@ -39,31 +39,20 @@ const style = {
 };
 
 const POIList = () => {
-	const { isAuthenticated } = useAuth();
 	const router = useRouter();
 
 	const [open, setOpen] = React.useState<boolean>(false);
-	const [page, setPage] = React.useState<number>(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
-	const [count, setCount] = React.useState<number>(0);
 	const [poi, setPOI] = React.useState<PoiType>();
 
 	const { data: poisData, loading, error } = useQuery(GET_ALL_POIS);
-
-	console.log(poisData);
 
 	const [
 		deletePOI,
 		{ data: deletePOIData, loading: deletePOILoading, error: deletePOIError },
 	] = useMutation(DELETE_POI_BY_ID);
 
-	React.useEffect(() => {
-		if (poisData?.getAllPois) {
-			setCount(poisData?.getAllPois.length + 1);
-		}
-	}, [poisData]);
 
-	if (error) return <p>Error :</p>;
+	if (error) toast.error("Une erreur est survenue.");
 
 return loading ? (
 	<CircularProgress />

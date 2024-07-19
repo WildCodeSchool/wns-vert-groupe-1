@@ -41,7 +41,7 @@ const POIDetails = () => {
 				category: data.getPoiById.category.name,
 			});
 		}
-	}, [data, error, router.query.id]);
+	}, [data, error, router.query.id, loading]);
 
 	function Item(props: { item: string; index: number }) {
 		return (

@@ -132,9 +132,8 @@ const EditPoiByID = () => {
 			toast.error("Error updating POI");
 		}
 	};
-	console.log(form);
 
-	if (poiError) return <p>Error loading POI data</p>;
+	if (poiError) return toast.error("Une erreur est survenue.");;
 
 return poiLoading || !cityData || !categoryData ? (
 		<CircularProgress />
