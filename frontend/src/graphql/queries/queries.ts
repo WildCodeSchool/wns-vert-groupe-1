@@ -130,3 +130,9 @@ export const GET_CITY_BY_ID = gql`
 		}
 	}
 `;
+
+export const CHECK_EMAIL_UNIQUE = gql`
+	query IsEmailUnique($email: String!) {
+		isEmailUnique(email: $email)
+	}
+`;
