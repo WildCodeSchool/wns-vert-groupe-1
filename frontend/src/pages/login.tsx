@@ -96,6 +96,7 @@ const LoginPage = () => {
 						>
 							<TextField
 								name="email"
+								autoComplete="email"
 								fullWidth
 								label="Email"
 								id="email_input"
@@ -105,6 +106,7 @@ const LoginPage = () => {
 							/>
 							<TextField
 								name="password"
+								autoComplete="current-password"
 								fullWidth
 								label="Mot de passe"
 								id="password_input"
