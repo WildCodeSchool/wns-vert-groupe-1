@@ -19,7 +19,7 @@ export const Header = () => {
 				sx={{
 					boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
 					width: "100%",
-					backgroundColor: mainTheme.palette.primary.main,
+					backgroundColor: mainTheme.palette.primary.dark,
 					height: mainTheme.spacing(8),
 					position: "relative",
 				}}
@@ -91,7 +91,7 @@ export const Header = () => {
 							/>
 						</Stack>
 					) : (
-						<Link href="/login" passHref>
+						<Link href="/login" passHref aria-label="Se connecter">
 							<AccountCircleIcon
 								sx={{
 									fontSize: mainTheme.typography.h2,
