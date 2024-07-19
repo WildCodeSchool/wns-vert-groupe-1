@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { mainTheme } from "@theme";
 import {
 	TextField,
@@ -9,7 +9,7 @@ import {
 	Paper,
 	Rating,
 } from "@mui/material";
-import { CREATE_REVIEW_MUTATION } from "@mutations";
+import { CREATE_REVIEW_MUTATION } from "../graphql/mutations/mutations";
 import { useRouter } from "next/router";
 
 import { useAuth } from "context";
