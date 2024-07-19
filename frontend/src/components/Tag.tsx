@@ -13,17 +13,26 @@ export const Tag: React.FC<TagProps> = ({ name, isActive, onClick }) => {
 		<Paper
 			onClick={onClick}
 			sx={{
-				backgroundColor: mainTheme.palette.primary.light,
+				backgroundColor: isActive
+					? mainTheme.palette.primary.dark
+					: mainTheme.palette.primary.light,
 				borderRadius: "20px",
 				border: isActive
-					? `2px solid ${mainTheme.palette.primary.main}`
-					: "none",
+					? "none"
+					: `2px solid ${mainTheme.palette.primary.dark}`,
 				padding: `${mainTheme.spacing(2)} ${mainTheme.spacing(3)}`,
 				boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
 				cursor: "pointer",
 			}}
 		>
-			<Typography color={mainTheme.palette.primary.main} textAlign="center">
+			<Typography
+				color={
+					isActive
+						? mainTheme.palette.primary.light
+						: mainTheme.palette.primary.dark
+				}
+				textAlign="center"
+			>
 				{name}
 			</Typography>
 		</Paper>
