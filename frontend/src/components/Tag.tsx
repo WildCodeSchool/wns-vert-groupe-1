@@ -17,9 +17,7 @@ export const Tag: React.FC<TagProps> = ({ name, isActive, onClick }) => {
 					? mainTheme.palette.primary.dark
 					: mainTheme.palette.primary.light,
 				borderRadius: "20px",
-				border: isActive
-					? "none"
-					: `2px solid ${mainTheme.palette.primary.dark}`,
+				border: `2px solid ${mainTheme.palette.primary.dark}`,
 				padding: `${mainTheme.spacing(2)} ${mainTheme.spacing(3)}`,
 				boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
 				cursor: "pointer",
