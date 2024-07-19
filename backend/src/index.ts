@@ -12,6 +12,8 @@ import {
 } from "./resolvers";
 import * as jwt from "jsonwebtoken";
 import { createClient } from "redis";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export const redisClient = createClient({ url: "redis://redis" });
 
@@ -42,6 +44,12 @@ const start = async () => {
       }
     },
   });
+
+  if (!process.env.SECRET_KEY) {
+    throw new Error("SECRET_KEY environment variable is not defined");
+  }
+  const SECRET_KEY = process.env.SECRET_KEY;
+
   const server = new ApolloServer({
     schema,
   });
@@ -50,7 +58,7 @@ const start = async () => {
     context: async ({ req }) => {
       const token = req.headers.authorization?.split("Bearer ")[1];
       if (token) {
-        const payload = jwt.verify(token, "mysupersecretkey");
+        const payload = jwt.verify(token, SECRET_KEY);
         return payload;
       }
       return {};
