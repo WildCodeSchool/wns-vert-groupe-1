@@ -3,6 +3,7 @@ import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { CityUpdateInput, CityInput } from "../inputs";
 import { GeoCodingService } from "../services";
 import { redisClient } from "../index";
+import { validate } from "class-validator";
 
 @Resolver()
 export class CityResolver {
@@ -88,7 +89,15 @@ export class CityResolver {
       lat: coordinates?.latitude,
       lon: coordinates?.longitude,
       pois: pois,
-    }).save();
+    });
+
+    // Validate the new city instance before saving
+    const errors = await validate(city);
+    if (errors.length > 0) {
+      throw new Error(`Validation failed: ${errors}`);
+    }
+
+    await city.save();
 
     return city;
   }
@@ -128,5 +137,11 @@ export class CityResolver {
     });
 
     return updatedCity;
+  }
+
+  @Query(() => Boolean)
+  async isCityNameUnique(@Arg("name") name: string): Promise<boolean> {
+    const user = await City.findOne({ where: { name } });
+    return !user;
   }
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
@@ -13,6 +13,7 @@ import {
 	InputLabel,
 	Typography,
 	FormControl,
+	FormHelperText,
 } from "@mui/material";
 import { mainTheme } from "@theme";
 import { CREATE_NEW_POI } from "@mutations";
@@ -26,6 +27,7 @@ import { ImagesCarousel } from "@components";
 
 const NewPoi = () => {
 	const [imageURLs, setImageURLs] = useState<string[]>([]);
+	const [imageErrors, setImageErrors] = useState<string | null>(null);
 	const router = useRouter();
 
 	const {
@@ -33,7 +35,10 @@ const NewPoi = () => {
 		handleSubmit,
 		formState: { errors },
 		reset,
+		watch,
+		setValue,
 	} = useForm<POIInput>({ mode: "onBlur" });
+
 	const { data: cityData } = useQuery<{
 		getAllCities: {
 			id: number;
@@ -48,9 +53,66 @@ const NewPoi = () => {
 		}[];
 	}>(GET_ALL_CATEGORIES);
 
+	useEffect(() => {
+		if (categoryData && categoryData.getAllCategories.length > 0) {
+			setValue("category", categoryData.getAllCategories[0].id);
+		}
+	}, [categoryData, setValue]);
+
+	useEffect(() => {
+		if (cityData && cityData.getAllCities.length > 0) {
+			setValue("category", cityData.getAllCities[0].id);
+		}
+	}, [categoryData, setValue]);
+
 	const [createNewPoi] = useMutation(CREATE_NEW_POI);
 
+	const watchedName = watch("name");
+	const watchedDescription = watch("description");
+	const watchedAddress = watch("address");
+	const watchedCodePostal = watch("postalCode");
+	const watchedCity = watch("city");
+	const watchedCategory = watch("category");
+
+	const isDisabled =
+		!watchedName ||
+		!watchedDescription ||
+		!watchedAddress ||
+		!watchedCategory ||
+		!watchedCity ||
+		!watchedCodePostal;
+
+	const validateImages = (images: string[]) => {
+		if (images.length < 5) {
+			toast.error("Au moins cinq images sont requises.");
+			return false;
+		}
+
+		const imagePattern = /\.(jpg|jpeg|png)$/i;
+
+		const invalidImage = images
+			.map((image) => !imagePattern.test(image))
+			.some((isInvalid) => isInvalid);
+
+		if (invalidImage) {
+			toast.error(
+				"Chaque image doit être un fichier image valide (JPG, JPEG ou PNG)."
+			);
+			return false;
+		}
+
+		return true;
+	};
+
 	const onSubmit: SubmitHandler<POIInput> = async (formData: POIInput) => {
+		if (!validateImages(imageURLs)) {
+			return;
+		}
+		console.log(
+			"formData code",
+			formData.postalCode,
+			typeof formData.postalCode
+		);
 		try {
 			const result = await createNewPoi({
 				variables: {
@@ -60,12 +122,13 @@ const NewPoi = () => {
 						postalCode: formData.postalCode,
 						description: formData.description,
 						images: imageURLs.map((image) => image),
-						city: Number.parseInt(formData.city),
-						category: Number.parseInt(formData.category),
+						city: formData.city,
+						category: formData.category,
 					},
 				},
 			});
 			console.log(result);
+			toast.success("POI a été crée avec succès!");
 			setImageURLs([]);
 			reset();
 			router.push(`/poi/${result.data.createNewPoi.id}`);
@@ -73,7 +136,7 @@ const NewPoi = () => {
 			toast.error(
 				"Une erreur est survenue lors de la soumission du formulaire."
 			);
-			console.error(err);
+			console.error("Form submission error:", err, err.message);
 		}
 	};
 
@@ -88,8 +151,7 @@ const NewPoi = () => {
 		whiteSpace: "nowrap",
 		width: 1,
 	});
-	console.log(imageURLs);
-	// TODO : add form control and make all fields mandatory, fix console errors
+
 	if (cityData && categoryData) {
 		return (
 			<Grid
@@ -157,11 +219,18 @@ const NewPoi = () => {
 								<TextField
 									label="Nom"
 									{...register("name", {
-										required: {
-											value: true,
-											message: "Ce champ est obligatoire",
+										required: "Le nom est réquis",
+										minLength: {
+											value: 1,
+											message: "Le nom doit comporter au moins 1 caractère",
+										},
+										maxLength: {
+											value: 100,
+											message: "Le nom doit comporter au moins 100 caractères",
 										},
 									})}
+									error={!!errors.name}
+									helperText={errors.name?.message}
 									variant="standard"
 									fullWidth
 									margin="normal"
@@ -172,11 +241,14 @@ const NewPoi = () => {
 								<TextField
 									label="Adresse"
 									{...register("address", {
-										required: {
-											value: true,
-											message: "Ce champ est obligatoire",
+										required: "L'address est réquise",
+										minLength: {
+											value: 5,
+											message: "L'address doit comporter au moins 5 caractères",
 										},
 									})}
+									error={!!errors.address}
+									helperText={errors.address?.message}
 									variant="standard"
 									fullWidth
 									margin="normal"
@@ -187,11 +259,14 @@ const NewPoi = () => {
 								<TextField
 									label="Code Postal"
 									{...register("postalCode", {
-										required: {
-											value: true,
-											message: "Ce champ est obligatoire",
+										required: "Le code postal est réquis",
+										pattern: {
+											value: /^\d{5}$/,
+											message: "Format de code postal invalide.",
 										},
 									})}
+									error={!!errors.postalCode}
+									helperText={errors.postalCode?.message}
 									variant="standard"
 									fullWidth
 									margin="normal"
@@ -199,17 +274,20 @@ const NewPoi = () => {
 								/>
 							</Grid>
 							<Grid item xs={4}>
-								<FormControl fullWidth margin="normal" size="small">
+								<FormControl
+									fullWidth
+									margin="normal"
+									size="small"
+									error={!!errors.city}
+								>
 									<InputLabel id="city">Ville</InputLabel>
 									<Select
 										label="Ville"
 										labelId="city"
 										{...register("city", {
-											required: {
-												value: true,
-												message: "Ce champ est obligatoire",
-											},
+											required: "Une ville doit être sélectionnée",
 										})}
+										defaultValue=""
 										fullWidth
 										color="primary"
 									>
@@ -222,17 +300,20 @@ const NewPoi = () => {
 								</FormControl>
 							</Grid>
 							<Grid item xs={4}>
-								<FormControl fullWidth margin="normal" size="small">
+								<FormControl
+									fullWidth
+									margin="normal"
+									size="small"
+									error={!!errors.category}
+								>
 									<InputLabel id="category">Catégorie</InputLabel>
 									<Select
 										label="Catégorie"
 										labelId="category"
 										{...register("category", {
-											required: {
-												value: true,
-												message: "Ce champ est obligatoire",
-											},
+											required: "Une category doit être sélectionnée",
 										})}
+										defaultValue=""
 										fullWidth
 										color="primary"
 									>
@@ -250,11 +331,15 @@ const NewPoi = () => {
 									multiline
 									rows={3}
 									{...register("description", {
-										required: {
-											value: true,
-											message: "Ce champ est obligatoire",
+										required: "La description est requise",
+										minLength: {
+											value: 50,
+											message:
+												"La description doit comporter au moins 50 caractères",
 										},
 									})}
+									helperText={errors.description?.message}
+									error={!!errors.description}
 									fullWidth
 									variant="standard"
 									margin="normal"
@@ -285,6 +370,12 @@ const NewPoi = () => {
 										onChange={async (e: any) => {
 											if (e.target.files) {
 												const selectedFiles = Array.from(e.target.files);
+												if (selectedFiles.length !== 5) {
+													toast.error(
+														"Veuillez sélectionner exactement cinq images."
+													);
+													return;
+												}
 												const url = "/upload";
 												const uploadPromises = (selectedFiles as File[]).map(
 													async (file: File) => {
@@ -325,7 +416,12 @@ const NewPoi = () => {
 									marginTop: "1rem",
 								}}
 							>
-								<Button type="submit" variant="contained" color="primary">
+								<Button
+									type="submit"
+									variant="contained"
+									disabled={isDisabled}
+									color="primary"
+								>
 									Valider
 								</Button>
 							</Grid>

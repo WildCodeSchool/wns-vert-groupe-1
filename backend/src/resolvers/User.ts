@@ -148,6 +148,9 @@ export class UserResolver {
     let payload: { email: string; role: UserRole };
     try {
       const user = await User.findOneByOrFail({ email });
+      if (!user) {
+        throw new Error("Email not found");
+      }
 
       if (await argon2.verify(user.hashedPassword, password)) {
         payload = { email: user.email, role: user.role };

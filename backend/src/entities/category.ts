@@ -4,6 +4,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
 import { Length } from "class-validator";
@@ -11,6 +12,7 @@ import { Poi } from "./poi";
 
 @ObjectType()
 @Entity()
+@Unique(["name"])
 export class Category extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
@@ -18,7 +20,9 @@ export class Category extends BaseEntity {
 
   @Field()
   @Column()
-  @Length(1, 255)
+  @Length(1, 30, {
+    message: "Category name shoumd have between 1 and 30 characters.",
+  })
   name: string;
 
   @Field(() => [Poi])

@@ -1,52 +1,73 @@
 import { Typography, Button, TextField, Paper, Box, Grid } from "@mui/material";
 import { mainTheme } from "@theme";
-import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import React, { useLayoutEffect } from "react";
 import { CREATE_NEW_CITY } from "@mutations";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { CityInput } from "@types";
 import { toast } from "react-toastify";
 import { useAuth } from "context";
 import { useRouter } from "next/navigation";
+import { CHECK_CITY_UNIQUE } from "@queries";
 
-const defaultState: CityInput = {
-	name: "",
-	description: "",
-};
-
-//TODO : input validation
 const NewCity = () => {
 	const { isAuthenticated } = useAuth();
 	const router = useRouter();
-	const [form, setForm] = React.useState<CityInput>(defaultState);
 
-	const [createNewCity, { data, loading, error }] =
-		useMutation(CREATE_NEW_CITY);
+	const [createNewCity] = useMutation(CREATE_NEW_CITY, {
+		onCompleted: () => {
+			toast.success("La ville a été créée avec succès!");
+			reset();
+			router.push("/city/list");
+		},
+		onError: (error) => {
+			console.error("Error creating city:", error, error.message);
+			toast.error("Une erreur est survenue lors de la création de la ville");
+		},
+	});
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		createNewCity({
-			variables: {
-				cityData: {
-					name: form.name.charAt(0).toUpperCase() + form.name.slice(1),
-					description: form.description,
-				},
-			},
-		})
-			.then((res: any) => {
-				console.log("res", res);
-				toast.success(`La ville ${form.name} a été crée`);
-				router.push(`/city/list`);
-			})
-			.catch(() => {
-				toast.error("Une erreur est survenue lors de la création de la ville");
+	const [checkCityUnique] = useLazyQuery(CHECK_CITY_UNIQUE);
+
+	const {
+		register,
+		handleSubmit,
+		reset,
+		watch,
+		setError,
+		formState: { errors },
+	} = useForm<CityInput>({
+		defaultValues: {
+			name: "",
+			description: "",
+		},
+	});
+
+	const watchedName = watch("name");
+	const watchedDescription = watch("description");
+
+	const isDisabled = !watchedName || !watchedDescription;
+
+	const onSubmit: SubmitHandler<CityInput> = async (formData) => {
+		const { data } = await checkCityUnique({
+			variables: { name: formData.name },
+		});
+
+		if (data && !data.isCityNameUnique) {
+			setError("name", {
+				type: "manual",
+				message: "La ville avec ce nom existe déjà",
 			});
+			return;
+		}
+
+		if (!errors.name && Object.keys(errors).length === 0) {
+			await createNewCity({
+				variables: { cityData: formData },
+			});
+		}
 	};
 
-	const isDisabled = React.useMemo(() => {
-		return !(form.name && form.description);
-	}, [form]);
-
-	React.useLayoutEffect(() => {
+	useLayoutEffect(() => {
 		if (!isAuthenticated) {
 			router.replace("/");
 		}
@@ -73,7 +94,7 @@ const NewCity = () => {
 				>
 					<Box
 						component="form"
-						onSubmit={(e) => onSubmit(e)}
+						onSubmit={handleSubmit(onSubmit)}
 						flex={1}
 						display="flex"
 						flexDirection="column"
@@ -105,7 +126,19 @@ const NewCity = () => {
 							size="medium"
 							fullWidth
 							margin="normal"
-							onChange={(e) => setForm({ ...form, name: e.target.value })}
+							{...register("name", {
+								required: "Le nom de la ville est requis",
+								minLength: {
+									value: 1,
+									message: "Le nom doit comporter au moins 1 caractère",
+								},
+								maxLength: {
+									value: 50,
+									message: "Le nom ne doit pas dépasser 50 caractères",
+								},
+							})}
+							error={!!errors.name}
+							helperText={errors.name?.message}
 						/>
 						<TextField
 							data-testid="input_description"
@@ -118,9 +151,16 @@ const NewCity = () => {
 							size="medium"
 							fullWidth
 							margin="normal"
-							onChange={(e) =>
-								setForm({ ...form, description: e.target.value })
-							}
+							{...register("description", {
+								required: "La description est requise",
+								minLength: {
+									value: 100,
+									message:
+										"La description doit comporter au moins 100 caractères",
+								},
+							})}
+							error={!!errors.description}
+							helperText={errors.description?.message}
 						/>
 						<Button
 							disabled={isDisabled}
