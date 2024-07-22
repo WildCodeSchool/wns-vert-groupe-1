@@ -96,7 +96,7 @@ const NewPoi = () => {
 
 		if (invalidImage) {
 			toast.error(
-				"Chaque image doit être un fichier image valide (JPG, JPEG ou PNG)."
+				"Les images téléchargés ne sont pas au bon format (les formats d'image supportés sont les suivants : JPEG, JPG ou PNG)."
 			);
 			return false;
 		}
@@ -108,11 +108,7 @@ const NewPoi = () => {
 		if (!validateImages(imageURLs)) {
 			return;
 		}
-		console.log(
-			"formData code",
-			formData.postalCode,
-			typeof formData.postalCode
-		);
+
 		try {
 			const result = await createNewPoi({
 				variables: {
@@ -241,10 +237,10 @@ const NewPoi = () => {
 								<TextField
 									label="Adresse"
 									{...register("address", {
-										required: "L'address est réquise",
+										required: "L'adresse est réquise",
 										minLength: {
 											value: 5,
-											message: "L'address doit comporter au moins 5 caractères",
+											message: "L'adresse doit comporter au moins 5 caractères",
 										},
 									})}
 									error={!!errors.address}

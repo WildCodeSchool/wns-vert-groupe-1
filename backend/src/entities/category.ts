@@ -21,7 +21,7 @@ export class Category extends BaseEntity {
   @Field()
   @Column()
   @Length(1, 30, {
-    message: "Category name shoumd have between 1 and 30 characters.",
+    message: "Category name should have between 1 and 30 characters.",
   })
   name: string;
 

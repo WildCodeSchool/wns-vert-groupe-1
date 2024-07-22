@@ -52,10 +52,10 @@ export class User extends BaseEntity {
   lastName: string;
 
   @Column({ length: 150 })
-  @IsNotEmpty({ message: "Password should not be an empty value." })
+  @IsNotEmpty({ message: "Password cannot be an empty value." })
   @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
     message:
-      "Password should have  minimum 8 characters, of Which at least one is capital,one is a letter and one is a special character.",
+      "Password should have  minimum 8 characters, of which at least one is capital, one is a letter and one is a special character.",
   })
   hashedPassword: string;
 

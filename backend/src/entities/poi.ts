@@ -70,7 +70,7 @@ export class Poi extends BaseEntity {
   @Field(() => [String])
   @Column("text", { array: true, default: [] })
   @ArrayNotEmpty({
-    message: "Images cannot be empty. At least five images are required.",
+    message: "Images cannot be empty. 5 images are required.",
   })
   @ArrayMinSize(5, { message: "At least five images are required." })
   @ArrayMaxSize(5, { message: "No more than five images are allowed." })

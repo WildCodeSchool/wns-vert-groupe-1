@@ -30,7 +30,7 @@ const defaultStore: Store = {
 
 const errors = {
 	getUser: "Une erreur est survenue lors de la récupération de votre compte",
-	login: "Email ou mot de passe incorrect, ressayez à nouveau.",
+	login: "Email ou mot de passe incorrect, réessayez à nouveau.",
 	register: "Une erreur est survenue lors de votre inscription.",
 	adminRole: "Vous devez être administrateur pour accéder à cette page",
 	cityAdminRole:

@@ -22,7 +22,7 @@ export class City extends BaseEntity {
   @Field()
   @Column({ unique: true })
   @Length(1, 50, {
-    message: "City name shoumd have between 1 and 50 characters.",
+    message: "City name should have between 1 and 50 characters.",
   })
   name: string;
 
