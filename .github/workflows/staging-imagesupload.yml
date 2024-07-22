@@ -39,6 +39,6 @@ jobs:
         name: Build and push
         with:
           context: ./imagesupload
-          file: ./backend/Dockerfile.prod
+          file: ./imagesupload/Dockerfile.prod
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGESUPLOAD_IMAGE_NAME }}:latest

@@ -40,6 +40,7 @@ services:
       - REDIS_HOSTS=redis
   imagesupload:
     image: cityguide2024/images-upload
+    command: npm start
     volumes:
       - ./imagesupload/src:/app/src
       - ./imagesupload/uploads:/app/uploads
