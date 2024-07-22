@@ -162,3 +162,9 @@ export const CHECK_EMAIL_UNIQUE = gql`
 		isEmailUnique(email: $email)
 	}
 `;
+
+export const CHECK_CITY_UNIQUE = gql`
+	query IsCityNameUnique($name: String!) {
+		isCityNameUnique(name: $name)
+	}
+`;

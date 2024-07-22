@@ -20,7 +20,7 @@ const backend_url =
 		: "/graphql";
 
 const httpLink = createHttpLink({
-	uri: backend_url,
+	uri: "/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {

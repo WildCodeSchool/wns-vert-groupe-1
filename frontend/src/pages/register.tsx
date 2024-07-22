@@ -37,7 +37,7 @@ const Register = () => {
 	} = useForm<UserInput>();
 
 	const [cities, setCities] = useState<CityType[]>([]);
-	const [showPassword, setShowPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 
 	const [register] = useMutation(REGISTER, {
 		onCompleted: (data) => {
@@ -50,7 +50,8 @@ const Register = () => {
 			}
 		},
 		onError: (error) => {
-			toast.error(error.message);
+			console.error("Error subscription :", error);
+			toast.error("Une erreur est survenue lors de l&inscription");
 		},
 	});
 
@@ -82,7 +83,7 @@ const Register = () => {
 						lastName: formData.lastName,
 						email: formData.email,
 						password: formData.password,
-						city: Number(formData.city),
+						city: formData.city,
 					},
 				},
 			});
