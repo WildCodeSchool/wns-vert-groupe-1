@@ -102,31 +102,3 @@ export class UserInfo {
 	@Field()
 	id: number;
 }
-
-@ObjectType()
-export class UserList {
-	@Field(() => [User])
-	users: User[];
-}
-
-@ObjectType()
-export class ErrorMessage {
-	@Field()
-	message: string;
-}
-
-@ObjectType()
-export class UserType {
-	@Field(() => User)
-	user: User;
-}
-
-export const UsersResultUnion = createUnionType({
-	name: "UsersResultUnion",
-	types: () => [UserList, ErrorMessage] as const,
-});
-
-export const UserResultUnion = createUnionType({
-	name: "UserResultUnion",
-	types: () => [UserType, ErrorMessage] as const,
-});

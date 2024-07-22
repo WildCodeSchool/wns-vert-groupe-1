@@ -36,12 +36,19 @@ const start = async () => {
       CategoryResolver,
       RatingResolver,
     ],
-    authChecker: ({ context }) => {
-      if (context.email) {
-        return true;
-      } else {
-        return false;
+    authChecker: ({ context }, roles) => {
+      console.log("context role", context.role);
+      if (context.email && roles.length > 0) {
+        if (roles.includes(context.role)) {
+          return true;
+        } else {
+          return false;
+        }
       }
+      if (roles.length === 0 && context.email) {
+        return true;
+      }
+      return false;
     },
   });
 
@@ -56,6 +63,7 @@ const start = async () => {
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
     context: async ({ req }) => {
+      // console.log("token", req.headers.authorization?.split("Bearer ")[1]);
       const token = req.headers.authorization?.split("Bearer ")[1];
       if (token) {
         const payload = jwt.verify(token, SECRET_KEY);
