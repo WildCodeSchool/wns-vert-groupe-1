@@ -13,7 +13,6 @@ import {
 import * as jwt from "jsonwebtoken";
 import { createClient } from "redis";
 import { City } from "./entities";
-import { ApolloServerPluginLandingPageDisabled } from "@apollo/server/plugin/disabled";
 
 export const redisClient = createClient({ url: "redis://redis" });
 
