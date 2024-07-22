@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { PropsWithChildren } from "react";
 import { toast } from "react-toastify";
-import { REGISTER } from "@mutations";
+import { REGISTER } from "../graphql/mutations/mutations";
 
 interface Store {
 	user: UserType | undefined;
