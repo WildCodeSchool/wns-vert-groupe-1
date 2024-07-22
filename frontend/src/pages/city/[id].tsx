@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
 import { GET_CITY_BY_ID } from "@queries";
 import { mainTheme } from "@theme";
-import { useAuth } from "context";
+import { useAuth } from "../../context";
 import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";

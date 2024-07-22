@@ -4,7 +4,7 @@ import { ThemeProvider, Stack } from "@mui/material";
 import { mainTheme } from "@theme";
 import Footer from "./Footer";
 import React from "react";
-import { UserProvider } from "context";
+import { UserProvider } from "../context";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
 	return (

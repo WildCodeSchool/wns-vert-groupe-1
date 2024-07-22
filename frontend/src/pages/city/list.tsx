@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { GET_ALL_CITIES } from "@queries";
 import { mainTheme } from "@theme";
-import { errors, useAuth } from "context";
+import { errors, useAuth } from "../../context";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
