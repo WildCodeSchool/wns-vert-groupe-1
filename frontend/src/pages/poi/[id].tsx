@@ -143,7 +143,6 @@ const POIDetails = () => {
 					>
 						NOTE
 					</Typography>
-					<CreateReviewForm />
 					<Typography
 						color={mainTheme.palette.primary.main}
 						align="left"
@@ -155,6 +154,7 @@ const POIDetails = () => {
 					>
 						COMMENTAIRES
 					</Typography>
+					<CreateReviewForm />
 					<ReviewList />
 				</Grid>
 			</Grid>

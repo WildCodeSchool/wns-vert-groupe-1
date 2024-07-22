@@ -55,14 +55,7 @@ export const CreateReviewForm = () => {
 	};
 
 	return (
-		<Paper
-			elevation={3}
-			style={{
-				padding: "20px",
-				borderRadius: "10px",
-				backgroundColor: "#fff",
-			}}
-		>
+		<>
 			<form onSubmit={handleSubmit}>
 				<div>
 					<Rating
@@ -84,6 +77,7 @@ export const CreateReviewForm = () => {
 						multiline
 						rows={4}
 						sx={{
+							backgroundColor: "white",
 							width: "100%",
 							"& .MuiOutlinedInput-root": {
 								"& fieldset": {
@@ -103,6 +97,6 @@ export const CreateReviewForm = () => {
 					<Alert severity="success">Commentaire créé avec succès !</Alert>
 				)}
 			</form>
-		</Paper>
+		</>
 	);
 };
