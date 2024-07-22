@@ -12,6 +12,8 @@ import {
 } from "./resolvers";
 import * as jwt from "jsonwebtoken";
 import { createClient } from "redis";
+import { City } from "./entities";
+import { ApolloServerPluginLandingPageDisabled } from "@apollo/server/plugin/disabled";
 
 export const redisClient = createClient({ url: "redis://redis" });
 
@@ -42,6 +44,25 @@ const start = async () => {
       }
     },
   });
+
+  const cities = await City.find();
+  if (cities.length === 0) {
+    const city = new City();
+    city.name = "Paris";
+    city.lat = 48.866667;
+    city.lon = 2.333333;
+    city.description =
+      "Paris, capitale de la France, est une grande ville européenne et un centre mondial de l'art, de la mode, de la gastronomie et de la culture. Son paysage urbain du XIXe siècle est traversé par de larges boulevards et la Seine. Outre les monuments comme la tour Eiffel et la cathédrale gothique Notre-Dame du XIIe siècle, la ville est réputée pour ses cafés et ses boutiques de luxe bordant la rue du Faubourg-Saint-Honoré.";
+    city.save();
+
+    const city2 = new City();
+    city2.name = "Strasbourg";
+    city2.lat = 48.5833;
+    city2.lon = 7.75;
+    city2.description =
+      "Strasbourg est la capitale de la région Alsace-Champagne-Ardenne-Lorraine (Grand Est) au nord-est de la France. Il s'agit également du siège officiel du Parlement européen. Située près de la frontière avec l'Allemagne, la ville arbore une culture et une architecture aux influences allemandes et françaises. La cathédrale gothique Notre-Dame de Strasbourg propose des animations quotidiennes sur son horloge astronomique et une vue panoramique sur le Rhin à mi-hauteur de son clocher de 142 mètres de haut.";
+    city2.save();
+  }
   const server = new ApolloServer({
     schema,
   });
