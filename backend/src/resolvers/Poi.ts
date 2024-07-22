@@ -5,8 +5,8 @@ import { Query, Resolver, Mutation, Arg } from "type-graphql";
 @Resolver()
 export class PoiResolver {
 	@Query(() => [Poi])
-	async getAllPoi() {
-		const result = await Poi.find({ relations: ["category"] });
+	async getAllPois() {
+		const result = await Poi.find({ relations: ["category", "city"] });
 		return result;
 	}
 

@@ -15,7 +15,7 @@ import { createClient } from "redis";
 
 export const redisClient = createClient({ url: "redis://redis" });
 
-redisClient.on("error", (err) => {
+redisClient.on("error", (err: any) => {
   console.log("Redis Client Error", err);
 });
 redisClient.on("connect", () => {

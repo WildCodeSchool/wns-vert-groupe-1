@@ -8,10 +8,12 @@ import {
   ObjectType,
   Field,
   Ctx,
+  ArgumentValidationError,
 } from "type-graphql";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
 import { UserUpdateInput } from "../inputs/UserUpdate";
+import { validate } from "class-validator";
 
 @ObjectType()
 class UserInfo {
@@ -96,10 +98,17 @@ export class UserResolver {
     try {
       const { firstName, lastName, email, password, city } = newUserData;
 
+      // Check if the user already exists
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        throw new Error("A user with the given email already exists.");
+      }
+
       const newUser = new User();
       newUser.firstName = firstName;
       newUser.lastName = lastName;
       newUser.email = email;
+      newUser.hashedPassword = password;
 
       if (city) {
         const cityEntity = await City.findOneByOrFail({ id: city });
@@ -108,11 +117,18 @@ export class UserResolver {
         }
       }
 
+      // Perform validation
+      const errors = await validate(newUser);
+      if (errors.length > 0) {
+        console.error("Validation errors:", errors);
+        throw new ArgumentValidationError(errors);
+      }
+
       // Hash the password using Argon2
       const hashedPassword = await argon2.hash(password);
+      newUser.hashedPassword = hashedPassword;
 
       // Save the user to the database
-      newUser.hashedPassword = hashedPassword;
       await newUser.save();
 
       return "User has been successfully registered";
@@ -139,6 +155,12 @@ export class UserResolver {
       console.log("Error authenticating user:", err);
       return "Invalid credentials";
     }
+  }
+
+  @Query(() => Boolean)
+  async isEmailUnique(@Arg("email") email: string): Promise<boolean> {
+    const user = await User.findOne({ where: { email } });
+    return !user;
   }
 
   @Query(() => UserInfo)
