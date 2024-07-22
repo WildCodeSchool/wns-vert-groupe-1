@@ -74,10 +74,10 @@ export type POI = {
 
 export type UserInput = {
 	firstName: string;
-	lastName: number;
+	lastName: string;
 	email: string;
 	password: string;
-	city?: number;
+	city: number;
 };
 
 export type UserType = {
@@ -86,7 +86,7 @@ export type UserType = {
 	lastName: number;
 	email: string;
 	password: string;
-	city?: number;
+	city: number;
 	role: string;
 };
 

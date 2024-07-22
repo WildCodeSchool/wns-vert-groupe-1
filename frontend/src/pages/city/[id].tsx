@@ -12,7 +12,6 @@ const DisplayCityByID = () => {
 	const { isAuthenticated } = useAuth();
 	const router = useRouter();
 	const { id } = router.query;
-	console.log(id, typeof id, Number(id));
 	const { data, error, loading } = useQuery(GET_CITY_BY_ID, {
 		variables: { getCityByIdId: Number(id) },
 	});

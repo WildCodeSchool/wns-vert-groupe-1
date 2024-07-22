@@ -90,5 +90,5 @@ export class Poi extends BaseEntity {
 
   @Field(() => [Rating])
   @OneToMany(() => Rating, (rating) => rating.poi, { nullable: true })
-  ratings: Rating[];
+  ratings?: Rating[];
 }

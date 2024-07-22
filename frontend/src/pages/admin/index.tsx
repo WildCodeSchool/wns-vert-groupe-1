@@ -3,14 +3,21 @@ import { useRouter } from "next/router";
 import React from "react";
 
 export default function AdminHome() {
-	const { user } = useAuth();
+	const { user, isAuthenticated, isLoading } = useAuth();
 	const router = useRouter();
 
 	React.useEffect(() => {
-		if (user?.role !== "ADMIN" && user?.role !== "CITYADMIN") {
-			router.replace("/");
+		if (!isLoading) {
+			if (
+				!isAuthenticated &&
+				user?.role !== "ADMIN" &&
+				user?.role !== "CITYADMIN" &&
+				user?.role === "SUPERUSER"
+			) {
+				router.replace("/");
+			}
 		}
-	}, [user]);
+	}, [user, isAuthenticated, isLoading]);
 
 	return (
 		<>
@@ -19,6 +26,8 @@ export default function AdminHome() {
 				<p>Admin Dashboard</p>
 			) : user?.role === "CITYADMIN" ? (
 				<p>CityAdmin Dashboard</p>
+			) : user?.role === "SUPERUSER" ? (
+				<></>
 			) : (
 				<></>
 			)}
