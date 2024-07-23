@@ -57,12 +57,19 @@ export type POIInput = {
 	name: string;
 	address: string;
 	description: string;
+	city: number;
+	category: number;
+	images: string[];
+	postalCode: string;
+};
+
+export type POI = {
+	name: string;
+	address: string;
+	description: string;
 	city: string;
 	category: string;
 	images: string[];
-	postalCode?: string;
-	latitude?: number;
-	longitude?: number;
 };
 
 export type UserInput = {

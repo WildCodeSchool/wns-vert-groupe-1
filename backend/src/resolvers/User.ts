@@ -15,6 +15,11 @@ import * as jwt from "jsonwebtoken";
 import { UserUpdateInput } from "../inputs/UserUpdate";
 import { validate } from "class-validator";
 
+if (!process.env.SECRET_KEY) {
+  throw new Error("SECRET_KEY environment variable is not defined");
+}
+const SECRET_KEY = process.env.SECRET_KEY;
+
 @ObjectType()
 class UserInfo {
   @Field()
@@ -143,10 +148,13 @@ export class UserResolver {
     let payload: { email: string; role: UserRole };
     try {
       const user = await User.findOneByOrFail({ email });
+      if (!user) {
+        throw new Error("Email not found");
+      }
 
       if (await argon2.verify(user.hashedPassword, password)) {
         payload = { email: user.email, role: user.role };
-        const token: string = jwt.sign(payload, "mysupersecretkey");
+        const token: string = jwt.sign(payload, SECRET_KEY);
         return JSON.stringify({ token: token, id: user.id });
       } else {
         throw new Error("Invalid password");
