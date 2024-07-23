@@ -26,98 +26,77 @@ export class UserResolver {
 	@Query(() => [User])
 	async getAllUsers(@Ctx() ctx: { role: string; email: string }) {
 		try {
-			const user = await User.findOne({ where: { email: ctx.email } });
-			console.log("USER", user);
-			if (user) {
-				if (user.role === "Administrateur du site") {
-					console.log("its admin");
-					const users = await User.find({ relations: { city: true } });
-					return users;
-				} else if (user.role === "Administrateur de ville") {
-					console.log("its city admin");
-					const users = await User.find({
-						where: { city: { id: user?.cityId } },
-						relations: { city: true },
-					});
-					return users;
-				} else {
-					console.log("its not authorized");
-					throw new GraphQLError("User is not authorized", {
+			const user = await User.findOneByOrFail({ email: ctx.email });
+			if (
+				ctx.role === "Administrateur du site" ||
+				ctx.role === "Administrateur de ville"
+			) {
+				const users = await User.find({
+					where:
+						ctx.role === "Administrateur de ville"
+							? { city: { id: user?.cityId } }
+							: { city: { id: undefined } },
+					relations: { city: true },
+				});
+				return users;
+			} else {
+				throw new GraphQLError(
+					"You are not authorized to get users informations",
+					{
 						extensions: {
 							code: "UNAUTHORIZED",
 							http: { status: 401 },
 						},
-					});
-				}
-			} else {
-				throw new GraphQLError("You need to be authentificated.", {
+					}
+				);
+			}
+		} catch (error) {
+			throw new Error(`Error: ${error.message}`);
+		}
+	}
+
+	@Query(() => User)
+	async getUserById(@Arg("id") id: number) {
+		try {
+			const result = await User.findOne({
+				where: {
+					id: id,
+				},
+				relations: { city: true },
+			});
+			if (!result) {
+				throw new GraphQLError(`User with ID ${id} not found`, {
 					extensions: {
-						code: "UNAUTHENTICATED",
-						http: { status: 401 },
+						code: "NOT_FOUND",
+						http: { status: 404 },
 					},
 				});
+			} else {
+				return result;
 			}
-		} catch (e) {
-			throw new Error("Can't get all users");
+		} catch (error) {
+			throw new Error(`Error :  ${error.message}`);
 		}
 	}
 
 	@Authorized()
-	@Query(() => User)
-	async getUserById(
+	@Mutation(() => String)
+	async deleteUserById(
 		@Arg("id") id: number,
-		@Ctx() ctx: { email: string; role: string }
+		@Ctx() ctx: { role: string; email: string }
 	) {
 		try {
-			const user = await User.findOne({
-				where: { email: ctx.email },
-				relations: { city: true },
+			const userToDelete = await User.findOneByOrFail({
+				id: id,
 			});
-			console.log("user", user);
-			if (ctx.role === "Administrateur du site") {
-				console.log("its admin");
-				const result = await User.findOne({
-					where: {
-						id: id,
-					},
-					relations: { city: true },
-				});
-
-				if (!result) {
-					throw new Error(`User with ID ${id} not found`);
-				} else {
-					return result;
-				}
-			} else if (user?.id === id) {
-				console.log("its me");
-				return user;
-			} else {
-				console.log("its not autho");
-				throw new GraphQLError("User is not authorized", {
-					extensions: {
-						code: "UNAUTHORIZED",
-						http: { status: 401 },
-					},
-				});
-			}
-		} catch (err) {
-			throw new Error(`An error occurred while reading User with ID ${id}`);
-		}
-	}
-
-	@Authorized(["Administrateur du site"])
-	@Mutation(() => String)
-	async deleteUserById(@Arg("id") id: number, @Ctx() ctx: { role: string }) {
-		try {
-			if (ctx.role === "Administrateur du site") {
-				console.log("its admin");
-				const userToDelete = await User.findOneByOrFail({
-					id: id,
-				});
+			if (
+				ctx.role === "Administrateur du site" ||
+				ctx.email === userToDelete?.email
+			) {
 				userToDelete.remove();
 				return "User deleted";
 			} else {
-				throw new GraphQLError("You are not authorized to delete this user", {
+				throw new GraphQLError("You are not authorized to delete user", {
 					extensions: {
 						code: "UNAUTHORIZED",
 						http: { status: 401 },
@@ -129,21 +108,12 @@ export class UserResolver {
 		}
 	}
 
-	@Authorized(["Administrateur du site"])
+	@Authorized("Administrateur du site")
 	@Mutation(() => String)
-	async deleteAllUsers(@Ctx() ctx: { role: string }) {
+	async deleteAllUsers() {
 		try {
-			if (ctx.role === "Administrateur du site") {
-				User.delete({});
-				return "All users deleted";
-			} else {
-				throw new GraphQLError("You are not authorized to delete all users", {
-					extensions: {
-						code: "UNAUTHORIZED",
-						http: { status: 401 },
-					},
-				});
-			}
+			User.delete({});
+			return "All users deleted";
 		} catch (error) {
 			throw new Error(`Error: ${error.message}`);
 		}
@@ -154,33 +124,28 @@ export class UserResolver {
 	async updateUserById(
 		@Arg("id") id: number,
 		@Arg("newUserInput") newUserInput: UserUpdateInput,
-		// @Arg("role") newUserRole?: UserRole,
 		@Ctx() ctx: { email: string; role: string }
 	) {
 		try {
-			const loggedUser = await User.findOne({ where: { email: ctx.email } });
-			const oldUser = await User.findOne({ where: { id: id } });
+			const loggedUser = await User.findOneByOrFail({ email: ctx.email });
+			const oldUser = await User.findOneByOrFail({ id: id });
 
-			if (!oldUser) {
-				throw new Error(`The user with ID : ${id} not found`);
+			if (
+				ctx.role === "Administrateur du site" ||
+				oldUser?.email === ctx.email ||
+				(ctx.role === "Administrateur de ville" &&
+					oldUser.cityId === loggedUser?.cityId)
+			) {
+				Object.assign(oldUser, newUserInput);
+				await oldUser.save();
+				return "User updated";
 			} else {
-				if (
-					ctx.role === "Administrateur du site" ||
-					oldUser?.email === ctx.email ||
-					(ctx.role === "Administrateur de ville" &&
-						oldUser.cityId === loggedUser?.cityId)
-				) {
-					Object.assign(oldUser, newUserInput);
-					await oldUser.save();
-					return "User updated";
-				} else {
-					throw new GraphQLError("You are not authorized to update this user", {
-						extensions: {
-							code: "UNAUTHORIZED",
-							http: { status: 401 },
-						},
-					});
-				}
+				throw new GraphQLError("You are not authorized to update user", {
+					extensions: {
+						code: "UNAUTHORIZED",
+						http: { status: 401 },
+					},
+				});
 			}
 		} catch (error) {
 			throw new Error(`Error: ${error.message}`);
@@ -224,10 +189,9 @@ export class UserResolver {
 
 			// Save the user to the database
 			await newUser.save();
-
 			return "User has been successfully registered";
 		} catch (err) {
-			console.log("Error registering user:", err);
+			console.error("Error registering user:", err);
 			return "Error creating user";
 		}
 	}

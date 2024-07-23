@@ -37,7 +37,6 @@ const start = async () => {
       RatingResolver,
     ],
     authChecker: ({ context }, roles) => {
-      console.log("context role", context.role);
       if (context.email && roles.length > 0) {
         if (roles.includes(context.role)) {
           return true;
@@ -53,7 +52,7 @@ const start = async () => {
   });
 
   if (!process.env.SECRET_KEY) {
-    throw new Error("SECRET_KEY environment variable is not defined");
+    throw new Error("SECRET_KEY environment variable is not defined.");
   }
   const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -63,7 +62,6 @@ const start = async () => {
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
     context: async ({ req }) => {
-      // console.log("token", req.headers.authorization?.split("Bearer ")[1]);
       const token = req.headers.authorization?.split("Bearer ")[1];
       if (token) {
         const payload = jwt.verify(token, SECRET_KEY);

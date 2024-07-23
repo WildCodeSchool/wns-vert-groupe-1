@@ -71,7 +71,6 @@ function UserProvider({ children }: PropsWithChildren) {
 					const data = JSON.parse(res.data.login);
 					getUser({ variables: { getUserByIdId: data.id } })
 						.then((res) => {
-							console.log("TOKEN", data.token);
 							setJwt(data.token);
 							setUser(res?.data?.getUserById);
 							localStorage.setItem("jwt", data.token);
