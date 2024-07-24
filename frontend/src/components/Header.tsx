@@ -155,11 +155,23 @@ export const Header = () => {
 								backgroundColor: mainTheme.palette.primary.dark,
 								height: "100vh",
 								width: "20vw",
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "center",
 							}}
 						>
+							<Box
+								sx={{
+									marginTop: "5vh",
+									marginBottom: "15vh",
+								}}
+							>
+								<Logo />
+							</Box>
+
 							<List>
 								{menuItems.map((menuItem, index) => (
-									<Link href={menuItem.link ?? ''} key={index} passHref>
+									<Link href={menuItem.link ?? ""} key={index} passHref>
 										<ListItem
 											key={index}
 											sx={{
@@ -174,7 +186,7 @@ export const Header = () => {
 											}}
 										>
 											<ListItemText
-												primary={menuItem.name}
+												primary={menuItem?.name}
 												sx={{
 													textAlign: "center",
 												}}
