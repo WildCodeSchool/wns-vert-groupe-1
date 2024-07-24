@@ -11,4 +11,3 @@ jobs:
 
       - name: Go to frontend and run tests
         run: cd frontend && npm i && npm run test
-      

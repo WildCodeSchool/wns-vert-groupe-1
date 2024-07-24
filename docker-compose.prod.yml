@@ -1,8 +1,5 @@
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
     image: cityguide2024/backend
     volumes:
       - ./backend/src:/app/src
@@ -15,9 +12,6 @@ services:
       db:
         condition: service_healthy
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
     image: cityguide2024/frontend
     command: npm start
     restart: always
@@ -44,20 +38,13 @@ services:
     image: rediscommander/redis-commander
     environment:
       - REDIS_HOSTS=redis
-    ports:
-      - "8081:8081"
   imagesupload:
-    build:
-      context: ./imagesupload
-      dockerfile: Dockerfile.prod
     image: cityguide2024/images-upload
     volumes:
       - ./imagesupload/src:/app/src
       - ./imagesupload/uploads:/app/uploads
   adminer:
     image: adminer
-    ports:
-      - 8081:8080
   gateway:
     image: nginx
     ports:

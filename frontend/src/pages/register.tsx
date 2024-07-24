@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { REGISTER } from "@mutations";
-import { GET_ALL_CITIES } from "@queries";
+import { CHECK_EMAIL_UNIQUE, GET_ALL_CITIES } from "@queries";
 import { CityType, UserInput } from "@types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -15,7 +15,14 @@ import {
 	Select,
 	InputLabel,
 	MenuItem,
+	FormControl,
+	FormHelperText,
+	IconButton,
 } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
 	const router = useRouter();
@@ -25,35 +32,61 @@ const Register = () => {
 		register: registerForm,
 		handleSubmit,
 		reset,
+		setError,
 		formState: { errors },
 	} = useForm<UserInput>();
 
 	const [cities, setCities] = useState<CityType[]>([]);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 
-	const [register] = useMutation(REGISTER);
+	const [register] = useMutation(REGISTER, {
+		onCompleted: (data) => {
+			if (data && data.register && !data.errors) {
+				toast.success("Inscription réussie!");
+				reset();
+				router.push("/login");
+			} else if (data.errors) {
+				toast.error(data.errors[0].message);
+			}
+		},
+		onError: (error) => {
+			console.error("Error subscription :", error);
+			toast.error("Une erreur est survenue lors de l&inscription");
+		},
+	});
 
-	const onSubmit: SubmitHandler<UserInput> = async (data) => {
-		console.log("form data", data);
-		try {
-			data.city = Number(data.city);
-			console.log("data form", data);
+	const [checkEmailUnique] = useLazyQuery(CHECK_EMAIL_UNIQUE);
 
-			const result = await register({
+	const handleClick = (event: React.MouseEvent) => {
+		event.preventDefault();
+		setShowPassword(!showPassword);
+	};
+
+	const onSubmit: SubmitHandler<UserInput> = async (formData) => {
+		const { data } = await checkEmailUnique({
+			variables: { email: formData.email },
+		});
+
+		if (data && !data.isEmailUnique) {
+			setError("email", {
+				type: "manual",
+				message: "Cet email est déjà utilisé.",
+			});
+			return;
+		}
+
+		if (!errors.email && Object.keys(errors).length === 0) {
+			await register({
 				variables: {
 					newUserData: {
-						firstName: data.firstName,
-						lastName: data.lastName,
-						email: data.email,
-						password: data.password,
-						city: data.city,
+						firstName: formData.firstName,
+						lastName: formData.lastName,
+						email: formData.email,
+						password: formData.password,
+						city: formData.city,
 					},
 				},
 			});
-			console.log("result", result);
-			reset();
-			router.push("/login");
-		} catch (err) {
-			console.error("Error submitting form:", err);
 		}
 	};
 
@@ -95,8 +128,19 @@ const Register = () => {
 							placeholder="Prénom"
 							variant="standard"
 							style={{ marginBottom: "1rem" }}
-							{...registerForm("firstName", { required: true })}
-							helperText={errors.firstName && "Ce champ est requis"}
+							{...registerForm("firstName", {
+								required: "Le prénom est requis",
+								minLength: {
+									value: 2,
+									message: "Le prénom doit avoir au moins 2 caractères",
+								},
+								maxLength: {
+									value: 100,
+									message: "Le prénom doit avoir au maximum 100 caractères",
+								},
+							})}
+							error={!!errors.firstName}
+							helperText={errors.firstName?.message}
 						/>
 
 						<TextField
@@ -105,8 +149,19 @@ const Register = () => {
 							placeholder="Nom"
 							variant="standard"
 							style={{ marginBottom: "1rem" }}
-							{...registerForm("lastName", { required: true })}
-							helperText={errors.lastName && "Ce champ est requis"}
+							{...registerForm("lastName", {
+								required: "Le nom est requis",
+								minLength: {
+									value: 2,
+									message: "Le nom doit avoir au moins 2 caractères",
+								},
+								maxLength: {
+									value: 100,
+									message: "Le nom doit avoir au maximum 100 caractères",
+								},
+							})}
+							error={!!errors.lastName}
+							helperText={errors.lastName?.message}
 						/>
 
 						<TextField
@@ -116,39 +171,79 @@ const Register = () => {
 							variant="standard"
 							style={{ marginBottom: "1rem" }}
 							{...registerForm("email", {
-								required: true,
-								maxLength: 200,
+								required: "L'email est requis",
+								pattern: {
+									value: /^\S+@\S+\.\S+$/,
+									message: "L'email n'est pas valide",
+								},
+								maxLength: {
+									value: 100,
+									message: "L'email doit avoir au maximum 100 caractères",
+								},
 							})}
-							helperText={errors.email && "Ce champ est requis"}
+							error={!!errors.email}
+							helperText={errors.email?.message}
 						/>
 
 						<TextField
 							inputProps={{ "data-testid": "password" }}
 							fullWidth
 							placeholder="Mot de passe"
-							id="standard-basic"
 							variant="standard"
-							type="password"
+							type={showPassword ? "text" : "password"}
 							style={{ marginBottom: "1rem" }}
-							{...registerForm("password", { required: true })}
-							helperText={errors.password && "Ce champ est requis"}
+							{...registerForm("password", {
+								required: "Le mot de passe est requis",
+								pattern: {
+									value:
+										/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+									message:
+										"Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+								},
+								maxLength: {
+									value: 150,
+									message:
+										"Le mot de passe doit avoir au maximum 150 caractères",
+								},
+							})}
+							InputProps={{
+								endAdornment: (
+									<IconButton
+										aria-label="toggle password visibility"
+										onClick={handleClick}
+										edge="end"
+									>
+										{showPassword ? <Visibility /> : <VisibilityOff />}
+									</IconButton>
+								),
+							}}
+							error={!!errors.password}
+							autoComplete="new-password"
+							helperText={errors.password?.message}
 						/>
 
-						<InputLabel id="city-label">Sélectionner une ville</InputLabel>
-						<Select
-							data-testid="city-select"
-							labelId="city-label"
-							id="city"
-							defaultValue=""
-							sx={{ width: "100%" }}
-							{...registerForm("city")}
-						>
-							{cities.map((el) => (
-								<MenuItem key={el.id} value={el.id}>
-									{el.name}
-								</MenuItem>
-							))}
-						</Select>
+						<FormControl fullWidth margin="normal" error={!!errors.city}>
+							<InputLabel id="city-label">Sélectionner une ville</InputLabel>
+							<Select
+								labelId="city-label"
+								{...registerForm("city", {
+									required: "Une ville doit être sélectionnée",
+								})}
+								defaultValue=""
+								sx={{ width: "100%" }}
+							>
+								{cities.map((city) => (
+									<MenuItem key={city.id} value={city.id}>
+										{city.name}
+									</MenuItem>
+								))}
+							</Select>
+							{errors.city && (
+								<FormHelperText sx={{ color: "error.main" }}>
+									{errors.city.message}
+								</FormHelperText>
+							)}
+						</FormControl>
 
 						<Button
 							data-testid="submit"

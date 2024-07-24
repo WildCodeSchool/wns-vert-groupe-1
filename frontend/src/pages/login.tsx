@@ -9,18 +9,28 @@ import {
 	Checkbox,
 	Typography,
 	Link,
+	IconButton,
 } from "@mui/material";
 import { useAuth } from "context/UserContext";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useWindowDimensions from "utils/windowDimensions";
 import { mainTheme } from "@theme";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const LoginPage = () => {
+	const [checked, setIsChecked] = useState<boolean>(false);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+
 	const router = useRouter();
 	const { onLogin, user } = useAuth();
 	const { height } = useWindowDimensions();
 
-	React.useEffect(() => {
+	const handleClick = (event: React.MouseEvent) => {
+		event.preventDefault();
+		setShowPassword(!showPassword);
+	};
+
+	useEffect(() => {
 		if (user) {
 			if (user.role === "ADMIN" || user.role === "CITYADMIN") {
 				router.replace("/admin");
@@ -81,17 +91,19 @@ const LoginPage = () => {
 								const form = e.target;
 								const formData = new FormData(form as HTMLFormElement);
 
-								// const formJson = Object.fromEntries(formData.entries());
 								const email = formData.get("email") as string;
 								const password = formData.get("password") as string;
+								const rememberMe = formData.get("rememberMe");
 								onLogin({
 									email: email,
 									password: password,
+									checked: rememberMe ? true : false,
 								});
 							}}
 						>
 							<TextField
 								name="email"
+								autoComplete="email"
 								fullWidth
 								label="Email"
 								id="email_input"
@@ -101,16 +113,36 @@ const LoginPage = () => {
 							/>
 							<TextField
 								name="password"
+								autoComplete="current-password"
 								fullWidth
 								label="Mot de passe"
 								id="password_input"
 								variant="standard"
-								type="password"
+								type={showPassword ? "text" : "password"}
 								required
 								margin="normal"
+								InputProps={{
+									endAdornment: (
+										<IconButton
+											aria-label="toggle password visibility"
+											onClick={handleClick}
+											edge="end"
+										>
+											{showPassword ? <Visibility /> : <VisibilityOff />}
+										</IconButton>
+									),
+								}}
 							/>
 							<FormControlLabel
-								control={<Checkbox name="rememberMe" />}
+								control={
+									<Checkbox
+										name="rememberMe"
+										checked={checked}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+											setIsChecked(event?.target.checked)
+										}
+									/>
+								}
 								label="Se souvenir de moi"
 							/>
 							<Button

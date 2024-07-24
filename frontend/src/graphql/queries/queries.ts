@@ -1,17 +1,42 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_CITIES = gql`
-	query getAllCities {
-		getAllCities {
+	query GetAllCities($limit: Float, $offset: Float) {
+		getAllCities(limit: $limit, offset: $offset) {
 			name
 			description
 			id
+			lat
+			lon
 			pois {
 				id
 				name
 				address
 				description
 			}
+		}
+	}
+`;
+
+export const GET_ALL_POIS = gql`
+	query GetAllPois {
+		getAllPois {
+			id
+			description
+			address
+			name
+			latitude
+			longitude
+			postalCode
+			city {
+				id
+				name
+			}
+			category {
+				id
+				name
+			}
+			images
 		}
 	}
 `;
@@ -55,6 +80,9 @@ export const GET_POI_BY_ID = gql`
 			description
 			address
 			name
+			latitude
+			longitude
+			postalCode
 			city {
 				id
 				name
@@ -96,5 +124,47 @@ export const GET_USER = gql`
 				name
 			}
 		}
+	}
+`;
+
+export const GET_CITY_BY_ID = gql`
+	query GetCityById($getCityByIdId: Float!) {
+		getCityById(id: $getCityByIdId) {
+			id
+			name
+			description
+			lat
+			lon
+			pois {
+				id
+				name
+				category {
+					id
+					name
+				}
+				address
+				description
+				latitude
+				longitude
+				postalCode
+				ratings {
+					id
+					rating
+					text
+				}
+			}
+		}
+	}
+`;
+
+export const CHECK_EMAIL_UNIQUE = gql`
+	query IsEmailUnique($email: String!) {
+		isEmailUnique(email: $email)
+	}
+`;
+
+export const CHECK_CITY_UNIQUE = gql`
+	query IsCityNameUnique($name: String!) {
+		isCityNameUnique(name: $name)
 	}
 `;

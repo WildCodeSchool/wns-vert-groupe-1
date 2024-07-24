@@ -2,110 +2,132 @@ import { GeoCodingService } from "../services";
 import { City, Poi, Category } from "../entities";
 import { PoiInput } from "../inputs";
 import { Query, Resolver, Mutation, Arg } from "type-graphql";
+import { validate } from "class-validator";
 @Resolver()
 export class PoiResolver {
-	@Query(() => [Poi])
-	async getAllPoi() {
-		const result = await Poi.find({ relations: ["category"] });
-		return result;
-	}
+  @Query(() => [Poi])
+  async getAllPois() {
+    const result = await Poi.find({ relations: ["category", "city"] });
+    return result;
+  }
 
-	@Query(() => Poi)
-	async getPoiById(@Arg("id") id: number) {
-		try {
-			const result = await Poi.findOne({
-				where: {
-					id: id,
-				},
-				relations: { city: true, category: true, ratings: true },
-			});
+  @Query(() => Poi)
+  async getPoiById(@Arg("id") id: number) {
+    try {
+      const result = await Poi.findOne({
+        where: {
+          id: id,
+        },
+        relations: { city: true, category: true, ratings: true },
+      });
 
-			if (!result) {
-				throw new Error(`POI with ID ${id} not found`);
-			}
+      if (!result) {
+        throw new Error(`POI with ID ${id} not found`);
+      }
 
-			return result;
-		} catch (err) {
-			console.error("Error", err);
-			throw new Error("An error occurred while reading one POI");
-		}
-	}
+      return result;
+    } catch (err) {
+      console.error("Error", err);
+      throw new Error("An error occurred while reading one POI");
+    }
+  }
 
-	@Mutation(() => Poi)
-	async createNewPoi(@Arg("poiData") poiData: PoiInput) {
-		const city = await City.findOneByOrFail({ id: poiData.city });
-		const category = await Category.findOneByOrFail({ id: poiData.category });
-		const ratings = poiData.ratings
-			? poiData.ratings.map((rating) => ({ id: rating }))
-			: [];
+  @Mutation(() => Poi)
+  async createNewPoi(@Arg("poiData") poiData: PoiInput) {
+    const city = await City.findOneByOrFail({ id: poiData.city });
+    const category = await Category.findOneByOrFail({ id: poiData.category });
 
-		if (!city) {
-			throw new Error(`City with ID ${poiData.city} not found`);
-		}
+    if (!city) {
+      throw new Error(`City with ID ${poiData.city} not found`);
+    }
 
-		if (!category) {
-			throw new Error(`Category with ID ${poiData.category} not found`);
-		}
+    if (!category) {
+      throw new Error(`Category with ID ${poiData.category} not found`);
+    }
 
-		if (poiData.address !== undefined) {
-			const coordinates = await GeoCodingService.getCoordinates(
-				poiData.address
-			);
-			if (coordinates) {
-				poiData.latitude = coordinates.latitude;
-				poiData.longitude = coordinates.longitude;
-			}
-		}
+    const fullAddress = `${poiData.address}, ${city.name} ${poiData.postalCode}`;
 
-		const poi = await Poi.save({
-			...poiData,
-			city,
-			category,
-			ratings: ratings,
-		});
+    const coordinates = await GeoCodingService.getCoordinatesByAddress(
+      fullAddress
+    );
 
-		return poi;
-	}
+    const poi = Poi.create({
+      ...poiData,
+      city,
+      category,
+      latitude: coordinates?.latitude,
+      longitude: coordinates?.longitude,
+    });
 
-	@Mutation(() => String)
-	async deletePoiById(@Arg("id") id: number) {
-		const poiToDelete = await Poi.findOneByOrFail({
-			id: id,
-		});
-		poiToDelete.remove();
-		return `POI with id ${id} was successefully deleted`;
-	}
+    const errors = await validate(poi);
+    if (errors.length > 0) {
+      throw new Error(`Validation failed! Errors: ${errors}`);
+    }
 
-	@Mutation(() => String)
-	async updatePoiById(
-		@Arg("id") id: number,
-		@Arg("newPoiInput") newPoiInput: PoiInput
-	) {
-		try {
-			const oldPoi = await Poi.findOne({ where: { id: id } });
+    await poi.save();
 
-			if (!oldPoi) {
-				throw new Error(`POI with id ${id} haven't been found`);
-			}
+    return poi;
+  }
 
-			if (newPoiInput.address !== undefined) {
-				const coordinates = await GeoCodingService.getCoordinates(
-					newPoiInput.address
-				);
-				if (coordinates) {
-					newPoiInput.latitude = coordinates.latitude;
-					newPoiInput.longitude = coordinates.longitude;
-				}
-			}
+  @Mutation(() => String)
+  async deletePoiById(@Arg("id") id: number) {
+    const poiToDelete = await Poi.findOneByOrFail({
+      id: id,
+    });
+    poiToDelete.remove();
+    return `POI with id ${id} was successefully deleted`;
+  }
 
-			Object.assign(oldPoi, newPoiInput);
+  @Mutation(() => String)
+  async updatePoiById(
+    @Arg("id") id: number,
+    @Arg("newPoiInput") newPoiInput: PoiInput
+  ) {
+    try {
+      const oldPoi = await Poi.findOne({
+        where: { id: id },
+        relations: ["city"],
+      });
 
-			await oldPoi.save();
-			return `POI with id ${id} have been updated`;
-		} catch (error) {
-			throw new Error(
-				`En error occured while updateing a POI: ${error.message}`
-			);
-		}
-	}
+      if (!oldPoi) {
+        throw new Error(`POI with id ${id} haven't been found`);
+      }
+
+      const city = newPoiInput.city
+        ? await City.findOneByOrFail({ id: newPoiInput.city })
+        : oldPoi.city;
+      if (!city) {
+        throw new Error(`City with ID ${newPoiInput.city} not found`);
+      }
+
+      const fullAddress = `${newPoiInput.address}, ${city.name} ${newPoiInput.postalCode}`;
+
+      if (
+        newPoiInput.address &&
+        (oldPoi.address !== newPoiInput.address ||
+          oldPoi.city.id !== newPoiInput.city)
+      ) {
+        const coordinates = await GeoCodingService.getCoordinatesByAddress(
+          fullAddress
+        );
+        if (coordinates) {
+          oldPoi.latitude = coordinates.latitude;
+          oldPoi.longitude = coordinates.longitude;
+        } else {
+          throw new Error("Failed to obtain geocoding results.");
+        }
+      }
+
+      Object.assign(oldPoi, newPoiInput, {
+        city,
+      });
+
+      await oldPoi.save();
+      return `POI with id ${id} have been updated`;
+    } catch (error) {
+      throw new Error(
+        `En error occured while updateing a POI: ${error.message}`
+      );
+    }
+  }
 }
