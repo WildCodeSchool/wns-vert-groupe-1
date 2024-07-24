@@ -54,6 +54,8 @@ export const Header = () => {
 					sx={{
 						position: "absolute",
 						left: 0,
+						display: "flex",
+						alignItems: "center",
 					}}
 				>
 					{router.pathname.startsWith("/admin") && (
@@ -137,7 +139,7 @@ export const Header = () => {
 					)}
 				</Box>
 			</Toolbar>
-			{menuOpen && router.pathname.startsWith("/admin") && (
+			{router.pathname.startsWith("/admin") && (
 				<React.Fragment key={"left"}>
 					<SwipeableDrawer
 						anchor={"left"}
