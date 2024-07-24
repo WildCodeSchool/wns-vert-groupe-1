@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Button, List, ListItem, ListItemText, SwipeableDrawer, Toolbar } from "@mui/material";
 import Link from "next/link";
 import { mainTheme } from "@theme";
+import { Header } from "./Header";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -30,6 +31,7 @@ export default function AdminSidebar() {
 
 	return (
 		<div>
+			<Header/>
 			<React.Fragment key={"left"}>
 				<Button onClick={toggleDrawer("left", true)}>left</Button>
 				<SwipeableDrawer

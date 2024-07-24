@@ -1,9 +1,22 @@
 import React from "react";
 import Link from "next/link";
-import { AppBar, Stack, Toolbar, Typography, Box } from "@mui/material";
+import {
+	AppBar,
+	Stack,
+	Toolbar,
+	Typography,
+	Box,
+	IconButton,
+	ListItemText,
+	ListItem,
+	Button,
+	SwipeableDrawer,
+	List,
+} from "@mui/material";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
 import { mainTheme } from "@theme";
 import { useAuth } from "../context";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
@@ -12,6 +25,12 @@ import Logo from "./Logo";
 export const Header = () => {
 	const { onLogout, isAuthenticated, user } = useAuth();
 	const router = useRouter();
+	const [menuOpen, setMenuOpen] = React.useState(false);
+
+	const handleMenuToggle = () => {
+		setMenuOpen(!menuOpen);
+		console.log(menuOpen)
+	};
 
 	return (
 		<AppBar position="static">
@@ -30,6 +49,15 @@ export const Header = () => {
 						left: 0,
 					}}
 				>
+					{router.pathname.startsWith("/admin") && (
+					<IconButton
+						color="inherit"
+						aria-label="open menu"
+						onClick={handleMenuToggle}
+					>
+						<MenuIcon />
+					</IconButton>
+					)}
 					<Link href="/" passHref>
 						<Typography
 							color="inherit"
@@ -102,6 +130,117 @@ export const Header = () => {
 					)}
 				</Box>
 			</Toolbar>
+			{menuOpen && router.pathname.startsWith("/admin") && (
+				<React.Fragment key={"left"}>
+					<SwipeableDrawer
+						anchor={"left"}
+						open={menuOpen}
+						onClose={() => setMenuOpen(false)}
+						onOpen={() => setMenuOpen(true)}
+					>
+						<Box
+							role="presentation"
+							onClick={() => setMenuOpen(false)}
+							onKeyDown={() => setMenuOpen(true)}
+						>
+							<List>
+								<ListItem
+									component={Link}
+									href="/admin/cities/cities"
+									sx={{
+										backgroundColor: mainTheme.palette.background.default,
+										marginBottom: "2rem",
+										marginTop: "1rem",
+										borderRadius: "24px",
+										marginLeft: "0.5rem",
+										marginRight: "0.5rem",
+										maxWidth: "calc(100% - 1rem)",
+										boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+									}}
+								>
+									<ListItemText
+										primary={<span style={{ fontSize: "0.9rem" }}>VILLES</span>}
+										sx={{
+											textAlign: "center",
+										}}
+									/>
+								</ListItem>
+								<ListItem
+									component={Link}
+									href="/admin/pois/pois"
+									sx={{
+										backgroundColor: mainTheme.palette.background.default,
+										marginBottom: "2rem",
+										marginTop: "1rem",
+										borderRadius: "24px",
+										marginLeft: "0.5rem",
+										marginRight: "0.5rem",
+										maxWidth: "calc(100% - 1rem)",
+										boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+									}}
+								>
+									<ListItemText
+										primary={
+											<span style={{ fontSize: "0.8rem" }}>
+												POINTS D&apos;INTERETS
+											</span>
+										}
+										sx={{
+											textAlign: "center",
+										}}
+									/>
+								</ListItem>
+								<ListItem
+									component={Link}
+									href="/admin/users/users"
+									sx={{
+										backgroundColor: mainTheme.palette.background.default,
+										marginBottom: "2rem",
+										marginTop: "1rem",
+										borderRadius: "24px",
+										marginLeft: "0.5rem",
+										marginRight: "0.5rem",
+										maxWidth: "calc(100% - 1rem)",
+										boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+									}}
+								>
+									<ListItemText
+										primary={
+											<span style={{ fontSize: "0.8rem" }}>UTILISATEURS</span>
+										}
+										sx={{
+											textAlign: "center",
+										}}
+									/>
+								</ListItem>
+								<ListItem
+									component={Link}
+									href="/admin/categories/categories"
+									sx={{
+										backgroundColor: mainTheme.palette.background.default,
+										marginBottom: "2rem",
+										marginTop: "1rem",
+										borderRadius: "24px",
+										marginLeft: "0.5rem",
+										marginRight: "0.5rem",
+										maxWidth: "calc(100% - 1rem)",
+										boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+									}}
+								>
+									<ListItemText
+										primary={
+											<span style={{ fontSize: "0.8rem" }}>CATEGORIES</span>
+										}
+										sx={{
+											textAlign: "center",
+										}}
+									/>
+								</ListItem>
+							</List>
+						</Box>{" "}
+					</SwipeableDrawer>
+				</React.Fragment>
+			)}
 		</AppBar>
 	);
 };
