@@ -129,6 +129,11 @@ const Register = () => {
 							style={{ marginBottom: "1rem" }}
 							{...registerForm("firstName", {
 								required: "Le prénom est requis",
+								pattern: {
+									value: /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
+									message:
+										"Le prénom ne doit pas contenir de chiffre ou de caractère spécial",
+								},
 								minLength: {
 									value: 2,
 									message: "Le prénom doit avoir au moins 2 caractères",
@@ -149,6 +154,11 @@ const Register = () => {
 							style={{ marginBottom: "1rem" }}
 							{...registerForm("lastName", {
 								required: "Le nom est requis",
+								pattern: {
+									value: /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
+									message:
+										"Le nom ne doit pas contenir de chiffre ou de caractère spécial",
+								},
 								minLength: {
 									value: 2,
 									message: "Le nom doit avoir au moins 2 caractères",
