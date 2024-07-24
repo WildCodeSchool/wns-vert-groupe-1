@@ -225,6 +225,7 @@ const Register = () => {
 						<FormControl fullWidth margin="normal" error={!!errors.city}>
 							<InputLabel id="city-label">Sélectionner une ville</InputLabel>
 							<Select
+								data-testid="city-select"
 								labelId="city-label"
 								{...registerForm("city", {
 									required: "Une ville doit être sélectionnée",

@@ -177,7 +177,6 @@ export const PoiCard = ({
 					))}
 				</Box>
 				<Box
-					data-testid={`poi-${id}`}
 					flexDirection="row"
 					display="flex"
 					onClick={handleClick}
