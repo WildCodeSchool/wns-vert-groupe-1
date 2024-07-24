@@ -33,10 +33,10 @@ export const Header = () => {
 	};
 
 	const menuItems = [
-		{ name: "VILLES", link: "/admin/cities/cities" },
-		{ name: "POINTS D'INTERETS", link: "/admin/pois/pois" },
-		{ name: "UTILISATEURS", link: "/admin/users/users" },
-		{ name: "CATEGORIES", link: "/admin/categories/categories" },
+		{ name: "VILLES", link: "/admin/cities/list" },
+		{ name: "POINTS D'INTERETS", link: "/admin/pois/list" },
+		{ name: "UTILISATEURS" },
+		{ name: "CATEGORIES" },
 	];
 
 	return (
@@ -159,28 +159,28 @@ export const Header = () => {
 						>
 							<List>
 								{menuItems.map((menuItem, index) => (
-									<ListItem
-										key={index}
-										component={Link}
-										href={menuItem.link}
-										sx={{
-											backgroundColor: mainTheme.palette.background.default,
-											marginBottom: "2rem",
-											marginTop: "1rem",
-											borderRadius: "24px",
-											marginLeft: "0.5rem",
-											marginRight: "0.5rem",
-											maxWidth: "calc(100% - 1rem)",
-											boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-										}}
-									>
-										<ListItemText
-											primary={menuItem.name}
+									<Link href={menuItem.link ?? ''} key={index} passHref>
+										<ListItem
+											key={index}
 											sx={{
-												textAlign: "center",
+												backgroundColor: mainTheme.palette.background.default,
+												marginBottom: "2rem",
+												marginTop: "1rem",
+												borderRadius: "24px",
+												marginLeft: "0.5rem",
+												marginRight: "0.5rem",
+												maxWidth: "calc(100% - 1rem)",
+												boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
 											}}
-										/>
-									</ListItem>
+										>
+											<ListItemText
+												primary={menuItem.name}
+												sx={{
+													textAlign: "center",
+												}}
+											/>
+										</ListItem>
+									</Link>
 								))}
 							</List>
 						</Box>{" "}
