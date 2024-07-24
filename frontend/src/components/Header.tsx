@@ -32,6 +32,13 @@ export const Header = () => {
 		console.log(menuOpen)
 	};
 
+	const menuItems = [
+		{ name: "VILLES", link: "/admin/cities/cities" },
+		{ name: "POINTS D'INTERETS", link: "/admin/pois/pois" },
+		{ name: "UTILISATEURS", link: "/admin/users/users" },
+		{ name: "CATEGORIES", link: "/admin/categories/categories" },
+	];
+
 	return (
 		<AppBar position="static">
 			<Toolbar
@@ -50,13 +57,13 @@ export const Header = () => {
 					}}
 				>
 					{router.pathname.startsWith("/admin") && (
-					<IconButton
-						color="inherit"
-						aria-label="open menu"
-						onClick={handleMenuToggle}
-					>
-						<MenuIcon />
-					</IconButton>
+						<IconButton
+							color="inherit"
+							aria-label="open menu"
+							onClick={handleMenuToggle}
+						>
+							<MenuIcon />
+						</IconButton>
 					)}
 					<Link href="/" passHref>
 						<Typography
@@ -142,100 +149,37 @@ export const Header = () => {
 							role="presentation"
 							onClick={() => setMenuOpen(false)}
 							onKeyDown={() => setMenuOpen(true)}
+							sx={{
+								backgroundColor: mainTheme.palette.primary.dark,
+								height: "100vh",
+								width: "20vw",
+							}}
 						>
 							<List>
-								<ListItem
-									component={Link}
-									href="/admin/cities/cities"
-									sx={{
-										backgroundColor: mainTheme.palette.background.default,
-										marginBottom: "2rem",
-										marginTop: "1rem",
-										borderRadius: "24px",
-										marginLeft: "0.5rem",
-										marginRight: "0.5rem",
-										maxWidth: "calc(100% - 1rem)",
-										boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-									}}
-								>
-									<ListItemText
-										primary={<span style={{ fontSize: "0.9rem" }}>VILLES</span>}
+								{menuItems.map((menuItem, index) => (
+									<ListItem
+										key={index}
+										component={Link}
+										href={menuItem.link}
 										sx={{
-											textAlign: "center",
+											backgroundColor: mainTheme.palette.background.default,
+											marginBottom: "2rem",
+											marginTop: "1rem",
+											borderRadius: "24px",
+											marginLeft: "0.5rem",
+											marginRight: "0.5rem",
+											maxWidth: "calc(100% - 1rem)",
+											boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
 										}}
-									/>
-								</ListItem>
-								<ListItem
-									component={Link}
-									href="/admin/pois/pois"
-									sx={{
-										backgroundColor: mainTheme.palette.background.default,
-										marginBottom: "2rem",
-										marginTop: "1rem",
-										borderRadius: "24px",
-										marginLeft: "0.5rem",
-										marginRight: "0.5rem",
-										maxWidth: "calc(100% - 1rem)",
-										boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-									}}
-								>
-									<ListItemText
-										primary={
-											<span style={{ fontSize: "0.8rem" }}>
-												POINTS D&apos;INTERETS
-											</span>
-										}
-										sx={{
-											textAlign: "center",
-										}}
-									/>
-								</ListItem>
-								<ListItem
-									component={Link}
-									href="/admin/users/users"
-									sx={{
-										backgroundColor: mainTheme.palette.background.default,
-										marginBottom: "2rem",
-										marginTop: "1rem",
-										borderRadius: "24px",
-										marginLeft: "0.5rem",
-										marginRight: "0.5rem",
-										maxWidth: "calc(100% - 1rem)",
-										boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-									}}
-								>
-									<ListItemText
-										primary={
-											<span style={{ fontSize: "0.8rem" }}>UTILISATEURS</span>
-										}
-										sx={{
-											textAlign: "center",
-										}}
-									/>
-								</ListItem>
-								<ListItem
-									component={Link}
-									href="/admin/categories/categories"
-									sx={{
-										backgroundColor: mainTheme.palette.background.default,
-										marginBottom: "2rem",
-										marginTop: "1rem",
-										borderRadius: "24px",
-										marginLeft: "0.5rem",
-										marginRight: "0.5rem",
-										maxWidth: "calc(100% - 1rem)",
-										boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-									}}
-								>
-									<ListItemText
-										primary={
-											<span style={{ fontSize: "0.8rem" }}>CATEGORIES</span>
-										}
-										sx={{
-											textAlign: "center",
-										}}
-									/>
-								</ListItem>
+									>
+										<ListItemText
+											primary={menuItem.name}
+											sx={{
+												textAlign: "center",
+											}}
+										/>
+									</ListItem>
+								))}
 							</List>
 						</Box>{" "}
 					</SwipeableDrawer>
