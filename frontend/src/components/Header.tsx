@@ -184,7 +184,16 @@ export const Header = () => {
 											}}
 										>
 											<ListItemText
-												primary={menuItem?.name}
+												disableTypography
+												primary={
+													<Typography
+														sx={{
+															fontSize: mainTheme.typography.h4,
+														}}
+													>
+														{menuItem?.name}
+													</Typography>
+												}
 												sx={{
 													textAlign: "center",
 												}}
