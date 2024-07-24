@@ -29,14 +29,14 @@ export const Header = () => {
 
 	const handleMenuToggle = () => {
 		setMenuOpen(!menuOpen);
-		console.log(menuOpen)
+		console.log(menuOpen);
 	};
 
 	const menuItems = [
-		{ name: "VILLES", link: "/admin/cities/list" },
-		{ name: "POINTS D'INTERETS", link: "/admin/pois/list" },
-		{ name: "UTILISATEURS" },
-		{ name: "CATEGORIES" },
+		{ name: "Villes", link: "/admin/cities/list" },
+		{ name: "Points d'intérêts", link: "/admin/pois/list" },
+		{ name: "Utilisateurs" },
+		{ name: "Catégories" },
 	];
 
 	return (
@@ -175,14 +175,12 @@ export const Header = () => {
 										<ListItem
 											key={index}
 											sx={{
-												backgroundColor: mainTheme.palette.background.default,
-												marginBottom: "2rem",
-												marginTop: "1rem",
+												backgroundColor: mainTheme.palette.primary.light,
+												marginBottom: "3rem",
 												borderRadius: "24px",
 												marginLeft: "0.5rem",
 												marginRight: "0.5rem",
 												maxWidth: "calc(100% - 1rem)",
-												boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
 											}}
 										>
 											<ListItemText
