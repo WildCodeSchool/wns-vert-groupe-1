@@ -1,4 +1,12 @@
-import { Typography, Button, TextField, Paper, Box, Grid } from "@mui/material";
+import {
+	Typography,
+	Button,
+	TextField,
+	Paper,
+	Box,
+	Grid,
+	CircularProgress,
+} from "@mui/material";
 import { mainTheme } from "@theme";
 import { SubmitHandler, useForm } from "react-hook-form";
 import React, { useLayoutEffect } from "react";
@@ -11,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { CHECK_CITY_UNIQUE } from "@queries";
 
 const NewCity = () => {
-	const { isAuthenticated, user, isLoading } = useAuth();
+	const { isAuthenticated, isLoadingSession, user } = useAuth();
 	const router = useRouter();
 
 	const [createNewCity] = useMutation(CREATE_NEW_CITY, {
@@ -67,8 +75,8 @@ const NewCity = () => {
 		}
 	};
 
-	useLayoutEffect(() => {
-		if (!isLoading) {
+	React.useLayoutEffect(() => {
+		if (!isLoadingSession) {
 			if (!isAuthenticated) {
 				router.replace("/");
 			} else {
@@ -77,9 +85,11 @@ const NewCity = () => {
 				}
 			}
 		}
-	}, [isAuthenticated, isLoading, user?.role]);
+	}, [isAuthenticated, isLoadingSession, user?.role]);
 
-	return !isLoading && !isAuthenticated ? (
+	return !isLoadingSession ? (
+		<CircularProgress />
+	) : !isAuthenticated ? (
 		<>
 			<Typography>{ErrorContext.connected}</Typography>
 		</>

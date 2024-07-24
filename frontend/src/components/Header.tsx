@@ -1,6 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { AppBar, Stack, Toolbar, Typography, Box } from "@mui/material";
+import {
+	AppBar,
+	Stack,
+	Toolbar,
+	Typography,
+	Box,
+	CircularProgress,
+} from "@mui/material";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -10,10 +17,12 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Logo from "./Logo";
 
 export const Header = () => {
-	const { onLogout, isAuthenticated, user } = useAuth();
+	const { onLogout, isAuthenticated, user, isLoadingSession } = useAuth();
 	const router = useRouter();
-
-	return (
+	console.log("user", user);
+	return isLoadingSession ? (
+		<CircularProgress />
+	) : (
 		<AppBar position="static">
 			<Toolbar
 				sx={{

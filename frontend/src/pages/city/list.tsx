@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import {
 	Box,
 	Button,
+	CircularProgress,
 	Grid,
 	Modal,
 	Paper,
@@ -10,7 +11,6 @@ import {
 	TableCell,
 	TableContainer,
 	TableHead,
-	TablePagination,
 	TableRow,
 	Typography,
 } from "@mui/material";
@@ -39,7 +39,7 @@ const style = {
 };
 
 const CityList = () => {
-	const { isAuthenticated, isLoading, user } = useAuth();
+	const { isAuthenticated, isLoadingSession, user } = useAuth();
 	const router = useRouter();
 
 	const [open, setOpen] = React.useState<boolean>(false);
@@ -54,8 +54,6 @@ const CityList = () => {
 		error: citiesError,
 		refetch,
 	} = useQuery(GET_ALL_CITIES, {
-		variables: { offset: page * rowsPerPage, limit: rowsPerPage },
-		notifyOnNetworkStatusChange: true,
 		fetchPolicy: "cache-and-network",
 	});
 
@@ -75,7 +73,7 @@ const CityList = () => {
 	}, [citiesData]);
 
 	React.useLayoutEffect(() => {
-		if (!isLoading) {
+		if (!isLoadingSession) {
 			if (!isAuthenticated) {
 				router.replace("/");
 			} else {
@@ -84,7 +82,7 @@ const CityList = () => {
 				}
 			}
 		}
-	}, [isAuthenticated, isLoading, user?.role]);
+	}, [isAuthenticated, isLoadingSession, user?.role]);
 
 	const handleChangePage = (
 		event: React.MouseEvent<HTMLButtonElement> | null,
@@ -103,18 +101,20 @@ const CityList = () => {
 	React.useEffect(() => {
 		if (citiesError) {
 			toast.error(
-				"Une erreur est surveune lors de la récupération des données."
+				"Une erreur est survenue lors de la récupération des données."
 			);
 		}
 
 		if (deleteCityError) {
 			toast.error(
-				"Une erreur est surveune lors de la suppression de la ville."
+				"Une erreur est survenue lors de la suppression de la ville."
 			);
 		}
 	}, [citiesError, deleteCityError]);
 
-	return !isLoading && !isAuthenticated ? (
+	return !isLoadingSession ? (
+		<CircularProgress />
+	) : !isAuthenticated ? (
 		<>
 			<Typography>{errors.connected}</Typography>
 		</>
@@ -171,7 +171,7 @@ const CityList = () => {
 									fontWeight={mainTheme.typography.fontWeightMedium}
 									alignContent="center"
 								>
-									Listes des villes :
+									Liste des villes :
 								</Typography>
 								<AddCircleIcon
 									onClick={() => router.push("/city/new")}
@@ -297,27 +297,12 @@ const CityList = () => {
 											</TableBody>
 										</Table>
 									</TableContainer>
-									<TablePagination
-										component="div"
-										count={count}
-										page={page}
-										onPageChange={handleChangePage}
-										rowsPerPage={rowsPerPage}
-										onRowsPerPageChange={handleChangeRowsPerPage}
-										labelRowsPerPage="Lignes par page"
-										rowsPerPageOptions={[1, 2, 3, 4, 5, 6]}
-									/>
 									<Modal
 										key={city?.id}
 										open={open}
 										onClose={() => setOpen(false)}
 										aria-labelledby="modal-modal-title"
 										aria-describedby="modal-modal-description"
-										// BackdropProps={{
-										// 	style: {
-										// 		backgroundColor: "rgba(0, 0, 0, 0.1)",
-										// 	},
-										// }}
 									>
 										<Box sx={style}>
 											<Typography

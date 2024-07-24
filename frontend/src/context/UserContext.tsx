@@ -1,5 +1,9 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { CHECK_INFO, GET_USER, LOGIN } from "../graphql/queries/queries";
+import {
+	CHECK_INFO,
+	GET_USER_BY_EMAIL,
+	LOGIN,
+} from "../graphql/queries/queries";
 import { LoginT, UserType, UserInput } from "@types";
 import { useRouter } from "next/router";
 import React from "react";
@@ -13,7 +17,7 @@ interface Store {
 	isAuthenticated: boolean;
 	jwt: string | undefined;
 	loading?: boolean;
-	isLoading: boolean;
+	isLoadingSession: boolean;
 	onLogout: () => void;
 	onLogin: (payload: LoginT) => void;
 	onRegister: (payload: UserInput) => void;
@@ -27,7 +31,7 @@ const defaultStore: Store = {
 	isAuthenticated: false,
 	jwt: undefined,
 	loading: false,
-	isLoading: false,
+	isLoadingSession: false,
 	setUser: () => {},
 	onLogin: () => {},
 	onRegister: () => {},
@@ -51,17 +55,18 @@ function UserProvider({ children }: PropsWithChildren) {
 	const router = useRouter();
 	const [user, setUser] = React.useState(defaultStore["user"]);
 	const [error, setError] = React.useState(defaultStore["error"]);
-	const [checkSession, { loading: loadingCheckSession, refetch }] =
+	const [checkSession, { loading: loadingCheckSession }] =
 		useLazyQuery(CHECK_INFO);
 	const [jwt, setJwt] = React.useState(defaultStore["jwt"]);
 	const [login, { loading: loadingLogin }] = useLazyQuery(LOGIN);
 	const [register] = useMutation(REGISTER);
-	const [getUser, { loading: loadingGetUser }] = useLazyQuery(GET_USER);
-	const [isLoading, setIsLoading] = React.useState<boolean>(true);
+	const [getUser, { loading: loadingGetUser }] =
+		useLazyQuery(GET_USER_BY_EMAIL);
+	const [isLoadingSession, setIsLoadingSession] = React.useState<boolean>(true);
 
 	const onLogin = React.useCallback(
 		async (payload: LoginT) => {
-			setIsLoading(true);
+			setIsLoadingSession(true);
 			await login({
 				variables: {
 					userData: { email: payload.email, password: payload.password },
@@ -69,27 +74,23 @@ function UserProvider({ children }: PropsWithChildren) {
 			})
 				.then((res) => {
 					const data = JSON.parse(res.data.login);
-					getUser({ variables: { getUserByIdId: data.id } })
+					getUser({ variables: { email: payload.email } })
 						.then((res) => {
 							setJwt(data.token);
-							setUser(res?.data?.getUserById);
+							setUser(res?.data?.getUserByEmail);
 							localStorage.setItem("jwt", data.token);
-							localStorage.setItem(
-								"user",
-								JSON.stringify(res?.data?.getUserById)
-							);
-							setIsLoading(false);
+							setIsLoadingSession(false);
 						})
 
 						.catch(() => {
 							setError(errors.getUser);
-							setIsLoading(false);
+							setIsLoadingSession(false);
 							toast.error(errors.getUser);
 						});
 				})
 				.catch(() => {
 					setError(errors.login);
-					setIsLoading(false);
+					setIsLoadingSession(false);
 					toast.error(errors.login);
 				});
 		},
@@ -98,7 +99,7 @@ function UserProvider({ children }: PropsWithChildren) {
 
 	const onRegister = React.useCallback(
 		async (payload: UserInput) => {
-			setIsLoading(true);
+			setIsLoadingSession(true);
 			await register({
 				variables: {
 					newUserData: payload,
@@ -109,11 +110,11 @@ function UserProvider({ children }: PropsWithChildren) {
 						toast.success("Votre inscription a bien été pris en compte.");
 						router.push("/login");
 					}
-					setIsLoading(false);
+					setIsLoadingSession(false);
 				})
 				.catch(() => {
 					setError(errors.register);
-					setIsLoading(false);
+					setIsLoadingSession(false);
 					toast.error(errors.register);
 				});
 		},
@@ -131,39 +132,40 @@ function UserProvider({ children }: PropsWithChildren) {
 		if (jwt) {
 			window.localStorage.setItem("jwt", jwt);
 		}
-		if (user) {
-			window.localStorage.setItem("user", JSON.stringify(user));
-		}
-	}, [jwt, user]);
+	}, [jwt]);
 
 	React.useEffect(() => {
 		async function restore() {
-			setIsLoading(true);
+			setIsLoadingSession(true);
 			await checkSession()
 				.then((res) => {
 					if (!res?.data?.checkSession) {
 						onLogout();
 					}
+					getUser({ variables: { email: res?.data?.checkSession.email } })
+						.then((result) => {
+							setUser(result?.data?.getUserByEmail);
+						})
+						.catch(() => onLogout());
 				})
 				.catch(() => {
 					onLogout();
 					toast.error("Une erreur est survenue.");
 				});
 			const storedToken = window.localStorage.getItem("jwt");
-			const storedUser = window.localStorage.getItem("user");
 			setJwt(storedToken ? storedToken : defaultStore["jwt"]);
-			setUser(storedUser ? JSON.parse(storedUser) : defaultStore["user"]);
-			setIsLoading(false);
+			setIsLoadingSession(false);
 		}
 
 		restore();
 	}, [checkSession, onLogout]);
 
+	//add register loading
 	const loading: boolean = React.useMemo(() => {
 		return loadingGetUser || loadingLogin || loadingCheckSession;
 	}, [loadingGetUser, loadingLogin, loadingCheckSession]);
 
-	const isAuthenticated = !!user && !!jwt;
+	const isAuthenticated = !!jwt;
 
 	const initialState: any = React.useMemo(
 		() => ({
@@ -176,7 +178,7 @@ function UserProvider({ children }: PropsWithChildren) {
 			onLogout,
 			isAuthenticated,
 			loading,
-			isLoading,
+			isLoadingSession,
 			onRegister,
 		}),
 		[
@@ -189,7 +191,7 @@ function UserProvider({ children }: PropsWithChildren) {
 			onLogout,
 			isAuthenticated,
 			loading,
-			isLoading,
+			isLoadingSession,
 			onRegister,
 		]
 	);

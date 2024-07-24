@@ -8,35 +8,15 @@ import { GraphQLError } from "graphql";
 
 @Resolver()
 export class CityResolver {
-	@Authorized("Administrateur du site")
 	@Query(() => [City])
-	async getAllCities(
-		@Arg("offset", () => Number, { nullable: true })
-		offset: number,
-		@Arg("limit", () => Number, { nullable: true })
-		limit: number,
-		@Ctx() ctx: { role: string }
-	): Promise<City[] | String> {
+	async getAllCities(): Promise<City[]> {
 		try {
-			if (ctx.role === "Administrateur du site") {
-				const result = await City.find({
-					relations: ["pois"],
-					skip: offset,
-					take: limit,
-					order: { name: "ASC" },
-				});
-				return result;
-			} else {
-				throw new GraphQLError("User is not authorized", {
-					extensions: {
-						code: "UNAUTHORIZED",
-						http: { status: 401 },
-					},
-				});
-				// throw new Error("You don't have the right to fetch cities data.");
-			}
+			const result = await City.find({
+				relations: ["pois"],
+				order: { name: "ASC" },
+			});
+			return result;
 		} catch (error) {
-			console.error(error);
 			throw new Error("Failed to fetch cities");
 		}
 	}
@@ -89,7 +69,7 @@ export class CityResolver {
 		}
 	}
 
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => City)
 	async createNewCity(@Arg("cityData") cityData: CityInput) {
 		try {
@@ -115,8 +95,7 @@ export class CityResolver {
 			throw new Error(`Error : ${error}`);
 		}
 	}
-
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => String)
 	async deleteAllCities() {
 		try {
@@ -127,7 +106,7 @@ export class CityResolver {
 		}
 	}
 
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => String)
 	async deleteCityById(@Arg("id") id: number) {
 		try {
@@ -142,7 +121,7 @@ export class CityResolver {
 		}
 	}
 
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => City)
 	async updateCity(
 		@Arg("id") id: number,

@@ -22,18 +22,15 @@ const SECRET_KEY = process.env.SECRET_KEY;
 
 @Resolver()
 export class UserResolver {
-	@Authorized(["Administrateur du site", "Administrateur de ville"])
+	@Authorized(["ADMIN", "CITYADMIN"])
 	@Query(() => [User])
-	async getAllUsers(@Ctx() ctx: { role: string; email: string }) {
+	async getAllUsers(@Ctx() ctx: { role: UserRole; email: string }) {
 		try {
 			const user = await User.findOneByOrFail({ email: ctx.email });
-			if (
-				ctx.role === "Administrateur du site" ||
-				ctx.role === "Administrateur de ville"
-			) {
+			if (ctx.role === "ADMIN" || ctx.role === "CITYADMIN") {
 				const users = await User.find({
 					where:
-						ctx.role === "Administrateur de ville"
+						ctx.role === "CITYADMIN"
 							? { city: { id: user?.cityId } }
 							: { city: { id: undefined } },
 					relations: { city: true },
@@ -55,6 +52,7 @@ export class UserResolver {
 		}
 	}
 
+	@Authorized()
 	@Query(() => User)
 	async getUserById(@Arg("id") id: number) {
 		try {
@@ -83,16 +81,13 @@ export class UserResolver {
 	@Mutation(() => String)
 	async deleteUserById(
 		@Arg("id") id: number,
-		@Ctx() ctx: { role: string; email: string }
+		@Ctx() ctx: { role: UserRole; email: string }
 	) {
 		try {
 			const userToDelete = await User.findOneByOrFail({
 				id: id,
 			});
-			if (
-				ctx.role === "Administrateur du site" ||
-				ctx.email === userToDelete?.email
-			) {
+			if (ctx.role === "ADMIN" || ctx.email === userToDelete?.email) {
 				userToDelete.remove();
 				return "User deleted";
 			} else {
@@ -108,7 +103,7 @@ export class UserResolver {
 		}
 	}
 
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => String)
 	async deleteAllUsers() {
 		try {
@@ -119,22 +114,31 @@ export class UserResolver {
 		}
 	}
 
+	@Query(() => User)
+	async getUserByEmail(@Arg("email") email: string) {
+		try {
+			const user = await User.findOneByOrFail({ email: email });
+			return user;
+		} catch (error) {
+			throw new Error(`Error : ${error}`);
+		}
+	}
+
 	@Authorized()
 	@Mutation(() => String)
 	async updateUserById(
 		@Arg("id") id: number,
 		@Arg("newUserInput") newUserInput: UserUpdateInput,
-		@Ctx() ctx: { email: string; role: string }
+		@Ctx() ctx: { email: string; role: UserRole }
 	) {
 		try {
 			const loggedUser = await User.findOneByOrFail({ email: ctx.email });
 			const oldUser = await User.findOneByOrFail({ id: id });
 
 			if (
-				ctx.role === "Administrateur du site" ||
+				ctx.role === "ADMIN" ||
 				oldUser?.email === ctx.email ||
-				(ctx.role === "Administrateur de ville" &&
-					oldUser.cityId === loggedUser?.cityId)
+				(ctx.role === "CITYADMIN" && oldUser.cityId === loggedUser?.cityId)
 			) {
 				Object.assign(oldUser, newUserInput);
 				await oldUser.save();
@@ -199,7 +203,6 @@ export class UserResolver {
 	@Query(() => String)
 	async login(@Arg("userData") { email, password }: UserLoginInput) {
 		let payload: { email: string; role: UserRole };
-		// ; id: number; city_id: number
 		try {
 			const user = await User.findOneByOrFail({ email });
 			if (!user) {
@@ -210,12 +213,9 @@ export class UserResolver {
 				payload = {
 					email: user.email,
 					role: user.role,
-					// id: user?.id,
-					// city_id: user?.cityId,
 				};
 				const token: string = jwt.sign(payload, SECRET_KEY);
 				return JSON.stringify({ token: token });
-				// , id: user.id
 			} else {
 				throw new Error("Invalid password");
 			}

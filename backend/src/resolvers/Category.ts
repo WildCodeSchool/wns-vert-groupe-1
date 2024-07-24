@@ -11,7 +11,7 @@ export class CategoryResolver {
 		const result = await Category.find({ relations: ["pois"] });
 		return result;
 	}
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => Category)
 	async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
 		const category = await Category.create({
@@ -28,7 +28,7 @@ export class CategoryResolver {
 		return category;
 	}
 
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => String)
 	async updateCategory(
 		@Arg("categoryData") categoryData: CategoryInput,

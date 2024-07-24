@@ -87,7 +87,7 @@ export type UserType = {
 	email: string;
 	password: string;
 	city: number;
-	role: string;
+	role: UserRoleType;
 };
 
 export type LoginT = {
@@ -95,3 +95,5 @@ export type LoginT = {
 	password: string;
 	checked: boolean;
 };
+
+export type UserRoleType = "ADMIN" | "CITYADMIN" | "SUPERUSER" | "USER";

@@ -17,11 +17,12 @@ import { City } from "./city";
 import { IsEmail, IsNotEmpty, Length, Matches } from "class-validator";
 
 export enum UserRole {
-	ADMIN = "Administrateur du site",
-	CITYADMIN = "Administrateur de ville",
-	SUPERUSER = "Super utilisateur",
-	USER = "Utilisateur",
+	ADMIN = "ADMIN",
+	CITYADMIN = "CITYADMIN",
+	SUPERUSER = "SUPERUSER",
+	USER = "USER",
 }
+
 registerEnumType(UserRole, {
 	name: "UserRole",
 	description: "Role utilisateur",
@@ -82,7 +83,10 @@ export class User extends BaseEntity {
 	// Many to One relationship (many users one city)
 	@Field(() => City)
 	@JoinColumn({ name: "cityId" })
-	@ManyToOne(() => City, (city) => city.users, { onDelete: "CASCADE" })
+	@ManyToOne(() => City, (city) => city.users, {
+		onDelete: "CASCADE",
+		eager: true,
+	})
 	city: City;
 
 	@Column()
@@ -96,9 +100,5 @@ export class UserInfo {
 	@Field({ nullable: true })
 	email: string;
 	@Field({ nullable: true })
-	role: string;
-	@Field()
-	city_id: number;
-	@Field()
-	id: number;
+	role: UserRole;
 }
