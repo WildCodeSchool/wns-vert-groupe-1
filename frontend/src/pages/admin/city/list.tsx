@@ -163,7 +163,7 @@ const CityList = () => {
 							Listes des villes :
 						</Typography>
 						<AddCircleIcon
-							onClick={() => router.push("/city/new")}
+							onClick={() => router.push("/admin/city/new")}
 							sx={{
 								color: mainTheme.palette.primary.main,
 								fontSize: "50px",
@@ -252,7 +252,7 @@ const CityList = () => {
 																			cursor: "pointer",
 																		}}
 																		onClick={() =>
-																			router.push(`/city/edit/${city.id}`)
+																			router.push(`admin/city/edit/${city.id}`)
 																		}
 																	/>
 																	<DeleteIcon

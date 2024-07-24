@@ -33,8 +33,8 @@ export const Header = () => {
 	};
 
 	const menuItems = [
-		{ name: "Villes", link: "/admin/cities/list" },
-		{ name: "Points d'intérêts", link: "/admin/pois/list" },
+		{ name: "Villes", link: "/admin/city/list" },
+		{ name: "Points d'intérêts", link: "/admin/poi/list" },
 		{ name: "Utilisateurs" },
 		{ name: "Catégories" },
 	];
