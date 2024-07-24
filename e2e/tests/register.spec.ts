@@ -49,30 +49,6 @@ test.describe("User tests", () => {
 		await expect(page).toHaveURL("http://localhost:7000/login");
 	});
 
-	// test("User authentication", async ({ page }) => {
-	// 	await page.goto("http://localhost:7000/", { waitUntil: "networkidle" });
-
-	// 	await page.getByTestId("AccountCircleIcon").click();
-
-	// 	await expect(page).toHaveURL("http://localhost:7000/login");
-
-	// 	const emailLogin = await page.waitForSelector('label:has-text("Email *")', {
-	// 		state: "visible",
-	// 	});
-	// 	await emailLogin.fill("adelina@gmail.com");
-
-	// 	const passwordLogin = await page.waitForSelector(
-	// 		'label:has-text("Mot de passe *")',
-	// 		{ state: "visible" }
-	// 	);
-	// 	await passwordLogin.fill("adelina");
-
-	// 	await page.getByLabel("Se souvenir de moi").check();
-
-	// 	await page.getByRole("button", { name: "Envoyer" }).click();
-
-	// 	await expect(page).toHaveURL("http://localhost:7000/");
-	// });
 });
 
 
