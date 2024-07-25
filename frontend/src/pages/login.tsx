@@ -22,7 +22,7 @@ const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 
 	const router = useRouter();
-	const { onLogin, user } = useAuth();
+	const { onLogin, user, loading } = useAuth();
 	const { height } = useWindowDimensions();
 
 	const handleClick = (event: React.MouseEvent) => {
@@ -83,7 +83,7 @@ const LoginPage = () => {
 							gutterBottom
 							fontWeight="bold"
 						>
-							Se connecter
+							Connexion
 						</Typography>
 						<form
 							onSubmit={(e) => {
@@ -156,7 +156,7 @@ const LoginPage = () => {
 									borderRadius: "24px",
 								}}
 							>
-								Envoyer
+								{!loading ? "Se connecter" : "Connexion en cours..."}
 							</Button>
 							<Typography
 								gutterBottom
@@ -165,7 +165,7 @@ const LoginPage = () => {
 								align="center"
 								sx={{ fontSize: "1rem", textAlign: "center" }}
 							>
-								Pas encore de compte ?
+								Vous n&apos;avez pas de compte ?
 								<Link
 									href="/register"
 									underline="hover"

@@ -29,7 +29,6 @@ export class GeoCodingService {
       );
       if (response.ok) {
         const data = await response.json();
-        console.log("data", data);
 
         if (data.features && data.features.length > 0) {
           const firstResult = data.features[0];

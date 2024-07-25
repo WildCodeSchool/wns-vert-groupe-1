@@ -36,17 +36,23 @@ const start = async () => {
       CategoryResolver,
       RatingResolver,
     ],
-    authChecker: ({ context }) => {
-      if (context.email) {
-        return true;
-      } else {
-        return false;
+    authChecker: ({ context }, roles) => {
+      if (context.email && roles.length > 0) {
+        if (roles.includes(context.role)) {
+          return true;
+        } else {
+          return false;
+        }
       }
+      if (roles.length === 0 && context.email) {
+        return true;
+      }
+      return false;
     },
   });
 
   if (!process.env.SECRET_KEY) {
-    throw new Error("SECRET_KEY environment variable is not defined");
+    throw new Error("SECRET_KEY environment variable is not defined.");
   }
   const SECRET_KEY = process.env.SECRET_KEY;
 
