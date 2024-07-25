@@ -14,6 +14,6 @@ export class UserInput {
   @Field()
   email: string;
 
-  @Field({ nullable: true })
-  city?: number;
+  @Field()
+  city: number;
 }

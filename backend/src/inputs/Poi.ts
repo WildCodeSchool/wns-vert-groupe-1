@@ -1,25 +1,31 @@
-import { Field, InputType } from "type-graphql";
+import { Field, InputType, Float } from "type-graphql";
 
 @InputType()
 export class PoiInput {
-  @Field()
-  name: string;
+	@Field()
+	name: string;
 
-  @Field()
-  address: string;
+	@Field()
+	address: string;
 
-  @Field()
-  postalCode: string;
+	@Field()
+	postalCode: string;
 
-  @Field()
-  description: string;
+	@Field()
+	description: string;
 
-  @Field()
-  city: number;
+	@Field()
+	city: number;
 
-  @Field(() => [String])
-  images: string[];
+	@Field(() => Float, { nullable: true })
+	latitude?: number;
 
-  @Field()
-  category: number;
+	@Field(() => Float, { nullable: true })
+	longitude?: number;
+
+	@Field(() => [String])
+	images: string[];
+
+	@Field()
+	category: number;
 }
