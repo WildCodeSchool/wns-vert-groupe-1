@@ -108,7 +108,7 @@ return loading ? (
 						Liste des POIs :
 					</Typography>
 					<AddCircleIcon
-						onClick={() => router.push("admin/poi/new")}
+						onClick={() => router.push("/admin/poi/new")}
 						sx={{
 							color: mainTheme.palette.primary.main,
 							fontSize: "50px",
@@ -199,7 +199,7 @@ return loading ? (
 																fontSize: "25px",
 																cursor: "pointer",
 															}}
-															onClick={() => router.push(`admin/poi/edit/${poi.id}`)}
+															onClick={() => router.push(`/admin/poi/edit/${poi.id}`)}
 														/>
 														<DeleteIcon
 															sx={{

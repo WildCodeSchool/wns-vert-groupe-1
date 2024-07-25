@@ -233,7 +233,7 @@ const CityList = () => {
 																				cursor: "pointer",
 																			}}
 																			onClick={() => {
-																				router.push(`admin/city/${city.id}`);
+																				router.push(`/admin/city/${city.id}`);
 																			}}
 																		/>
 																		<EditIcon
@@ -243,7 +243,7 @@ const CityList = () => {
 																				cursor: "pointer",
 																			}}
 																			onClick={() =>
-																				router.push(`admin/city/edit/${city.id}`)
+																				router.push(`/admin/city/edit/${city.id}`)
 																			}
 																		/>
 																		<DeleteIcon
