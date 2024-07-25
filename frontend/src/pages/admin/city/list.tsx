@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { GET_ALL_CITIES } from "@queries";
 import { mainTheme } from "@theme";
-import { errors, useAuth } from "../../context";
+import { errors, useAuth } from "../../../context";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
@@ -152,7 +152,7 @@ const CityList = () => {
 									Liste des villes :
 								</Typography>
 								<AddCircleIcon
-									onClick={() => router.push("/city/new")}
+									onClick={() => router.push("admin/city/new")}
 									sx={{
 										color: mainTheme.palette.primary.main,
 										fontSize: "50px",
@@ -233,7 +233,7 @@ const CityList = () => {
 																				cursor: "pointer",
 																			}}
 																			onClick={() => {
-																				router.push(`/city/${city.id}`);
+																				router.push(`/admin/city/${city.id}`);
 																			}}
 																		/>
 																		<EditIcon
@@ -243,7 +243,7 @@ const CityList = () => {
 																				cursor: "pointer",
 																			}}
 																			onClick={() =>
-																				router.push(`/city/edit/${city.id}`)
+																				router.push(`/admin/city/edit/${city.id}`)
 																			}
 																		/>
 																		<DeleteIcon

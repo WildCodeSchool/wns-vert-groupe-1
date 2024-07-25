@@ -6,11 +6,17 @@ import {
 	Toolbar,
 	Typography,
 	Box,
+	IconButton,
+	ListItemText,
+	ListItem,
+	SwipeableDrawer,
+	List,
 	CircularProgress,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
 import { mainTheme } from "@theme";
 import { useAuth } from "../context";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
@@ -19,7 +25,21 @@ import Logo from "./Logo";
 export const Header = () => {
 	const { onLogout, isAuthenticated, user, isLoadingSession } = useAuth();
 	const router = useRouter();
-	console.log("user", user);
+	const [menuOpen, setMenuOpen] = React.useState(false);
+
+	const handleMenuToggle = () => {
+		setMenuOpen(!menuOpen);
+		console.log(menuOpen);
+	};
+
+	const menuItems = [
+		{ name: "Villes", link: "/admin/city/list" },
+		{ name: "Points d'intérêt", link: "/admin/poi/list" },
+		{ name: "Utilisateurs" },
+		{ name: "Catégories" },
+	];
+
+
 	return isLoadingSession ? (
 		<CircularProgress />
 	) : (
@@ -37,8 +57,19 @@ export const Header = () => {
 					sx={{
 						position: "absolute",
 						left: 0,
+						display: "flex",
+						alignItems: "center",
 					}}
 				>
+					{router.pathname.startsWith("/admin") && (
+						<IconButton
+							color="inherit"
+							aria-label="open menu"
+							onClick={handleMenuToggle}
+						>
+							<MenuIcon />
+						</IconButton>
+					)}
 					<Link href="/" passHref>
 						<Typography
 							color="inherit"
@@ -111,6 +142,73 @@ export const Header = () => {
 					)}
 				</Box>
 			</Toolbar>
+			{router.pathname.startsWith("/admin") && (
+				<React.Fragment key={"left"}>
+					<SwipeableDrawer
+						anchor={"left"}
+						open={menuOpen}
+						onClose={() => setMenuOpen(false)}
+						onOpen={() => setMenuOpen(true)}
+					>
+						<Box
+							role="presentation"
+							onClick={() => setMenuOpen(false)}
+							onKeyDown={() => setMenuOpen(true)}
+							sx={{
+								backgroundColor: mainTheme.palette.primary.dark,
+								height: "100vh",
+								width: "20vw",
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "center",
+							}}
+						>
+							<Box
+								sx={{
+									marginTop: "5vh",
+									marginBottom: "15vh",
+								}}
+							>
+								<Logo />
+							</Box>
+
+							<List>
+								{menuItems.map((menuItem, index) => (
+									<Link href={menuItem.link ?? ""} key={index} passHref>
+										<ListItem
+											key={index}
+											sx={{
+												backgroundColor: mainTheme.palette.primary.light,
+												marginBottom: "3rem",
+												borderRadius: "24px",
+												marginLeft: "0.5rem",
+												marginRight: "0.5rem",
+												maxWidth: "calc(100% - 1rem)",
+											}}
+										>
+											<ListItemText
+												disableTypography
+												primary={
+													<Typography
+														sx={{
+															fontSize: mainTheme.typography.h4,
+														}}
+													>
+														{menuItem?.name}
+													</Typography>
+												}
+												sx={{
+													textAlign: "center",
+												}}
+											/>
+										</ListItem>
+									</Link>
+								))}
+							</List>
+						</Box>{" "}
+					</SwipeableDrawer>
+				</React.Fragment>
+			)}
 		</AppBar>
 	);
 };
