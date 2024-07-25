@@ -9,9 +9,9 @@ import {
 	IconButton,
 	ListItemText,
 	ListItem,
-	Button,
 	SwipeableDrawer,
 	List,
+	CircularProgress,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -23,7 +23,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Logo from "./Logo";
 
 export const Header = () => {
-	const { onLogout, isAuthenticated, user } = useAuth();
+	const { onLogout, isAuthenticated, user, isLoadingSession } = useAuth();
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = React.useState(false);
 
@@ -39,7 +39,10 @@ export const Header = () => {
 		{ name: "Catégories" },
 	];
 
-	return (
+
+	return isLoadingSession ? (
+		<CircularProgress />
+	) : (
 		<AppBar position="static">
 			<Toolbar
 				sx={{

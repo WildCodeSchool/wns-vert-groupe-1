@@ -74,10 +74,10 @@ export type POI = {
 
 export type UserInput = {
 	firstName: string;
-	lastName: number;
+	lastName: string;
 	email: string;
 	password: string;
-	city?: number;
+	city: number;
 };
 
 export type UserType = {
@@ -86,8 +86,8 @@ export type UserType = {
 	lastName: number;
 	email: string;
 	password: string;
-	city?: number;
-	role: string;
+	city: number;
+	role: UserRoleType;
 };
 
 export type LoginT = {
@@ -95,3 +95,5 @@ export type LoginT = {
 	password: string;
 	checked: boolean;
 };
+
+export type UserRoleType = "ADMIN" | "CITYADMIN" | "SUPERUSER" | "USER";

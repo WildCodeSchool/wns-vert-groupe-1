@@ -81,14 +81,14 @@ export class Poi extends BaseEntity {
   images: string[];
 
   @Field(() => City)
-  @ManyToOne(() => City, (city) => city.pois)
+  @ManyToOne(() => City, (city) => city.pois, { eager: true })
   city: City;
 
   @Field(() => Category)
-  @ManyToOne(() => Category, (category) => category.pois)
+  @ManyToOne(() => Category, (category) => category.pois, { eager: true })
   category: Category;
 
-  @Field(() => [Rating])
-  @OneToMany(() => Rating, (rating) => rating.poi, { nullable: true })
-  ratings: Rating[];
+  @Field(() => [Rating], { nullable: true })
+  @OneToMany(() => Rating, (rating) => rating.poi)
+  ratings?: Rating[];
 }

@@ -1,24 +1,26 @@
 import { Field, ObjectType, registerEnumType } from "type-graphql";
 import {
-  BaseEntity,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  Unique,
+	BaseEntity,
+	Column,
+	Entity,
+	PrimaryGeneratedColumn,
+	ManyToOne,
+	Unique,
+	JoinColumn,
 } from "typeorm";
 import { City } from "./city";
 import { IsEmail, IsNotEmpty, Length, Matches } from "class-validator";
 
 export enum UserRole {
-  ADMIN = "Administrateur du site",
-  CITYADMIN = "Administrateur de ville",
-  SUPERUSER = "Super utilisateur",
-  USER = "Utilisateur",
+	ADMIN = "ADMIN",
+	CITYADMIN = "CITYADMIN",
+	SUPERUSER = "SUPERUSER",
+	USER = "USER",
 }
+
 registerEnumType(UserRole, {
-  name: "UserRole",
-  description: "Role utilisateur",
+	name: "UserRole",
+	description: "Role utilisateur",
 });
 
 @ObjectType()
@@ -73,7 +75,25 @@ export class User extends BaseEntity {
 	})
 	role: UserRole;
 
-	@Field(() => City, { nullable: true })
-	@ManyToOne(() => City, (city: City) => city.users, { onDelete: "CASCADE" })
-	city?: City;
+	// Many to One relationship (many users one city)
+	@Field(() => City)
+	@JoinColumn({ name: "cityId" })
+	@ManyToOne(() => City, (city) => city.users, {
+		onDelete: "CASCADE",
+		eager: true,
+	})
+	city: City;
+
+	@Column()
+	cityId: number;
+}
+
+@ObjectType()
+export class UserInfo {
+	@Field()
+	isLoggedIn: boolean;
+	@Field({ nullable: true })
+	email: string;
+	@Field({ nullable: true })
+	role: UserRole;
 }
