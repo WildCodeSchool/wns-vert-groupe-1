@@ -1,10 +1,9 @@
 import { City } from "../entities";
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import { CityUpdateInput, CityInput } from "../inputs";
 import { GeoCodingService } from "../services";
 import { redisClient } from "../index";
 import { validate } from "class-validator";
-import { GraphQLError } from "graphql";
 
 @Resolver()
 export class CityResolver {

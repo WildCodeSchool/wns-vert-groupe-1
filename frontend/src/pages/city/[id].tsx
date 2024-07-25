@@ -35,10 +35,10 @@ const DisplayCityByID = () => {
 			{loading ? (
 				<CircularProgress color="primary" />
 			) : (
-				<Box flex={1} p={10}>
+				<Box flex={1} paddingX={10} width={"100%"}>
 					<>
 						{data?.getCityById ? (
-							<Grid container direction={"column"} gap={10} paddingTop={10}>
+							<Grid container direction={"column"} gap={10} paddingY={10}>
 								<Grid item>
 									<Typography
 										component="h1"

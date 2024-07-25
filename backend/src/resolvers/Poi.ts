@@ -41,24 +41,22 @@ export class PoiResolver {
 		@Ctx() ctx: { role: UserRole; email: string }
 	) {
 		try {
-		} catch (error) {}
-		const loggedUser = await User.findOneByOrFail({ email: ctx.email });
-		const city = await City.findOneByOrFail({ id: poiData.city });
-		const category = await Category.findOneByOrFail({ id: poiData.category });
+			const loggedUser = await User.findOneByOrFail({ email: ctx.email });
+			const city = await City.findOneByOrFail({ id: poiData.city });
+			const category = await Category.findOneByOrFail({ id: poiData.category });
 
-		if (!city) {
-			throw new Error(`City with ID ${poiData.city} not found`);
-		}
+			if (!city) {
+				throw new Error(`City with ID ${poiData.city} not found`);
+			}
 
-		if (!category) {
-			throw new Error(`Category with ID ${poiData.category} not found`);
-		}
-		if (
-			ctx.role === "ADMIN" ||
-			(ctx.role === "CITYADMIN" && loggedUser.cityId === poiData.city) ||
-			(ctx.role === "SUPERUSER" && loggedUser.cityId === poiData.city)
-		) {
-			if (poiData.address !== undefined) {
+			if (!category) {
+				throw new Error(`Category with ID ${poiData.category} not found`);
+			}
+			if (
+				ctx.role === "ADMIN" ||
+				(ctx.role === "CITYADMIN" && loggedUser.cityId === poiData.city) ||
+				(ctx.role === "SUPERUSER" && loggedUser.cityId === poiData.city)
+			) {
 				const fullAddress = `${poiData.address}, ${city.name} ${poiData.postalCode}`;
 
 				const coordinates = await GeoCodingService.getCoordinatesByAddress(
@@ -86,14 +84,16 @@ export class PoiResolver {
 				await poi.save();
 
 				return poi;
+			} else {
+				throw new GraphQLError("You are not authorized to create POI.", {
+					extensions: {
+						code: "UNAUTHORIZED",
+						http: { status: 401 },
+					},
+				});
 			}
-		} else {
-			throw new GraphQLError("You are not authorized to create POI.", {
-				extensions: {
-					code: "UNAUTHORIZED",
-					http: { status: 401 },
-				},
-			});
+		} catch (error) {
+			throw new Error(`Error ${error}`);
 		}
 	}
 

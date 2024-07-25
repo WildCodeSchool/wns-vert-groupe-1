@@ -1,9 +1,4 @@
-import {
-	createUnionType,
-	Field,
-	ObjectType,
-	registerEnumType,
-} from "type-graphql";
+import { Field, ObjectType, registerEnumType } from "type-graphql";
 import {
 	BaseEntity,
 	Column,

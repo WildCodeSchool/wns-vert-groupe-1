@@ -87,7 +87,7 @@ const NewCity = () => {
 		}
 	}, [isAuthenticated, isLoadingSession, user?.role]);
 
-	return !isLoadingSession ? (
+	return isLoadingSession ? (
 		<CircularProgress />
 	) : !isAuthenticated ? (
 		<>

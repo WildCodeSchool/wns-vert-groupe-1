@@ -90,7 +90,7 @@ const CityList = () => {
 		}
 	}, [citiesError, deleteCityError]);
 
-	return !isLoadingSession ? (
+	return isLoadingSession ? (
 		<CircularProgress />
 	) : !isAuthenticated ? (
 		<>
@@ -232,12 +232,9 @@ const CityList = () => {
 																				fontSize: "25px",
 																				cursor: "pointer",
 																			}}
-																			onClick={() =>
-																				router.push(`/city/search/${city.name}`)
-																			}
-																			// onClick={() => {
-																			// 	router.push(`/city/${city.id}`);
-																			// }}
+																			onClick={() => {
+																				router.push(`/city/${city.id}`);
+																			}}
 																		/>
 																		<EditIcon
 																			sx={{
