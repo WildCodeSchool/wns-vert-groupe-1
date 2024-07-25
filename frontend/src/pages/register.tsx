@@ -100,6 +100,7 @@ const Register = () => {
 						</Typography>
 
 						<TextField
+							inputProps={{ "data-testid": "surname" }}
 							required
 							fullWidth
 							placeholder="Prénom *"
@@ -126,6 +127,7 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "name" }}
 							required
 							fullWidth
 							placeholder="Nom *"
@@ -152,6 +154,7 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "email" }}
 							required
 							fullWidth
 							placeholder="E-mail *"
@@ -173,6 +176,7 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "password" }}
 							required
 							fullWidth
 							placeholder="Mot de passe *"
@@ -212,6 +216,7 @@ const Register = () => {
 						<FormControl fullWidth margin="normal" error={!!errors.city}>
 							<InputLabel id="city-label">Sélectionner une ville</InputLabel>
 							<Select
+								data-testid="city-select"
 								labelId="city-label"
 								{...registerForm("city", {
 									required: "Une ville doit être sélectionnée",
@@ -233,6 +238,7 @@ const Register = () => {
 						</FormControl>
 
 						<Button
+							data-testid="submit"
 							variant="contained"
 							color="primary"
 							type="submit"
