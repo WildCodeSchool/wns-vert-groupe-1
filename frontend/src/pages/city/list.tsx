@@ -43,9 +43,7 @@ const CityList = () => {
 	const router = useRouter();
 
 	const [open, setOpen] = React.useState<boolean>(false);
-	const [page, setPage] = React.useState<number>(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
-	const [count, setCount] = React.useState<number>(0);
+
 	const [city, setCity] = React.useState<CityType>();
 
 	const {
@@ -66,12 +64,6 @@ const CityList = () => {
 		},
 	] = useMutation(DELETE_CITY_BY_ID);
 
-	React.useEffect(() => {
-		if (citiesData?.getAllCities) {
-			setCount(citiesData?.getAllCities.length + 1);
-		}
-	}, [citiesData]);
-
 	React.useLayoutEffect(() => {
 		if (!isLoadingSession) {
 			if (!isAuthenticated) {
@@ -83,20 +75,6 @@ const CityList = () => {
 			}
 		}
 	}, [isAuthenticated, isLoadingSession, user?.role]);
-
-	const handleChangePage = (
-		event: React.MouseEvent<HTMLButtonElement> | null,
-		newPage: number
-	) => {
-		setPage(newPage);
-	};
-
-	const handleChangeRowsPerPage = (
-		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
-	};
 
 	React.useEffect(() => {
 		if (citiesError) {
@@ -210,88 +188,82 @@ const CityList = () => {
 											<TableBody>
 												{citiesData?.getAllCities?.map(
 													(city: CityType, index: number) => {
-														if (index < rowsPerPage) {
-															return (
-																<TableRow
-																	key={city.name}
+														return (
+															<TableRow
+																key={city.name}
+																sx={{
+																	"&:last-child td, &:last-child th": {
+																		border: 0,
+																	},
+																}}
+															>
+																<TableCell align="center">
+																	{city.name}
+																</TableCell>
+																<TableCell
 																	sx={{
-																		"&:last-child td, &:last-child th": {
-																			border: 0,
-																		},
+																		maxWidth: 300,
+																		whiteSpace: "nowrap",
+																		overflow: "hidden",
+																		textOverflow: "ellipsis",
 																	}}
+																	align="center"
 																>
-																	<TableCell align="center">
-																		{city.name}
-																	</TableCell>
-																	<TableCell
-																		sx={{
-																			maxWidth: 300,
-																			whiteSpace: "nowrap",
-																			overflow: "hidden",
-																			textOverflow: "ellipsis",
-																		}}
-																		align="center"
-																	>
-																		{city?.description}
-																	</TableCell>
-																	<TableCell align="center">
-																		{city?.lat}
-																	</TableCell>
-																	<TableCell align="center">
-																		{city?.lon}
-																	</TableCell>
+																	{city?.description}
+																</TableCell>
+																<TableCell align="center">
+																	{city?.lat}
+																</TableCell>
+																<TableCell align="center">
+																	{city?.lon}
+																</TableCell>
 
-																	<TableCell align="center">
-																		<Box
-																			display="flex"
-																			flexDirection="row"
-																			justifyContent="space-evenly"
-																			alignContent="center"
-																			gap={mainTheme.spacing(2)}
-																		>
-																			<RemoveRedEyeIcon
-																				sx={{
-																					color: mainTheme.palette.primary.main,
-																					fontSize: "25px",
-																					cursor: "pointer",
-																				}}
-																				onClick={() =>
-																					router.push(
-																						`/city/search/${city.name}`
-																					)
-																				}
-																				// onClick={() => {
-																				// 	router.push(`/city/${city.id}`);
-																				// }}
-																			/>
-																			<EditIcon
-																				sx={{
-																					color: mainTheme.palette.primary.main,
-																					fontSize: "25px",
-																					cursor: "pointer",
-																				}}
-																				onClick={() =>
-																					router.push(`/city/edit/${city.id}`)
-																				}
-																			/>
-																			<DeleteIcon
-																				sx={{
-																					color: mainTheme.palette.primary.main,
-																					fontSize: "25px",
-																					cursor: "pointer",
-																				}}
-																				onClick={() => {
-																					setOpen(true);
-																					setCity(city);
-																				}}
-																			/>
-																		</Box>
-																	</TableCell>
-																</TableRow>
-															);
-														} else {
-															return <></>;
-														}
+																<TableCell align="center">
+																	<Box
+																		display="flex"
+																		flexDirection="row"
+																		justifyContent="space-evenly"
+																		alignContent="center"
+																		gap={mainTheme.spacing(2)}
+																	>
+																		<RemoveRedEyeIcon
+																			sx={{
+																				color: mainTheme.palette.primary.main,
+																				fontSize: "25px",
+																				cursor: "pointer",
+																			}}
+																			onClick={() =>
+																				router.push(`/city/search/${city.name}`)
+																			}
+																			// onClick={() => {
+																			// 	router.push(`/city/${city.id}`);
+																			// }}
+																		/>
+																		<EditIcon
+																			sx={{
+																				color: mainTheme.palette.primary.main,
+																				fontSize: "25px",
+																				cursor: "pointer",
+																			}}
+																			onClick={() =>
+																				router.push(`/city/edit/${city.id}`)
+																			}
+																		/>
+																		<DeleteIcon
+																			sx={{
+																				color: mainTheme.palette.primary.main,
+																				fontSize: "25px",
+																				cursor: "pointer",
+																			}}
+																			onClick={() => {
+																				setOpen(true);
+																				setCity(city);
+																			}}
+																		/>
+																	</Box>
+																</TableCell>
+															</TableRow>
+														);
 													}
 												)}
 											</TableBody>
