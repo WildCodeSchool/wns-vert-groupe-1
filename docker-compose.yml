@@ -39,7 +39,7 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
       interval: 10s
@@ -47,6 +47,8 @@ services:
       retries: 20
     volumes:
       - pgdata:/var/lib/postgresql/data
+    env_file:
+      - ./backend/.env
   redis:
     image: redis
   redis-commander:
