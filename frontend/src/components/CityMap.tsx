@@ -21,7 +21,6 @@ export const CityMap = ({
 		onMarkerClick(poiId);
 	};
 
-
 	return (
 		<Map
 			key={key}
