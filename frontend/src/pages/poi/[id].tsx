@@ -1,33 +1,34 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
-import Carousel from "react-material-ui-carousel";
 import {
 	Breadcrumbs,
-	ImageList,
-	ImageListItem,
 	Typography,
 	Grid,
 	Paper,
 	Link,
+	CircularProgress,
 } from "@mui/material";
 import { GET_POI_BY_ID } from "@queries";
-import { POIInput } from "@types";
+import { POIInput, PoiType } from "@types";
 import { mainTheme } from "@theme";
 import PlaceIcon from "@mui/icons-material/Place";
 import { ImagesCarousel, CreateReviewForm, ReviewList } from "@components";
 import { useAuth } from "context";
+import AverageRating from "components/AverageRating";
 
 const POIDetails = () => {
 	const router = useRouter();
 	const { user } = useAuth();
-	const [POI, setPOI] = useState<POIInput>({
+	const [POI, setPOI] = useState<PoiType>({
 		name: "",
 		address: "",
 		description: "",
 		images: [],
-		city: "",
-		category: "",
+		city: undefined,
+		category: undefined,
+		ratings: [],
+		averageNote: 0,
 	});
 
 	const { loading, error, data } = useQuery(GET_POI_BY_ID, {
@@ -41,23 +42,13 @@ const POIDetails = () => {
 				address: data.getPoiById.address,
 				description: data.getPoiById.description,
 				images: data.getPoiById.images,
-				city: data.getPoiById.city.name,
-				category: data.getPoiById.category.name,
+				city: data.getPoiById.city,
+				category: data.getPoiById.category,
+				ratings: data.getPoiById.ratings,
+				averageNote: data.getPoiById.averageNote,
 			});
 		}
-	}, [data, error, router.query.id]);
-
-	function Item(props: { item: string; index: number }) {
-		return (
-			<Paper>
-				<img
-					src={props.item}
-					alt={`Image ${props.index}`}
-					style={{ width: "100%" }}
-				/>
-			</Paper>
-		);
-	}
+	}, [data, error, router.query.id, loading]);
 
 	const handleCityClick = () => {
 		router.push(`/city/search/${POI.city}`);
@@ -66,12 +57,10 @@ const POIDetails = () => {
 	const handleCategoryClick = () => {
 		router.push(`/city/search/${POI.city}/category/${POI.category}`);
 	};
-	const carouselImageStyle = {
-		width: "100%",
-		height: "300px",
-		objectFit: "cover",
-	};
-	return (
+
+	return loading ? (
+		<CircularProgress />
+	) : (
 		<div>
 			<Breadcrumbs
 				aria-label="breadcrumb"
@@ -84,7 +73,7 @@ const POIDetails = () => {
 					sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
 					color={mainTheme.palette.primary.dark}
 				>
-					{POI.city}
+					{POI.city?.name}
 				</Link>
 				<Link
 					underline="hover"
@@ -92,7 +81,7 @@ const POIDetails = () => {
 					sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
 					color={mainTheme.palette.primary.dark}
 				>
-					{POI.category}
+					{POI.category?.name}
 				</Link>
 				<Link
 					underline="hover"
@@ -141,8 +130,9 @@ const POIDetails = () => {
 							marginTop: "3rem",
 						}}
 					>
-						NOTE
+						NOTE MOYENNE
 					</Typography>
+					<AverageRating averageRating={POI.averageNote ?? 0} />
 					<Typography
 						color={mainTheme.palette.primary.main}
 						align="left"

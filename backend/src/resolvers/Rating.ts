@@ -54,6 +54,10 @@ export class RatingResolver {
 				poi,
 				user,
 			}).save();
+			// Recalcular averageNote
+			const ratings = await Rating.find({ where: { poi: { id: ratingData.poi } } });
+			poi.averageNote = ratings.reduce((acc, r) => acc + r.rating, 0) / ratings.length;
+			await poi.save();
 
 			return rating;
 		} catch (error) {
@@ -64,10 +68,22 @@ export class RatingResolver {
 
 	@Mutation(() => String)
 	async deleteRatingById(@Arg("id") id: number) {
-		const ratingToDelete = await Rating.findOneByOrFail({
-			id: id,
-		});
-		ratingToDelete.remove();
-		return "Your rating has been deleted";
+		try {
+			const ratingToDelete = await Rating.findOneByOrFail({ id });
+			const poi = await Poi.findOne({ where: { id: ratingToDelete.poi.id }, relations: ["ratings"] });
+
+			await ratingToDelete.remove();
+
+			// Recalculate averageNote
+			if (poi && poi.ratings.length > 0) {
+				poi.averageNote = poi.ratings.reduce((acc, r) => acc + r.rating, 0) / poi.ratings.length;
+				await poi.save();
+			}
+
+			return "Your rating has been deleted";
+		} catch (error) {
+			console.error("Error deleting rating:", error);
+			throw new Error("Failed to delete rating");
+		}
 	}
 }

@@ -17,11 +17,11 @@ export const RatingStars = ({ rating }: { rating: number }) => {
 		const stars = [];
 		for (let i = 0; i < 5; i++) {
 			if (i < fullStars) {
-				stars.push(<StarIcon key={i} />);
+				stars.push(<StarIcon key={i} sx={{ color: "#FFB400" }} />);
 			} else if (i === fullStars && hasHalfStar) {
-				stars.push(<StarHalf key={i} />);
+				stars.push(<StarHalf key={i} sx={{ color: "#FFB400" }} />);
 			} else {
-				stars.push(<StarOutlineIcon key={i} />);
+				stars.push(<StarOutlineIcon key={i} sx={{ color: "#FFB400" }} />);
 			}
 		}
 		console.log(stars);
@@ -38,7 +38,7 @@ export const ReviewList = () => {
 			console.log("reviewData", data);
 		}
 		if (error) {
-			// toas("error", error);
+			console.log("error", error);
 		}
 	}, [data]);
 	if (loading) return <CircularProgress />;
@@ -48,7 +48,14 @@ export const ReviewList = () => {
 	// const displayText = userEmail ? userEmail : `User ID: ${userId}`;
 
 	return (
-		<Box>
+		<Box
+			sx={{
+				marginTop: "0.50rem",
+				maxHeight: "200px",
+				overflowY: "auto",
+				padding: "1rem",
+			}}
+		>
 			{data?.getAllRatings.map((review: any) => (
 				<Box key={review.id}>
 					<Typography>

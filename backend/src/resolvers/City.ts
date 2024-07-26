@@ -60,7 +60,7 @@ export class CityResolver {
           where: {
             name: capitalizedName,
           },
-          relations: ["pois", "pois.category"],
+          relations: ["pois", "pois.category", "pois.averageNote"],
         });
 
         if (!result) {

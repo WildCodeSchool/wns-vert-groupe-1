@@ -18,6 +18,30 @@ export const GET_ALL_CITIES = gql`
 	}
 `;
 
+export const GET_ALL_POIS = gql`
+	query GetAllPois {
+		getAllPois {
+			id
+			description
+			address
+			name
+			latitude
+			longitude
+			postalCode
+			averageNote
+			city {
+				id
+				name
+			}
+			category {
+				id
+				name
+			}
+			images
+		}
+	}
+`;
+
 export const GET_ALL_CATEGORIES = gql`
 	query GetAllCategories {
 		getAllCategories {
@@ -39,6 +63,7 @@ export const GET_CITY_BY_NAME = gql`
 				description
 				latitude
 				longitude
+				averageNote
 				images
 				category {
 					id
@@ -57,6 +82,10 @@ export const GET_POI_BY_ID = gql`
 			description
 			address
 			name
+			latitude
+			longitude
+			postalCode
+			averageNote
 			city {
 				id
 				name
@@ -144,4 +173,10 @@ query Query {
 	  text
 	}
   }
+`;
+
+export const CHECK_EMAIL_UNIQUE = gql`
+	query IsEmailUnique($email: String!) {
+		isEmailUnique(email: $email)
+	}
 `;

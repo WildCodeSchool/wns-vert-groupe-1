@@ -6,7 +6,7 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
-import { Field, ObjectType } from "type-graphql";
+import { Field, Float, ObjectType } from "type-graphql";
 import { City } from "./city";
 import { Category } from "./category";
 import { Rating } from "./rating";
@@ -57,4 +57,8 @@ export class Poi extends BaseEntity {
   @Field(() => [Rating])
   @OneToMany(() => Rating, (rating) => rating.poi, { nullable: true })
   ratings: Rating[];
+
+  @Field(() => Float)
+  @Column("float", { nullable: true })
+  averageNote?: number;
 }

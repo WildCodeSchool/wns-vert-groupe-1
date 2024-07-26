@@ -40,7 +40,8 @@ export const CreateReviewForm = () => {
 					ratingData: {
 						rating,
 						text: comment,
-						user: user!.id,
+						// user: user!.id,
+						user: 7,
 						poi: parseFloat(id as string),
 					},
 				},
@@ -56,6 +57,7 @@ export const CreateReviewForm = () => {
 
 	return (
 		<>
+			<div style={{ marginTop: "1rem" }}></div>
 			<form onSubmit={handleSubmit}>
 				<div>
 					<Rating
@@ -87,9 +89,27 @@ export const CreateReviewForm = () => {
 						}}
 					/>
 				</div>
-				<div>
-					<Button type="submit" disabled={loading}>
-						{loading ? <CircularProgress size={24} /> : "Submit"}
+				<div
+					style={{
+						marginTop: "0.50rem",
+						display: "flex",
+						justifyContent: "flex-end",
+					}}
+				>
+					<Button
+						type="submit"
+						disabled={loading}
+						sx={{
+							textTransform: "none",
+							backgroundColor: mainTheme.palette.primary.dark,
+							color: "white",
+							"&:hover": {
+								backgroundColor: mainTheme.palette.primary.light,
+								color: mainTheme.palette.primary.dark,
+							},
+						}}
+					>
+						{loading ? <CircularProgress size={24} /> : "Ajouter"}
 					</Button>
 				</div>
 				{error && <Alert severity="error">Error: {error.message}</Alert>}

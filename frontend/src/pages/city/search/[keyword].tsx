@@ -109,108 +109,114 @@ const SearchResults = () => {
 	return loading ? (
 		<CircularProgress />
 	) : (
-		<Grid
-			container
-			display="flex"
-			flexGrow={1}
-			sx={{ sm: "column", md: "column", lg: "row", xl: "row" }}
-		>
+		<>
+			<title>
+				Liste des lieux d&#39;intérêts de la ville de {searchedCity.name}
+			</title>
 			<Grid
-				item
-				display="grid"
-				flex="1"
-				maxHeight={window.innerHeight - 120}
-				overflow="auto"
-				alignContent="flex-start"
-				gap={4}
+				container
+				display="flex"
+				flexGrow={1}
+				sx={{ sm: "column", md: "column", lg: "row", xl: "row" }}
 			>
-				<Box padding={mainTheme.spacing(6)}>
-					<SearchForm />
-				</Box>
-				<Box
-					display="flex"
-					alignItems="center"
-					gap={mainTheme.spacing(3)}
-					paddingX={mainTheme.spacing(6)}
+				<Grid
+					item
+					display="grid"
+					flex="1"
+					maxHeight={window.innerHeight - 120}
+					overflow="auto"
+					alignContent="flex-start"
+					gap={4}
 				>
-					<Tag
-						key={"category-tag-all-categories"}
-						name="Tous les catégories"
-						isActive={activeCategories.length === 0}
-						onClick={() => handleCategoryTagClick("Tous les catégories")}
-					/>
-					{categoryTags.map((category) => (
-						<Tag
-							key={category.id}
-							name={category.name}
-							isActive={activeCategories.includes(category.name)}
-							onClick={() => handleCategoryTagClick(category.name)}
-						/>
-					))}
-				</Box>
-				{searchedCity.name !== "" && data!! ? (
-					<Box
-						padding={mainTheme.spacing(6)}
-						display="flex"
-						flexDirection="column"
-						gap={6}
-					>
-						<Typography
-							sx={{
-								color: mainTheme.palette.primary.dark,
-								fontSize: mainTheme.typography.h3,
-								fontWeight: "bold",
-							}}
-						>
-							{searchedCity.name} ({filteredPois.length})
-						</Typography>
-						{filteredPois.length > 0 ? (
-							<>
-								{filteredPois?.map((poi) => (
-									<PoiCard
-										id={poi.id}
-										key={poi.id}
-										name={poi.name}
-										images={poi.images}
-										category={poi.category}
-										description={poi.description}
-										onMouseOver={() => handleMouseOverPoi(poi.id)}
-										onMouseOut={handleMouseOutPoi}
-									/>
-								))}
-							</>
-						) : (
-							<Typography>
-								Cette ville ne possède pas encore de point d&apos;intérêt.
-							</Typography>
-						)}
+					<Box padding={mainTheme.spacing(6)}>
+						<SearchForm />
 					</Box>
-				) : (
-					dataFetched && (
-						<Typography
-							sx={{
-								color: mainTheme.palette.error.main,
-								mb: mainTheme.spacing(2),
-							}}
+					<Box
+						display="flex"
+						alignItems="center"
+						gap={mainTheme.spacing(3)}
+						paddingX={mainTheme.spacing(6)}
+					>
+						<Tag
+							key={"category-tag-all-categories"}
+							name="Toutes les catégories"
+							isActive={activeCategories.length === 0}
+							onClick={() => handleCategoryTagClick("Tous les catégories")}
+						/>
+						{categoryTags.map((category) => (
+							<Tag
+								key={category.id}
+								name={category.name}
+								isActive={activeCategories.includes(category.name)}
+								onClick={() => handleCategoryTagClick(category.name)}
+							/>
+						))}
+					</Box>
+					{searchedCity.name !== "" && data!! ? (
+						<Box
+							padding={mainTheme.spacing(6)}
+							display="flex"
+							flexDirection="column"
+							gap={6}
 						>
-							Aucune ville trouvée pour le terme de recherche :{" "}
-							{router.query.keyword}
-						</Typography>
-					)
-				)}
+							<Typography
+								sx={{
+									color: mainTheme.palette.primary.dark,
+									fontSize: mainTheme.typography.h3,
+									fontWeight: "bold",
+								}}
+							>
+								{searchedCity.name} ({filteredPois.length})
+							</Typography>
+							{filteredPois.length > 0 ? (
+								<>
+									{filteredPois?.map((poi) => (
+										<PoiCard
+											id={poi.id}
+											key={poi.id}
+											name={poi.name}
+											images={poi.images}
+											category={poi.category}
+											description={poi.description}
+											averageNote={poi.averageNote}
+											onMouseOver={() => handleMouseOverPoi(poi.id)}
+											onMouseOut={handleMouseOutPoi}
+										/>
+									))}
+								</>
+							) : (
+								<Typography>
+									Cette ville ne possède pas encore de point d&apos;intérêt.
+								</Typography>
+							)}
+						</Box>
+					) : (
+						dataFetched && (
+							<Typography
+								sx={{
+									color: mainTheme.palette.error.main,
+									mb: mainTheme.spacing(2),
+								}}
+							>
+								Aucune ville trouvée pour le terme de recherche :{" "}
+								{router.query.keyword}
+							</Typography>
+						)
+					)}
+				</Grid>
+				<Grid item flex="1" display="grid">
+					{dataFetched && (
+						<CityMap
+							lat={searchedCity.lat}
+							lon={searchedCity.lon}
+							pois={searchedCity.pois}
+							activePoiId={activePoiId}
+							onMarkerClick={(poiId) => scrollToPoi(poiId)}
+						/>
+					)}
+				</Grid>
 			</Grid>
-			<Grid item flex="1" display="grid">
-				{dataFetched && (
-					<CityMap
-						lat={searchedCity.lat}
-						lon={searchedCity.lon}
-						pois={searchedCity.pois}
-						activePoiId={activePoiId}
-						onMarkerClick={(poiId) => scrollToPoi(poiId)}
-					/>
-				)}
-			</Grid>
-		</Grid>
+		</>
 	);
 };
 
