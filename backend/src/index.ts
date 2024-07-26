@@ -20,6 +20,11 @@ import {
 	ApolloServerPluginLandingPageProductionDefault,
 } from "@apollo/server/plugin/landingPage/default";
 
+console.log(
+	"ENV VAR",
+	process.env.DATABASE_USERNAME,
+	process.env.DATABASE_PASSWORD
+);
 export const redisClient = createClient({ url: "redis://redis" });
 
 redisClient.on("error", (err: any) => {
@@ -32,6 +37,11 @@ redisClient.on("connect", () => {
 const start = async () => {
 	await redisClient.connect();
 	await dataSource.initialize();
+	console.log(
+		"ENV VAR",
+		process.env.DATABASE_USERNAME,
+		process.env.DATABASE_PASSWORD
+	);
 
 	const schema = await buildSchema({
 		resolvers: [
