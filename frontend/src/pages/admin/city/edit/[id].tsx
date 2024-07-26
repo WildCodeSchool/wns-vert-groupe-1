@@ -4,7 +4,7 @@ import { EDIT_CITY_BY_ID } from "@mutations";
 import { GET_CITY_BY_ID } from "@queries";
 import { mainTheme } from "@theme";
 import { CityInput } from "@types";
-import { useAuth } from "../../../context";
+import { useAuth } from "../../../../context";
 import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
@@ -42,7 +42,7 @@ const EditCityByID = () => {
 		})
 			.then((res: any) => {
 				toast.success(`La ville ${form.name} a bien été modifié.`);
-				router.push(`/city/${res?.data?.updateCity?.id}`);
+				router.push(`admin/city/${res?.data?.updateCity?.id}`);
 			})
 			.catch(() => {
 				toast.error(

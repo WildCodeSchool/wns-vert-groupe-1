@@ -39,7 +39,6 @@ export const Header = () => {
 		{ name: "Catégories" },
 	];
 
-
 	return isLoadingSession ? (
 		<CircularProgress />
 	) : (
@@ -104,8 +103,7 @@ export const Header = () => {
 								<>
 									<AdminPanelSettingsIcon
 										onClick={() => {
-											// router.push("/admin");
-											router.push("/city/list");
+											router.push("admin/city/list");
 										}}
 										sx={{
 											fontSize: mainTheme.typography.h3,
