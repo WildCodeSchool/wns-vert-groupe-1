@@ -42,7 +42,7 @@ const EditCityByID = () => {
 		})
 			.then((res: any) => {
 				toast.success(`La ville ${form.name} a bien été modifié.`);
-				router.push(`/city/${res?.data?.updateCity?.id}`);
+				router.push(`admin/city/${res?.data?.updateCity?.id}`);
 			})
 			.catch(() => {
 				toast.error(
