@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
