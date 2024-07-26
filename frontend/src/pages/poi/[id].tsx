@@ -21,6 +21,7 @@ import { ImagesCarousel, RatingStars } from "@components";
 import AverageRating from "components/AverageRating";
 import { CREATE_REVIEW_MUTATION } from "@mutations";
 import { useAuth } from "context";
+import { toast } from "react-toastify";
 
 const POIDetails = () => {
 	const router = useRouter();
@@ -69,10 +70,12 @@ const POIDetails = () => {
 			setErrorText("");
 
 			reviewListRefetch();
+			poiRefetch()
 		} catch (error) {
 			console.error("Error creating review:", error);
 		}
 	};
+
 	const [POI, setPOI] = useState<PoiType>({
 		name: "",
 		address: "",
@@ -84,7 +87,12 @@ const POIDetails = () => {
 		averageNote: 0,
 	});
 
-	const { loading, error, data } = useQuery(GET_POI_BY_ID, {
+	const {
+		loading,
+		error,
+		data,
+		refetch: poiRefetch,
+	} = useQuery(GET_POI_BY_ID, {
 		variables: { id: parseInt(router.query.id as string) },
 	});
 
@@ -110,6 +118,8 @@ const POIDetails = () => {
 	const handleCategoryClick = () => {
 		router.push(`/city/search/${POI.city}/category/${POI.category}`);
 	};
+
+	if (error || reviewListError) toast.error("Une erreur est survenue.");
 
 	return loading || reviewListLoading || reviewListLoading ? (
 		<CircularProgress />
