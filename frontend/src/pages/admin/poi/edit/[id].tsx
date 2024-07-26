@@ -11,7 +11,7 @@ import {
 	InputLabel,
 	Select,
 	MenuItem,
-    CircularProgress,
+	CircularProgress,
 } from "@mui/material";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import axios from "axios";
@@ -46,8 +46,6 @@ const EditPoiByID = () => {
 		postalCode: "",
 		description: "",
 		city: "",
-		latitude: 0,
-		longitude: 0,
 		images: [],
 		category: "",
 	});
@@ -55,15 +53,13 @@ const EditPoiByID = () => {
 	useEffect(() => {
 		if (poiData?.getPoiById) {
 			setForm({
-				name: poiData.getPoiById.name || "",
-				address: poiData.getPoiById.address || "",
-				postalCode: poiData.getPoiById.postalCode || "",
-				description: poiData.getPoiById.description || "",
-				city: poiData.getPoiById.city.id || "",
-				latitude: poiData.getPoiById.latitude || 0,
-				longitude: poiData.getPoiById.longitude || 0,
-				images: poiData.getPoiById.images || [],
-				category: poiData.getPoiById.category.id || "",
+				name: poiData?.getPoiById?.name,
+				address: poiData?.getPoiById?.address,
+				postalCode: poiData?.getPoiById?.postalCode,
+				description: poiData?.getPoiById?.description,
+				city: poiData?.getPoiById?.city?.id,
+				images: poiData?.getPoiById?.images,
+				category: poiData?.getPoiById?.category?.id,
 			});
 		}
 	}, [poiData]);
@@ -111,34 +107,35 @@ const EditPoiByID = () => {
 		try {
 			await editPoi({
 				variables: {
-					newPoiInput: {
+					poiInput: {
 						name: form.name,
 						address: form.address,
 						postalCode: form.postalCode,
 						description: form.description,
 						city: Number(form.city),
-						latitude: form.latitude,
-						longitude: form.longitude,
 						images: form.images,
 						category: Number(form.category),
 					},
-					id: Number(id),
+					updatePoiByIdId: Number(id),
 				},
 			});
-			toast.success("POI updated successfully");
+			toast.success("Le POI a bien été mis à jour !");
 			router.push(`/poi/${id}`);
 		} catch (error) {
 			console.error("Error updating POI: ", error);
-			toast.error("Error updating POI");
+			toast.error("Erreur lors de la mise à jour du POI.");
 		}
 	};
 
-	if (poiError) return toast.error("Une erreur est survenue.");;
+	if (poiError)
+		return toast.error(
+			"Une erreur est survenue lors de la récupération des données du POI."
+		);
 
-return poiLoading || !cityData || !categoryData ? (
+	return poiLoading || !cityData || !categoryData ? (
 		<CircularProgress />
-	) :	(
-    	<Paper
+	) : (
+		<Paper
 			component={Box}
 			elevation={5}
 			square={false}
@@ -212,28 +209,6 @@ return poiLoading || !cityData || !categoryData ? (
 									))}
 								</Select>
 							</FormControl>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Latitude"
-								name="latitude"
-								type="number"
-								value={form.latitude}
-								onChange={(e) =>
-									setForm({ ...form, latitude: Number(e.target.value) })
-								}
-							/>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Longitude"
-								name="longitude"
-								type="number"
-								value={form.longitude}
-								onChange={(e) =>
-									setForm({ ...form, longitude: Number(e.target.value) })
-								}
-							/>
 							<FormControl fullWidth margin="normal">
 								<InputLabel id="category-label">Catégorie</InputLabel>
 								<Select
@@ -333,7 +308,6 @@ return poiLoading || !cityData || !categoryData ? (
 				</Grid>
 			</Grid>
 		</Paper>
-    
 	);
 };
 

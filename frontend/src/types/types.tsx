@@ -57,8 +57,8 @@ export type POIInput = {
 	name: string;
 	address: string;
 	description: string;
-	city: number;
-	category: number;
+	city?: string;
+	category?: string;
 	images: string[];
 	postalCode: string;
 };

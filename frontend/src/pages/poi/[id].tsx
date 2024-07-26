@@ -28,6 +28,7 @@ const POIDetails = () => {
 
 	const { loading, error, data } = useQuery(GET_POI_BY_ID, {
 		variables: { id: parseInt(router.query.id as string) },
+		fetchPolicy: "cache-and-network",
 	});
 
 	useEffect(() => {
