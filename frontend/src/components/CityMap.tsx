@@ -21,10 +21,11 @@ export const CityMap = ({
 		onMarkerClick(poiId);
 	};
 
+
 	return (
 		<Map
 			key={key}
-			mapboxAccessToken="pk.eyJ1IjoibWVpamU4IiwiYSI6ImNsczF1ZXlqczBjeW4yanBjZzNsbXFuZncifQ.7Z0qk6v18gniDPLKIctVQA"
+			mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
 			latitude={lat}
 			longitude={lon}
 			zoom={10}
