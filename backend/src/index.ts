@@ -14,7 +14,7 @@ import * as jwt from "jsonwebtoken";
 import { createClient } from "redis";
 import * as dotenv from "dotenv";
 dotenv.config();
-import { City } from "./entities";
+// import { City } from "./entities";
 import {
 	ApolloServerPluginLandingPageLocalDefault,
 	ApolloServerPluginLandingPageProductionDefault,
