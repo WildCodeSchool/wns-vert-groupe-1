@@ -4,10 +4,11 @@ import Alert from "@mui/material/Alert";
 import StarIcon from "@mui/icons-material/Star";
 import { StarHalf } from "@mui/icons-material";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
-import { GET_ALL_RATINGS } from "@queries";
+import { GET_RATINGS_BY_POI } from "@queries";
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { toast } from "react-toastify";
+import { mainTheme } from "@theme";
 
 export const RatingStars = ({ rating }: { rating: number }) => {
 	const fullStars = Math.floor(rating);
@@ -17,11 +18,20 @@ export const RatingStars = ({ rating }: { rating: number }) => {
 		const stars = [];
 		for (let i = 0; i < 5; i++) {
 			if (i < fullStars) {
-				stars.push(<StarIcon key={i} sx={{ color: "#FFB400" }} />);
+				stars.push(
+					<StarIcon key={i} sx={{ color: mainTheme.palette.primary.dark }} />
+				);
 			} else if (i === fullStars && hasHalfStar) {
-				stars.push(<StarHalf key={i} sx={{ color: "#FFB400" }} />);
+				stars.push(
+					<StarHalf key={i} sx={{ color: mainTheme.palette.primary.dark }} />
+				);
 			} else {
-				stars.push(<StarOutlineIcon key={i} sx={{ color: "#FFB400" }} />);
+				stars.push(
+					<StarOutlineIcon
+						key={i}
+						sx={{ color: mainTheme.palette.primary.dark }}
+					/>
+				);
 			}
 		}
 		console.log(stars);
@@ -31,8 +41,17 @@ export const RatingStars = ({ rating }: { rating: number }) => {
 	return <div>{renderStars()}</div>;
 };
 
-export const ReviewList = () => {
-	const { loading, error, data } = useQuery(GET_ALL_RATINGS);
+export const ReviewList = ({
+	poiId,
+	refetch,
+}: {
+	poiId: number;
+	refetch: () => void;
+}) => {
+	const { loading, error, data } = useQuery(GET_RATINGS_BY_POI, {
+		variables: { poiId },
+	});
+
 	React.useEffect(() => {
 		if (data) {
 			console.log("reviewData", data);
@@ -41,11 +60,9 @@ export const ReviewList = () => {
 			console.log("error", error);
 		}
 	}, [data]);
+
 	if (loading) return <CircularProgress />;
 	if (error) return <Alert severity="error">Error: {error.message}</Alert>;
-
-	// const userEmail = data.reviewsForUser[0]?.author?.email;
-	// const displayText = userEmail ? userEmail : `User ID: ${userId}`;
 
 	return (
 		<Box
@@ -56,7 +73,7 @@ export const ReviewList = () => {
 				padding: "1rem",
 			}}
 		>
-			{data?.getAllRatings.map((review: any) => (
+			{data?.getRatingsByPoi.map((review: any) => (
 				<Box key={review.id}>
 					<Typography>
 						<RatingStars rating={review.rating} />

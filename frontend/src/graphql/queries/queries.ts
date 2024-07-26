@@ -202,3 +202,17 @@ export const GET_USER_BY_EMAIL = gql`
 		}
 	}
 `;
+export const GET_RATINGS_BY_POI = gql`
+	query GetRatingsByPoi($poiId: Float!) {
+		getRatingsByPoi(poiId: $poiId) {
+			id
+			rating
+			text
+			user {
+				id
+				firstName
+				lastName
+			}
+		}
+	}
+`;

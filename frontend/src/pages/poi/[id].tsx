@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Component } from "react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "@apollo/client";
 import {
@@ -13,7 +13,7 @@ import {
 	Rating,
 	Box,
 } from "@mui/material";
-import { GET_ALL_RATINGS, GET_POI_BY_ID } from "@queries";
+import { GET_ALL_RATINGS, GET_POI_BY_ID, GET_RATINGS_BY_POI } from "@queries";
 import { PoiType } from "@types";
 import { mainTheme } from "@theme";
 import PlaceIcon from "@mui/icons-material/Place";
@@ -22,6 +22,7 @@ import AverageRating from "components/AverageRating";
 import { CREATE_REVIEW_MUTATION } from "@mutations";
 import { useAuth } from "context";
 import { toast } from "react-toastify";
+import { ReviewList } from "@components";
 
 const POIDetails = () => {
 	const router = useRouter();
@@ -33,14 +34,26 @@ const POIDetails = () => {
 		createReview,
 		{ loading: reviewLoading, error: reviewError, data: reviewData },
 	] = useMutation(CREATE_REVIEW_MUTATION);
+
+	const { id, rating: urlRating } = router.query;
+
+	const {
+		loading: poiLoading,
+		error: poiError,
+		data: poiData,
+		refetch: poiRefetch,
+	} = useQuery(GET_POI_BY_ID, {
+		variables: { id: parseInt(router.query.id as string) },
+	});
+
 	const {
 		loading: reviewListLoading,
 		error: reviewListError,
 		data: reviewListData,
 		refetch: reviewListRefetch,
-	} = useQuery(GET_ALL_RATINGS);
-
-	const { id, rating: urlRating } = router.query;
+	} = useQuery(GET_RATINGS_BY_POI, {
+		variables: { poiId: parseInt(router.query.id as string) },
+	});
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		console.log(rating, comment);
@@ -70,7 +83,7 @@ const POIDetails = () => {
 			setErrorText("");
 
 			reviewListRefetch();
-			poiRefetch()
+			poiRefetch();
 		} catch (error) {
 			console.error("Error creating review:", error);
 		}
@@ -87,29 +100,20 @@ const POIDetails = () => {
 		averageNote: 0,
 	});
 
-	const {
-		loading,
-		error,
-		data,
-		refetch: poiRefetch,
-	} = useQuery(GET_POI_BY_ID, {
-		variables: { id: parseInt(router.query.id as string) },
-	});
-
 	useEffect(() => {
-		if (!loading && data && data.getPoiById) {
+		if (!poiLoading && poiData && poiData.getPoiById) {
 			setPOI({
-				name: data.getPoiById.name,
-				address: data.getPoiById.address,
-				description: data.getPoiById.description,
-				images: data.getPoiById.images,
-				city: data.getPoiById.city,
-				category: data.getPoiById.category,
-				ratings: data.getPoiById.ratings,
-				averageNote: data.getPoiById.averageNote,
+				name: poiData.getPoiById.name,
+				address: poiData.getPoiById.address,
+				description: poiData.getPoiById.description,
+				images: poiData.getPoiById.images,
+				city: poiData.getPoiById.city,
+				category: poiData.getPoiById.category,
+				ratings: poiData.getPoiById.ratings,
+				averageNote: poiData.getPoiById.averageNote,
 			});
 		}
-	}, [data, error, router.query.id, loading]);
+	}, [poiData, poiError, router.query.id, poiLoading]);
 
 	const handleCityClick = () => {
 		router.push(`/city/search/${POI.city}`);
@@ -119,9 +123,9 @@ const POIDetails = () => {
 		router.push(`/city/search/${POI.city}/category/${POI.category}`);
 	};
 
-	if (error || reviewListError) toast.error("Une erreur est survenue.");
+	if (poiError || reviewListError) toast.error("Une erreur est survenue.");
 
-	return loading || reviewListLoading || reviewListLoading ? (
+	return poiLoading || reviewListLoading ? (
 		<CircularProgress />
 	) : (
 		<div>
@@ -277,26 +281,10 @@ const POIDetails = () => {
 						</>
 					)}
 					{!user && <h5>Merci de vous connecter pour laisser un message</h5>}
-					<Box
-						sx={{
-							marginTop: "0.50rem",
-							maxHeight: "200px",
-							overflowY: "auto",
-							padding: "1rem",
-						}}
-					>
-						{reviewListData?.getAllRatings.map((review: any) => (
-							<Box key={review.id}>
-								<Typography>
-									<RatingStars rating={review.rating} />
-								</Typography>
-								<Typography>
-									{review.user.firstName} {review.user.lastName}
-								</Typography>
-								<Typography>{review.text}</Typography>
-							</Box>
-						))}
-					</Box>{" "}
+					<ReviewList
+						poiId={parseInt(router.query.id as string)}
+						refetch={reviewListRefetch}
+					/>
 				</Grid>
 			</Grid>
 		</div>
