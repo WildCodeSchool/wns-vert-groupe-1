@@ -28,15 +28,16 @@ const POIDetails = () => {
 	const [comment, setComment] = useState("");
 	const [errorText, setErrorText] = useState("");
 	const { user } = useAuth();
-	const [createReview, { loading: reviewLoading, error: reviewError, data: reviewData }] = useMutation(
-		CREATE_REVIEW_MUTATION
-	);
-const {
-	loading: reviewListLoading,
-	error: reviewListError,
-	data: reviewListData,
-	refetch: reviewListRefetch,
-} = useQuery(GET_ALL_RATINGS);
+	const [
+		createReview,
+		{ loading: reviewLoading, error: reviewError, data: reviewData },
+	] = useMutation(CREATE_REVIEW_MUTATION);
+	const {
+		loading: reviewListLoading,
+		error: reviewListError,
+		data: reviewListData,
+		refetch: reviewListRefetch,
+	} = useQuery(GET_ALL_RATINGS);
 
 	const { id, rating: urlRating } = router.query;
 
