@@ -4,6 +4,12 @@ import Typography from "@mui/material/Typography";
 import { Box, Stack } from "@mui/material";
 import { mainTheme } from "@theme";
 import { ReactTyped } from "react-typed";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "City Guide ",
+	description: "Exploez, partaggez et découvrez",
+};
 
 const Home = () => {
 	return (

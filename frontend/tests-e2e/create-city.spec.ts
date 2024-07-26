@@ -3,20 +3,20 @@ import { test, expect } from "@playwright/test";
 test("Trigger a error when the form is submitted with empty inputs and after create a city", async ({
 	page,
 }) => {
-	await page.goto("http://localhost:3000/login");
+	await page.goto("http://localhost:7000/login");
 
 	await page.getByLabel("Email *").fill("duygu@gmail.com");
 
 	await page.getByLabel("Mot de passe *").fill("password");
 
 	await page.getByRole("button", { name: "Envoyer" }).click();
-	await expect(page).toHaveURL("http://localhost:3000/");
+	await expect(page).toHaveURL("http://localhost:7000/");
 
 	await page.pause();
 	//to modify
 	await page.getByRole("button", { name: "GO CITY NEW FORM" }).click();
 
-	await expect(page).toHaveURL("http://localhost:3000/city/new");
+	await expect(page).toHaveURL("http://localhost:7000/city/new");
 
 	const form = await page.getByTestId("city-form");
 	await expect(form).toBeTruthy();

@@ -5,7 +5,7 @@ services:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
- 
+
     ports:
       - 4000:4000
     volumes:
@@ -31,6 +31,8 @@ services:
       - 3000:3000
     volumes:
       - ./frontend/src:/app/src
+    env_file:
+      - ./frontend/.env
     depends_on:
       backend:
         condition: service_healthy

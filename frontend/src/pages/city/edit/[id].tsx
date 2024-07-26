@@ -1,16 +1,25 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Grid,
+	TextField,
+	Typography,
+} from "@mui/material";
 import { EDIT_CITY_BY_ID } from "@mutations";
 import { GET_CITY_BY_ID } from "@queries";
 import { mainTheme } from "@theme";
 import { CityInput } from "@types";
-import { useAuth } from "../../../context";
+import { errors, useAuth } from "../../../context";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
+import RoundedBox from "components/RoundedBox";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const EditCityByID = () => {
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated, isLoadingSession, user } = useAuth();
 	const router = useRouter();
 	const { id } = router.query;
 
@@ -55,7 +64,7 @@ const EditCityByID = () => {
 		return !(form.name && form.description);
 	}, [form]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (error) {
 			toast.error("Erreur lors de la modification des données de la ville.");
 		}
@@ -71,42 +80,43 @@ const EditCityByID = () => {
 	}, [error, cityError, cityData]);
 
 	React.useLayoutEffect(() => {
-		if (!isAuthenticated) {
-			router.replace("/");
+		if (!isLoadingSession) {
+			if (!isAuthenticated) {
+				router.replace("/");
+			} else {
+				if (user?.role !== "ADMIN") {
+					router.replace("/");
+				}
+			}
 		}
-	}, [isAuthenticated]);
+	}, [isAuthenticated, isLoadingSession, user?.role]);
 
-	return (
-		<Paper
-			component={Box}
-			elevation={5}
-			square={false}
-			width={{ xs: "85%", lg: "60%" }}
-			height={window.innerHeight * 0.7}
-			display="flex"
-			alignItems="center"
-			justifyContent="center"
-		>
-			<Grid container flex={1}>
-				<Grid
-					item
+	return isLoadingSession || cityLoading ? (
+		<CircularProgress />
+	) : !isAuthenticated ? (
+		<Typography>{errors.connected}</Typography>
+	) : user?.role === "ADMIN" ? (
+		<Grid container flex={1} paddingX={10} direction={"column"}>
+			<Grid item paddingTop={10}>
+				<ArrowBackIosIcon
+					onClick={() => router.back()}
+					sx={{ cursor: "pointer", color: "primary.main" }}
+				/>
+			</Grid>
+			<Grid item flex={1} paddingTop={10}>
+				<Box
+					component="form"
+					onSubmit={(e) => onSubmit(e)}
 					flex={1}
 					display="flex"
+					flexDirection="column"
+					justifyContent="space-evenly"
 					alignItems="center"
-					justifyContent="center"
+					height="100%"
+					padding={5}
+					gap={4}
 				>
-					<Box
-						component="form"
-						onSubmit={(e) => onSubmit(e)}
-						flex={1}
-						display="flex"
-						flexDirection="column"
-						justifyContent="space-evenly"
-						alignItems="center"
-						height="100%"
-						padding={5}
-						gap={6}
-					>
+					<RoundedBox color={mainTheme.palette.primary.main}>
 						<Typography
 							fontFamily={mainTheme.typography.fontFamily}
 							fontSize={{
@@ -115,51 +125,69 @@ const EditCityByID = () => {
 								md: mainTheme.typography.h4.fontSize,
 								lg: mainTheme.typography.h3.fontSize,
 							}}
-							color={mainTheme.palette.primary.main}
+							color={mainTheme.palette.primary.light}
 							fontWeight={mainTheme.typography.fontWeightMedium}
 						>
 							Modification de la ville {cityData?.name}
 						</Typography>
-						<TextField
-							data-testid="input_name"
-							id="name"
-							variant="standard"
-							placeholder="Nom de la ville"
-							required
-							size="medium"
-							fullWidth
-							margin="normal"
-							value={form.name ?? form.name}
-							onChange={(e) => setForm({ ...form, name: e.target.value })}
-						/>
-						<TextField
-							data-testid="input_description"
-							id="description"
-							variant="standard"
-							placeholder="Description"
-							multiline
-							rows={5}
-							required
-							size="medium"
-							fullWidth
-							margin="normal"
-							value={form?.description ?? form.description}
-							onChange={(e) =>
-								setForm({ ...form, description: e.target.value })
-							}
-						/>
-						<Button
-							disabled={isDisabled}
-							type="submit"
-							variant="contained"
-							color="primary"
-						>
-							Enregistrer
-						</Button>
-					</Box>
-				</Grid>
+					</RoundedBox>
+					<TextField
+						data-testid="input_name"
+						id="name"
+						variant="outlined"
+						placeholder="Nom de la ville *"
+						required
+						size="medium"
+						fullWidth
+						margin="normal"
+						value={form.name ?? form.name}
+						onChange={(e) => setForm({ ...form, name: e.target.value })}
+						sx={{
+							backgroundColor: "white",
+							borderRadius: "10px",
+							"& .MuiInputBase-root": {
+								backgroundColor: "white",
+								borderRadius: "1rem",
+								paddingX: "1rem",
+							},
+						}}
+					/>
+					<TextField
+						data-testid="input_description"
+						id="description"
+						variant="outlined"
+						placeholder="Description *"
+						multiline
+						rows={5}
+						required
+						size="medium"
+						fullWidth
+						margin="normal"
+						value={form?.description ?? form.description}
+						onChange={(e) => setForm({ ...form, description: e.target.value })}
+						sx={{
+							backgroundColor: "white",
+							borderRadius: "10px",
+							"& .MuiInputBase-root": {
+								backgroundColor: "white",
+								borderRadius: "10px",
+								paddingX: "1rem",
+							},
+						}}
+					/>
+					<Button
+						disabled={isDisabled}
+						type="submit"
+						variant="contained"
+						color="primary"
+					>
+						{loading ? "Enregistrer " : "Enregistrement en cours ..."}
+					</Button>
+				</Box>
 			</Grid>
-		</Paper>
+		</Grid>
+	) : (
+		<Typography>{errors.role}</Typography>
 	);
 };
 

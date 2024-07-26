@@ -7,9 +7,10 @@ import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const DisplayCityByID = () => {
-	const { isAuthenticated, isLoadingSession } = useAuth();
+	const { isAuthenticated, isLoadingSession, user } = useAuth();
 	const router = useRouter();
 	const { id } = router.query;
 	const { data, error, loading } = useQuery(GET_CITY_BY_ID, {
@@ -23,14 +24,20 @@ const DisplayCityByID = () => {
 	}, [error]);
 
 	React.useLayoutEffect(() => {
-		if (!isAuthenticated) {
-			router.replace("/");
+		if (!isLoadingSession) {
+			if (!isAuthenticated) {
+				router.replace("/");
+			} else {
+				if (user?.role !== "ADMIN") {
+					router.replace("/");
+				}
+			}
 		}
 	}, [isAuthenticated, isLoadingSession]);
 
 	return isLoadingSession ? (
 		<CircularProgress />
-	) : isAuthenticated ? (
+	) : isAuthenticated && user?.role === "ADMIN" ? (
 		<>
 			{loading ? (
 				<CircularProgress color="primary" />
@@ -39,6 +46,12 @@ const DisplayCityByID = () => {
 					<>
 						{data?.getCityById ? (
 							<Grid container direction={"column"} gap={10} paddingY={10}>
+								<Grid item>
+									<ArrowBackIosIcon
+										onClick={() => router.back()}
+										sx={{ cursor: "pointer", color: "primary.main" }}
+									/>
+								</Grid>
 								<Grid item>
 									<Typography
 										component="h1"

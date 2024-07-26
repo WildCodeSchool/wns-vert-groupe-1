@@ -17,6 +17,8 @@ import { toast } from "react-toastify";
 import { errors as ErrorContext, useAuth } from "context";
 import { useRouter } from "next/navigation";
 import { CHECK_CITY_UNIQUE } from "@queries";
+import RoundedBox from "components/RoundedBox";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const NewCity = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
@@ -75,7 +77,7 @@ const NewCity = () => {
 		}
 	};
 
-	React.useLayoutEffect(() => {
+	useLayoutEffect(() => {
 		if (!isLoadingSession) {
 			if (!isAuthenticated) {
 				router.replace("/");
@@ -90,104 +92,131 @@ const NewCity = () => {
 	return isLoadingSession ? (
 		<CircularProgress />
 	) : !isAuthenticated ? (
-		<>
-			<Typography>{ErrorContext.connected}</Typography>
-		</>
+		<Typography>{ErrorContext.connected}</Typography>
 	) : (
 		<>
 			{user?.role !== "ADMIN" ? (
 				<Typography>{ErrorContext.role}</Typography>
 			) : (
-				<Paper
-					component={Box}
-					elevation={5}
-					square={false}
-					width={{ xs: "85%", lg: "60%" }}
-					height={window.innerHeight * 0.7}
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
+				<Grid
+					container
+					flex={1}
+					paddingX={10}
+					alignItems={"center"}
+					direction={"column"}
 				>
-					<Box
-						component="form"
-						onSubmit={handleSubmit(onSubmit)}
-						flex={1}
+					<Grid
+						item
+						width={"100%"}
+						paddingTop={10}
 						display="flex"
-						flexDirection="column"
-						justifyContent="space-evenly"
-						alignItems="center"
-						height="100%"
-						padding={5}
-						gap={6}
+						justifyContent="flex-start"
 					>
-						<Typography
-							fontFamily={mainTheme.typography.fontFamily}
-							fontSize={{
-								sx: mainTheme.typography.h6.fontSize,
-								sm: mainTheme.typography.h5.fontSize,
-								md: mainTheme.typography.h4.fontSize,
-								lg: mainTheme.typography.h3.fontSize,
-							}}
-							color={mainTheme.palette.primary.main}
-							fontWeight={mainTheme.typography.fontWeightMedium}
-						>
-							Création d&apos;une nouvelle ville
-						</Typography>
-						<TextField
-							data-testid="input_name"
-							id="name"
-							variant="standard"
-							placeholder="Nom de la ville *"
-							required
-							size="medium"
-							fullWidth
-							margin="normal"
-							{...register("name", {
-								required: "Le nom de la ville est requis",
-								minLength: {
-									value: 1,
-									message: "Le nom doit comporter au moins 1 caractère",
-								},
-								maxLength: {
-									value: 50,
-									message: "Le nom ne doit pas dépasser 50 caractères",
-								},
-							})}
-							error={!!errors.name}
-							helperText={errors.name?.message}
+						<ArrowBackIosIcon
+							onClick={() => router.back()}
+							sx={{ cursor: "pointer", color: "primary.main" }}
 						/>
-						<TextField
-							data-testid="input_description"
-							id="description"
-							variant="standard"
-							placeholder="Description *"
-							multiline
-							rows={5}
-							required
-							size="medium"
-							fullWidth
-							margin="normal"
-							{...register("description", {
-								required: "La description est requise",
-								minLength: {
-									value: 100,
-									message:
-										"La description doit comporter au moins 100 caractères",
-								},
-							})}
-							error={!!errors.description}
-							helperText={errors.description?.message}
-						/>
-						<Button
-							disabled={isDisabled}
-							type="submit"
-							variant="contained"
-							color="primary"
+					</Grid>
+					<Grid item flex={1} width={"100%"} paddingTop={10}>
+						<Box
+							component="form"
+							onSubmit={handleSubmit(onSubmit)}
+							flex={1}
+							display="flex"
+							flexDirection="column"
+							justifyContent="space-evenly"
+							alignItems="center"
+							height="100%"
+							padding={5}
+							gap={6}
 						>
-							Créer
-						</Button>
-					</Box>
-				</Paper>
+							<RoundedBox color={mainTheme.palette.primary.main}>
+								<Typography
+									fontFamily={mainTheme.typography.fontFamily}
+									fontSize={{
+										sx: mainTheme.typography.h6.fontSize,
+										sm: mainTheme.typography.h5.fontSize,
+										md: mainTheme.typography.h4.fontSize,
+										lg: mainTheme.typography.h3.fontSize,
+									}}
+									color={mainTheme.palette.primary.light}
+									fontWeight={mainTheme.typography.fontWeightMedium}
+								>
+									Création d&apos;une nouvelle ville
+								</Typography>
+							</RoundedBox>
+							<TextField
+								data-testid="input_name"
+								id="name"
+								variant="outlined"
+								placeholder="Nom de la ville *"
+								required
+								size="medium"
+								fullWidth
+								margin="normal"
+								{...register("name", {
+									required: "Le nom de la ville est requis",
+									minLength: {
+										value: 1,
+										message: "Le nom doit comporter au moins 1 caractère",
+									},
+									maxLength: {
+										value: 50,
+										message: "Le nom ne doit pas dépasser 50 caractères",
+									},
+								})}
+								error={!!errors.name}
+								helperText={errors.name?.message}
+								sx={{
+									backgroundColor: "white",
+									borderRadius: "10px",
+									"& .MuiInputBase-root": {
+										backgroundColor: "white",
+										borderRadius: "1rem",
+									},
+								}}
+							/>
+							<TextField
+								data-testid="input_description"
+								id="description"
+								variant="outlined"
+								placeholder="Description *"
+								multiline
+								rows={5}
+								required
+								size="medium"
+								fullWidth
+								margin="normal"
+								{...register("description", {
+									required: "La description est requise",
+									minLength: {
+										value: 100,
+										message:
+											"La description doit comporter au moins 100 caractères",
+									},
+								})}
+								error={!!errors.description}
+								helperText={errors.description?.message}
+								sx={{
+									backgroundColor: "white",
+									borderRadius: "10px",
+									"& .MuiInputBase-root": {
+										backgroundColor: "white",
+										borderRadius: "1rem",
+									},
+								}}
+							/>
+							<Button
+								disabled={isDisabled}
+								type="submit"
+								variant="contained"
+								color="primary"
+							>
+								Créer
+							</Button>
+						</Box>
+					</Grid>
+				</Grid>
 			)}
 		</>
 	);
