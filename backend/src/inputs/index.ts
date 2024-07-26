@@ -6,3 +6,4 @@ export * from "./CityUpdate";
 export * from "./Rating";
 export * from "./UserLogin";
 export * from "./UserUpdate";
+export * from "./PoiUpdate";

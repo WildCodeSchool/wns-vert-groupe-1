@@ -5,21 +5,18 @@ import {
 	Breadcrumbs,
 	Typography,
 	Grid,
-	Paper,
 	Link,
 	CircularProgress,
 } from "@mui/material";
 import { GET_POI_BY_ID } from "@queries";
-import { POIInput, PoiType } from "@types";
+import { PoiType } from "@types";
 import { mainTheme } from "@theme";
 import PlaceIcon from "@mui/icons-material/Place";
 import { ImagesCarousel, CreateReviewForm, ReviewList } from "@components";
-import { useAuth } from "context";
 import AverageRating from "components/AverageRating";
 
 const POIDetails = () => {
 	const router = useRouter();
-	const { user } = useAuth();
 	const [POI, setPOI] = useState<PoiType>({
 		name: "",
 		address: "",

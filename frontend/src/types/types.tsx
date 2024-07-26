@@ -60,20 +60,27 @@ export type POIInput = {
 	name: string;
 	address: string;
 	description: string;
+	city: number;
+	category: number;
+	images: string[];
+	postalCode: string;
+};
+
+export type POI = {
+	name: string;
+	address: string;
+	description: string;
 	city: string;
 	category: string;
 	images: string[];
-	postalCode?: string;
-	latitude?: number;
-	longitude?: number;
 };
 
 export type UserInput = {
 	firstName: string;
-	lastName: number;
+	lastName: string;
 	email: string;
 	password: string;
-	city?: number;
+	city: number;
 };
 
 export type UserType = {
@@ -82,8 +89,8 @@ export type UserType = {
 	lastName: number;
 	email: string;
 	password: string;
-	city?: number;
-	role: string;
+	city: number;
+	role: UserRoleType;
 };
 
 export type LoginT = {
@@ -91,3 +98,5 @@ export type LoginT = {
 	password: string;
 	checked: boolean;
 };
+
+export type UserRoleType = "ADMIN" | "CITYADMIN" | "SUPERUSER" | "USER";

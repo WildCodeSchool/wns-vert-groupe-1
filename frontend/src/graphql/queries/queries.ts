@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_CITIES = gql`
-	query GetAllCities($limit: Float, $offset: Float) {
-		getAllCities(limit: $limit, offset: $offset) {
+	query GetAllCities {
+		getAllCities {
 			name
 			description
 			id
@@ -178,5 +178,27 @@ query Query {
 export const CHECK_EMAIL_UNIQUE = gql`
 	query IsEmailUnique($email: String!) {
 		isEmailUnique(email: $email)
+	}
+`;
+
+export const CHECK_CITY_UNIQUE = gql`
+	query IsCityNameUnique($name: String!) {
+		isCityNameUnique(name: $name)
+	}
+`;
+
+export const GET_USER_BY_EMAIL = gql`
+	query GetUserByEmail($email: String!) {
+		getUserByEmail(email: $email) {
+			id
+			firstName
+			lastName
+			email
+			role
+			city {
+				id
+				name
+			}
+		}
 	}
 `;

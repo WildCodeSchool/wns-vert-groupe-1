@@ -1,8 +1,6 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { REGISTER } from "@mutations";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { CHECK_EMAIL_UNIQUE, GET_ALL_CITIES } from "@queries";
 import { CityType, UserInput } from "@types";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
@@ -21,11 +19,10 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "context";
 
 const Register = () => {
-	const router = useRouter();
+	const { onRegister, loading } = useAuth();
 
 	const { data } = useQuery(GET_ALL_CITIES);
 	const {
@@ -37,22 +34,7 @@ const Register = () => {
 	} = useForm<UserInput>();
 
 	const [cities, setCities] = useState<CityType[]>([]);
-	const [showPassword, setShowPassword] = useState(false);
-
-	const [register] = useMutation(REGISTER, {
-		onCompleted: (data) => {
-			if (data && data.register && !data.errors) {
-				toast.success("Inscription réussie!");
-				reset();
-				router.push("/login");
-			} else if (data.errors) {
-				toast.error(data.errors[0].message);
-			}
-		},
-		onError: (error) => {
-			toast.error(error.message);
-		},
-	});
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 
 	const [checkEmailUnique] = useLazyQuery(CHECK_EMAIL_UNIQUE);
 
@@ -75,16 +57,12 @@ const Register = () => {
 		}
 
 		if (!errors.email && Object.keys(errors).length === 0) {
-			await register({
-				variables: {
-					newUserData: {
-						firstName: formData.firstName,
-						lastName: formData.lastName,
-						email: formData.email,
-						password: formData.password,
-						city: Number(formData.city),
-					},
-				},
+			onRegister({
+				firstName: formData.firstName,
+				lastName: formData.lastName,
+				email: formData.email,
+				password: formData.password,
+				city: formData.city,
 			});
 		}
 	};
@@ -118,16 +96,23 @@ const Register = () => {
 								marginTop: "4rem",
 							}}
 						>
-							S&apos;inscrire
+							Inscription
 						</Typography>
 
 						<TextField
+							inputProps={{ "data-testid": "surname" }}
+							required
 							fullWidth
-							placeholder="Prénom"
+							placeholder="Prénom *"
 							variant="standard"
 							style={{ marginBottom: "1rem" }}
 							{...registerForm("firstName", {
 								required: "Le prénom est requis",
+								pattern: {
+									value: /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
+									message:
+										"Le prénom ne doit pas contenir de chiffre ou de caractère spécial",
+								},
 								minLength: {
 									value: 2,
 									message: "Le prénom doit avoir au moins 2 caractères",
@@ -142,12 +127,19 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "name" }}
+							required
 							fullWidth
-							placeholder="Nom"
+							placeholder="Nom *"
 							variant="standard"
 							style={{ marginBottom: "1rem" }}
 							{...registerForm("lastName", {
 								required: "Le nom est requis",
+								pattern: {
+									value: /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
+									message:
+										"Le nom ne doit pas contenir de chiffre ou de caractère spécial",
+								},
 								minLength: {
 									value: 2,
 									message: "Le nom doit avoir au moins 2 caractères",
@@ -162,8 +154,10 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "email" }}
+							required
 							fullWidth
-							placeholder="E-mail"
+							placeholder="E-mail *"
 							variant="standard"
 							style={{ marginBottom: "1rem" }}
 							{...registerForm("email", {
@@ -182,8 +176,10 @@ const Register = () => {
 						/>
 
 						<TextField
+							inputProps={{ "data-testid": "password" }}
+							required
 							fullWidth
-							placeholder="Mot de passe"
+							placeholder="Mot de passe *"
 							variant="standard"
 							type={showPassword ? "text" : "password"}
 							style={{ marginBottom: "1rem" }}
@@ -220,6 +216,7 @@ const Register = () => {
 						<FormControl fullWidth margin="normal" error={!!errors.city}>
 							<InputLabel id="city-label">Sélectionner une ville</InputLabel>
 							<Select
+								data-testid="city-select"
 								labelId="city-label"
 								{...registerForm("city", {
 									required: "Une ville doit être sélectionnée",
@@ -241,6 +238,7 @@ const Register = () => {
 						</FormControl>
 
 						<Button
+							data-testid="submit"
 							variant="contained"
 							color="primary"
 							type="submit"
@@ -251,7 +249,7 @@ const Register = () => {
 								borderRadius: "24px",
 							}}
 						>
-							Envoyer
+							{!loading ? "S'inscrire" : "Inscription en cours ..."}
 						</Button>
 
 						<Typography

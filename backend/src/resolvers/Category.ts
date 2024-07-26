@@ -1,6 +1,8 @@
 import { CategoryInput } from "../inputs";
 import { Category } from "../entities";
-import { Arg, Query, Resolver, Mutation } from "type-graphql";
+import { validate } from "class-validator";
+import { Arg, Query, Resolver, Mutation, Authorized } from "type-graphql";
+import { GraphQLError } from "graphql";
 
 @Resolver()
 export class CategoryResolver {
@@ -9,21 +11,49 @@ export class CategoryResolver {
 		const result = await Category.find({ relations: ["pois"] });
 		return result;
 	}
-
+	@Authorized("ADMIN")
 	@Mutation(() => Category)
 	async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
-		const pois = categoryData.pois
-			? categoryData.pois.map((poi) => ({ id: poi }))
-			: [];
-
-		const city = await Category.create({
+		const category = await Category.create({
 			...categoryData,
-			pois: pois,
-		}).save();
+		});
 
-		return city;
+		const errors = await validate(category);
+		if (errors.length > 0) {
+			throw new Error(`Validation failed: ${errors}`);
+		}
+
+		category.save();
+
+		return category;
 	}
 
+	@Authorized("ADMIN")
+	@Mutation(() => String)
+	async updateCategory(
+		@Arg("categoryData") categoryData: CategoryInput,
+		@Arg("id") id: number
+	) {
+		try {
+			const category = await Category.findOne({ where: { id: id } });
+
+			if (!category) {
+				throw new GraphQLError(`Category with ID ${id} not found`, {
+					extensions: {
+						code: "NOT_FOUND",
+						http: { status: 404 },
+					},
+				});
+			}
+			Object.assign(category, categoryData);
+			await category.save();
+			return "Category updated";
+		} catch (error) {
+			throw new Error(`Error : ${error}`);
+		}
+	}
+
+	@Authorized("Administrateur du site")
 	@Mutation(() => String)
 	async deleteCategoryById(@Arg("id") id: number) {
 		const categoryToDelete = await Category.findOneByOrFail({

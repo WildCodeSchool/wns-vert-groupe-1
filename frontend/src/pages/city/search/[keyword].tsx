@@ -39,7 +39,6 @@ const SearchResults = () => {
 		}
 
 		if (!loading && data && data.getCityByName) {
-			console.log(data.getCityByName);
 			const cityData = data.getCityByName;
 			setSearchedCity({
 				id: cityData.id,

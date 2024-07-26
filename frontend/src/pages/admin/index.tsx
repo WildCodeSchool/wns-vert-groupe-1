@@ -1,24 +1,34 @@
+import { CircularProgress } from "@mui/material";
 import { useAuth } from "context/UserContext";
 import { useRouter } from "next/router";
 import React from "react";
 
 export default function AdminHome() {
-	const { user } = useAuth();
+	const { user, isAuthenticated, isLoadingSession } = useAuth();
 	const router = useRouter();
-
 	React.useEffect(() => {
-		if (user?.role !== "ADMIN" && user?.role !== "CITYADMIN") {
-			router.replace("/");
+		if (!isLoadingSession) {
+			if (
+				!isAuthenticated &&
+				user?.role !== "ADMIN" &&
+				user?.role !== "CITYADMIN" &&
+				user?.role === "SUPERUSER"
+			) {
+				router.replace("/");
+			}
 		}
-	}, [user]);
+	}, [user, isAuthenticated, isLoadingSession]);
 
-	return (
+	return isLoadingSession ? (
+		<CircularProgress />
+	) : (
 		<>
-			<p>DashBoard</p>
 			{user?.role === "ADMIN" ? (
 				<p>Admin Dashboard</p>
 			) : user?.role === "CITYADMIN" ? (
 				<p>CityAdmin Dashboard</p>
+			) : user?.role === "SUPERUSER" ? (
+				<p>Super Utilisateur Dashboard</p>
 			) : (
 				<></>
 			)}
