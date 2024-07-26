@@ -40,8 +40,7 @@ export const CreateReviewForm = () => {
 					ratingData: {
 						rating,
 						text: comment,
-						// user: user!.id,
-						user: 7,
+						user: user?.id,
 						poi: parseFloat(id as string),
 					},
 				},
