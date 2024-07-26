@@ -13,7 +13,6 @@ import {
 	InputLabel,
 	Typography,
 	FormControl,
-	FormHelperText,
 } from "@mui/material";
 import { mainTheme } from "@theme";
 import { CREATE_NEW_POI } from "@mutations";
