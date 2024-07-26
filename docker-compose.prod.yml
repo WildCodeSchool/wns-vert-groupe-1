@@ -39,7 +39,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     env_file:
-      - ./backend/.env
+      - ./.env
   redis:
     image: redis
   redis-commander:
