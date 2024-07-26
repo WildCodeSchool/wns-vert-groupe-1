@@ -26,7 +26,6 @@ import { ImagesCarousel } from "@components";
 
 const NewPoi = () => {
 	const [imageURLs, setImageURLs] = useState<string[]>([]);
-	const [imageErrors, setImageErrors] = useState<string | null>(null);
 	const router = useRouter();
 
 	const {
