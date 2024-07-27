@@ -3,6 +3,8 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { NextRouter } from "next/router";
 import { TextEncoder, TextDecoder } from "util";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 Object.assign(global, { TextDecoder, TextEncoder });
 
@@ -10,14 +12,21 @@ const mockRouter: Partial<NextRouter> = {
 	push: jest.fn(),
 };
 
-// Mock the useRouter hook
+// mocks next router
 jest.mock("next/router", () => ({
 	__esModule: true,
 	useRouter: () => mockRouter,
 }));
 
+// mocks react toastify
+jest.mock("react-toastify", () => ({
+	toast: {
+		error: jest.fn(),
+	},
+}));
+
 describe("SearchForm", () => {
-	it("renders the search form component, checks the form to be present, checks input to be empty, then clicks the submit button and checks it to has an error message", () => {
+	it("renders component, checks form presence, submits empty form, checks error toast", () => {
 		render(<SearchForm />);
 
 		const form = screen.getByTestId("search-form-container");
@@ -32,8 +41,13 @@ describe("SearchForm", () => {
 		fireEvent.change(cityInput, { target: { value: "" } });
 
 		fireEvent.click(button);
+
+		expect(toast.error).toHaveBeenCalledWith(
+			"Veuillez saisir un nom de ville."
+		);
+
 	});
-	it("renders the search form component, checks the form to be present, checks the input to has value, then clicks the submit button and checks the redirection to the new page", () => {
+	it("renders component, checks form presence, submits form filled with correct value, checks redirection", () => {
 		render(<SearchForm />);
 
 		const form = screen.getByTestId("search-form-container");
