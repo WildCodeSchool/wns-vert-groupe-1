@@ -8,7 +8,7 @@ const dataSource = new DataSource({
 	password: process.env.DATABASE_PASSWORD,
 	database: "postgres",
 	entities: [`${__dirname}/../entities/*{.js,.ts}`],
-	synchronize: false,
+	synchronize: true,
 	logging: ["error", "query"],
 });
 
