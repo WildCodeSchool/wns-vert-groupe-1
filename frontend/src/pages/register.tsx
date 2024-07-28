@@ -64,6 +64,7 @@ const Register = () => {
 				password: formData.password,
 				city: formData.city,
 			});
+			reset();
 		}
 	};
 
@@ -263,7 +264,6 @@ const Register = () => {
 								underline="hover"
 								sx={{ fontSize: "1rem", color: "primary" }}
 							>
-								{" "}
 								Se connecter
 							</Link>
 						</Typography>

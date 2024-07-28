@@ -6,7 +6,7 @@ import {
 	PrimaryGeneratedColumn,
 	ManyToOne,
 	Unique,
-	JoinColumn,
+	// JoinColumn,
 } from "typeorm";
 import { City } from "./city";
 import { IsEmail, IsNotEmpty, Length, Matches } from "class-validator";
@@ -77,15 +77,15 @@ export class User extends BaseEntity {
 
 	// Many to One relationship (many users one city)
 	@Field(() => City)
-	@JoinColumn({ name: "cityId" })
+	// @JoinColumn({ name: "cityId" })
 	@ManyToOne(() => City, (city) => city.users, {
 		onDelete: "CASCADE",
 		eager: true,
 	})
 	city: City;
 
-	@Column()
-	cityId: number;
+	// @Column()
+	// cityId: number;
 }
 
 @ObjectType()

@@ -10,3 +10,4 @@ export * from "./SearchInput";
 export * from "./Tag";
 export * from "./Footer";
 export * from "./RoundedBox";
+export * from "./BackButton";

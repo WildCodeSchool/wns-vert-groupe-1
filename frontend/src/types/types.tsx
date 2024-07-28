@@ -86,7 +86,7 @@ export type UserType = {
 	lastName: number;
 	email: string;
 	password: string;
-	city: number;
+	city: CityType;
 	role: UserRoleType;
 };
 

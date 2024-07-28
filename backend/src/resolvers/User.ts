@@ -31,7 +31,7 @@ export class UserResolver {
 				const users = await User.find({
 					where:
 						ctx.role === "CITYADMIN"
-							? { city: { id: user?.cityId } }
+							? { city: { id: user?.city?.id } }
 							: { city: { id: undefined } },
 					relations: { city: true },
 				});
@@ -138,7 +138,7 @@ export class UserResolver {
 			if (
 				ctx.role === "ADMIN" ||
 				oldUser?.email === ctx.email ||
-				(ctx.role === "CITYADMIN" && oldUser.cityId === loggedUser?.cityId)
+				(ctx.role === "CITYADMIN" && oldUser.city.id === loggedUser?.city.id)
 			) {
 				Object.assign(oldUser, newUserInput);
 				await oldUser.save();

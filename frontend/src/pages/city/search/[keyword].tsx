@@ -109,7 +109,9 @@ const SearchResults = () => {
 		<CircularProgress />
 	) : (
 		<>
-			<title>Liste des lieux d&#39;intérêts de la ville de {searchedCity.name}</title>
+			<title>
+				Liste des lieux d&#39;intérêts de la ville de {searchedCity.name}
+			</title>
 			<Grid
 				container
 				display="flex"
@@ -135,7 +137,7 @@ const SearchResults = () => {
 						paddingX={mainTheme.spacing(6)}
 					>
 						<Tag
-							key={"category-tag-all-categories"}
+							key="category-tag-all-categories"
 							name="Toutes les catégories"
 							isActive={activeCategories.length === 0}
 							onClick={() => handleCategoryTagClick("Tous les catégories")}

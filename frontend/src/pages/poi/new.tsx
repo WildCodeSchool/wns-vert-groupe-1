@@ -53,18 +53,6 @@ const NewPoi = () => {
 		}[];
 	}>(GET_ALL_CATEGORIES);
 
-	useEffect(() => {
-		if (categoryData && categoryData.getAllCategories.length > 0) {
-			setValue("category", categoryData.getAllCategories[0].id);
-		}
-	}, [categoryData, setValue]);
-
-	useEffect(() => {
-		if (cityData && cityData.getAllCities.length > 0) {
-			setValue("category", cityData.getAllCities[0].id);
-		}
-	}, [categoryData, setValue]);
-
 	const [createNewPoi] = useMutation(CREATE_NEW_POI);
 
 	const watchedName = watch("name");

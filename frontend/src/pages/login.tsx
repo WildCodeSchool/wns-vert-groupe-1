@@ -64,7 +64,7 @@ const LoginPage = () => {
 						display={{ xs: "none", md: "flex" }}
 						alignItems="center"
 						justifyContent="center"
-						sx={{ backgroundColor: mainTheme.palette.primary.light }}
+						bgcolor={mainTheme.palette.primary.light}
 					>
 						<Box>
 							<img

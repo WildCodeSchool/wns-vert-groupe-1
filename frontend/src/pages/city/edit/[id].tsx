@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 import RoundedBox from "components/RoundedBox";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { BackButton } from "@components";
 
 const EditCityByID = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
@@ -96,14 +96,9 @@ const EditCityByID = () => {
 	) : !isAuthenticated ? (
 		<Typography>{errors.connected}</Typography>
 	) : user?.role === "ADMIN" ? (
-		<Grid container flex={1} paddingX={10} direction={"column"}>
-			<Grid item paddingTop={10}>
-				<ArrowBackIosIcon
-					onClick={() => router.back()}
-					sx={{ cursor: "pointer", color: "primary.main" }}
-				/>
-			</Grid>
-			<Grid item flex={1} paddingTop={10}>
+		<Grid container flex={1} paddingX={10} direction="column">
+			<BackButton />
+			<Grid item flex={1}>
 				<Box
 					component="form"
 					onSubmit={(e) => onSubmit(e)}
@@ -143,11 +138,9 @@ const EditCityByID = () => {
 						value={form.name ?? form.name}
 						onChange={(e) => setForm({ ...form, name: e.target.value })}
 						sx={{
-							backgroundColor: "white",
-							borderRadius: "10px",
 							"& .MuiInputBase-root": {
 								backgroundColor: "white",
-								borderRadius: "1rem",
+								borderRadius: "2rem",
 								paddingX: "1rem",
 							},
 						}}
@@ -166,11 +159,9 @@ const EditCityByID = () => {
 						value={form?.description ?? form.description}
 						onChange={(e) => setForm({ ...form, description: e.target.value })}
 						sx={{
-							backgroundColor: "white",
-							borderRadius: "10px",
 							"& .MuiInputBase-root": {
 								backgroundColor: "white",
-								borderRadius: "10px",
+								borderRadius: "2rem",
 								paddingX: "1rem",
 							},
 						}}

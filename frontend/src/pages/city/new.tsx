@@ -18,7 +18,7 @@ import { errors as ErrorContext, useAuth } from "context";
 import { useRouter } from "next/navigation";
 import { CHECK_CITY_UNIQUE } from "@queries";
 import RoundedBox from "components/RoundedBox";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { BackButton } from "@components";
 
 const NewCity = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
@@ -102,22 +102,11 @@ const NewCity = () => {
 					container
 					flex={1}
 					paddingX={10}
-					alignItems={"center"}
-					direction={"column"}
+					alignItems="center"
+					direction="column"
 				>
-					<Grid
-						item
-						width={"100%"}
-						paddingTop={10}
-						display="flex"
-						justifyContent="flex-start"
-					>
-						<ArrowBackIosIcon
-							onClick={() => router.back()}
-							sx={{ cursor: "pointer", color: "primary.main" }}
-						/>
-					</Grid>
-					<Grid item flex={1} width={"100%"} paddingTop={10}>
+					<BackButton />
+					<Grid item flex={1} width="100%">
 						<Box
 							component="form"
 							onSubmit={handleSubmit(onSubmit)}
@@ -168,11 +157,9 @@ const NewCity = () => {
 								error={!!errors.name}
 								helperText={errors.name?.message}
 								sx={{
-									backgroundColor: "white",
-									borderRadius: "10px",
 									"& .MuiInputBase-root": {
 										backgroundColor: "white",
-										borderRadius: "1rem",
+										borderRadius: "2rem",
 									},
 								}}
 							/>
@@ -198,11 +185,9 @@ const NewCity = () => {
 								error={!!errors.description}
 								helperText={errors.description?.message}
 								sx={{
-									backgroundColor: "white",
-									borderRadius: "10px",
 									"& .MuiInputBase-root": {
 										backgroundColor: "white",
-										borderRadius: "1rem",
+										borderRadius: "2rem",
 									},
 								}}
 							/>

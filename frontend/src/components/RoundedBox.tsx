@@ -26,7 +26,7 @@ export default function RoundedBox({
 }: RoundedBoxProps) {
 	return (
 		<Box
-			width={"100%"}
+			width="100%"
 			padding={3}
 			border={1}
 			borderRadius={10}
@@ -36,7 +36,7 @@ export default function RoundedBox({
 			paddingLeft={10}
 			justifyContent={justify ? justify : "space-between"}
 			flexDirection={row ? "row" : "column"}
-			display={"flex"}
+			display="flex"
 		>
 			{children}
 		</Box>

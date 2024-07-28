@@ -8,8 +8,11 @@ import { GraphQLError } from "graphql";
 @Resolver()
 export class PoiResolver {
 	@Query(() => [Poi])
-	async getAllPois() {
-		const result = await Poi.find({ relations: ["category", "city"] });
+	async getAllPois(@Arg("city", { nullable: true }) city?: number) {
+		const result = await Poi.find({
+			where: { city: { id: city } },
+			relations: ["category", "city"],
+		});
 		return result;
 	}
 
@@ -54,8 +57,8 @@ export class PoiResolver {
 			}
 			if (
 				ctx.role === "ADMIN" ||
-				(ctx.role === "CITYADMIN" && loggedUser.cityId === poiData.city) ||
-				(ctx.role === "SUPERUSER" && loggedUser.cityId === poiData.city)
+				(ctx.role === "CITYADMIN" && loggedUser.city.id === poiData.city) ||
+				(ctx.role === "SUPERUSER" && loggedUser.city.id === poiData.city)
 			) {
 				const fullAddress = `${poiData.address}, ${city.name} ${poiData.postalCode}`;
 
@@ -119,7 +122,7 @@ export class PoiResolver {
 			}
 			if (
 				ctx.role === "ADMIN" ||
-				(ctx.role === "CITYADMIN" && poiToDelete.city.id === loggedUser.cityId)
+				(ctx.role === "CITYADMIN" && poiToDelete.city.id === loggedUser.city.id)
 			) {
 				poiToDelete.remove();
 				return `POI with id ${id} was successefully deleted`;
@@ -155,7 +158,7 @@ export class PoiResolver {
 			}
 			if (
 				ctx.role === "ADMIN" ||
-				(ctx.role === "CITYADMIN" && oldPoi.city.id === loggedUser.cityId)
+				(ctx.role === "CITYADMIN" && oldPoi.city.id === loggedUser.city.id)
 			) {
 				const city = PoiInput.city
 					? await City.findOneByOrFail({ id: PoiInput.city })

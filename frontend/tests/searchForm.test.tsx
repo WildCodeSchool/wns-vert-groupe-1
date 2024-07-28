@@ -46,6 +46,7 @@ describe("SearchForm", () => {
 		expect(cityInput).toHaveValue("");
 
 		fireEvent.change(cityInput, { target: { value: "Paris" } });
+		expect(cityInput).toHaveValue("Paris");
 
 		fireEvent.click(button);
 

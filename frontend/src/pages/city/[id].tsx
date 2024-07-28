@@ -33,7 +33,7 @@ const DisplayCityByID = () => {
 				}
 			}
 		}
-	}, [isAuthenticated, isLoadingSession]);
+	}, [isAuthenticated, isLoadingSession, user?.role]);
 
 	return isLoadingSession ? (
 		<CircularProgress />
@@ -42,10 +42,10 @@ const DisplayCityByID = () => {
 			{loading ? (
 				<CircularProgress color="primary" />
 			) : (
-				<Box flex={1} paddingX={10} width={"100%"}>
+				<Box flex={1} paddingX={10} width="100%">
 					<>
 						{data?.getCityById ? (
-							<Grid container direction={"column"} gap={10} paddingY={10}>
+							<Grid container direction="column" gap={10} paddingY={10}>
 								<Grid item>
 									<ArrowBackIosIcon
 										onClick={() => router.back()}
@@ -77,8 +77,8 @@ const DisplayCityByID = () => {
 								<Grid
 									item
 									justifyContent="space-between"
-									display={"flex"}
-									direction={"column"}
+									display="flex"
+									direction="column"
 									gap={10}
 								>
 									<Typography
@@ -118,10 +118,10 @@ const DisplayCityByID = () => {
 										Longitude : {data?.getCityById?.lon}
 									</Typography>
 								</Grid>
-								<Grid item display={"flex"} direction={"column"} gap={10}>
+								<Grid item display="flex" direction="column" gap={10}>
 									<Typography
 										fontSize={20}
-										component={"h3"}
+										component="h3"
 										padding={4}
 										border={1}
 										borderRadius={10}
@@ -129,7 +129,7 @@ const DisplayCityByID = () => {
 										bgcolor={mainTheme.palette.primary.light}
 										textAlign="left"
 										paddingLeft={10}
-										fontWeight={"bold"}
+										fontWeight="bold"
 										color={mainTheme.palette.primary.dark}
 									>
 										Point d&apos;intérêt :{" "}
@@ -142,7 +142,7 @@ const DisplayCityByID = () => {
 														<Grid
 															key={poi.id}
 															container
-															direction={"column"}
+															direction="column"
 															padding={4}
 															border={1}
 															borderColor={mainTheme.palette.secondary.light}
@@ -150,9 +150,9 @@ const DisplayCityByID = () => {
 															bgcolor="white"
 															textAlign="left"
 															paddingX={10}
-															flexDirection={"row"}
-															display={"flex"}
-															justifyContent={"space-between"}
+															flexDirection="row"
+															display="flex"
+															justifyContent="space-between"
 														>
 															<Grid item>
 																<Typography variant="h6">{poi.name}</Typography>
@@ -180,8 +180,8 @@ const DisplayCityByID = () => {
 												bgcolor="white"
 												textAlign="left"
 												paddingX={10}
-												flexDirection={"row"}
-												display={"flex"}
+												flexDirection="row"
+												display="flex"
 											>
 												Aucun point d&apos;intrêt pour l&apos;instant
 											</Typography>

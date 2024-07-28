@@ -27,7 +27,7 @@ import { DELETE_CITY_BY_ID } from "@mutations";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { CityType } from "@types";
 import RoundedBox from "components/RoundedBox";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { BackButton } from "@components";
 
 const style = {
 	position: "absolute" as "absolute",
@@ -106,22 +106,11 @@ const CityList = () => {
 					container
 					flex={1}
 					flexDirection="column"
-					alignItems={"center"}
+					alignItems="center"
 					gap={mainTheme.spacing(6)}
 				>
-					<Grid
-						item
-						width={"100%"}
-						paddingTop={10}
-						display="flex"
-						justifyContent="flex-start"
-					>
-						<ArrowBackIosIcon
-							onClick={() => router.back()}
-							sx={{ cursor: "pointer", color: "primary.main" }}
-						/>
-					</Grid>
-					<Grid item width="100%" display="flex" paddingX={10}>
+					<BackButton />
+					<Grid item width="100%" display="flex" paddingX={8}>
 						<RoundedBox
 							color={mainTheme.palette.primary.main}
 							justify="space-between"
@@ -211,15 +200,14 @@ const CityList = () => {
 																marginBottom: "16px",
 																"&:nth-of-type(odd)": {
 																	backgroundColor:
-																		mainTheme.palette.primary.light, // Add alternate row color
+																		mainTheme.palette.primary.light,
 																},
 																"&:last-child td, &:last-child th": {
 																	border: 0,
-																	// borderRadius: "0 0 1rem 1rem",
 																},
 																"& .MuiTableCell-root": {
-																	padding: "16px", // Consistent padding
-																	fontSize: "1rem", // Increase font size
+																	padding: "16px",
+																	fontSize: "1rem",
 																},
 															}}
 														>
