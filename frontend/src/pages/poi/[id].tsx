@@ -246,7 +246,9 @@ const POIDetails = () => {
 								</div>
 
 								{reviewError && (
-									<Alert severity="error">Error: {error?.message}</Alert>
+									<Alert severity="error">
+										Une erreur est survenue lors de l'ajout du commentaire.
+									</Alert>
 								)}
 								{reviewData && (
 									<Alert severity="success">
