@@ -12,15 +12,9 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { Layout } from "@components";
 import "../styles/globals.css";
-import { UserProvider } from "../context/UserContext";
-
-const backend_url =
-	process.env.NODE_ENV === "development"
-		? "http://localhost:4000/api/graphql"
-		: "/graphql";
 
 const httpLink = createHttpLink({
-	uri: backend_url,
+	uri: "/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -41,12 +35,10 @@ const client = new ApolloClient({
 function App({ Component, pageProps }: AppProps) {
 	return (
 		<ApolloProvider client={client}>
-			<UserProvider>
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
-				<ToastContainer />
-			</UserProvider>
+			<Layout>
+				<Component {...pageProps} />
+			</Layout>
+			<ToastContainer />
 		</ApolloProvider>
 	);
 }

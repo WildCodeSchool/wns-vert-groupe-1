@@ -21,7 +21,6 @@ export const SearchForm = () => {
 		if (city.trim() === "") {
 			setError(true);
 			toast.error("Veuillez saisir un nom de ville.");
-			console.log("error", error);
 		} else {
 			setError(false);
 			setCity(city);

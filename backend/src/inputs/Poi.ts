@@ -1,4 +1,4 @@
-import { Field, Float, InputType } from "type-graphql";
+import { Field, InputType, Float } from "type-graphql";
 
 @InputType()
 export class PoiInput {
@@ -23,13 +23,9 @@ export class PoiInput {
 	@Field(() => Float, { nullable: true })
 	longitude?: number;
 
-	//TODO: delete nullable true
-	@Field(() => [String], { nullable: true })
-	images?: string[];
+	@Field(() => [String])
+	images: string[];
 
 	@Field()
 	category: number;
-
-	@Field(() => [Number], { nullable: true })
-	ratings?: number[];
 }

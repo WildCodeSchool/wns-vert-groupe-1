@@ -20,5 +20,5 @@ COPY --from=builder /app/dist/ /app/dist/
 
 COPY package.json package.json
 RUN npm install --omit-dev
-
+ENV NODE_ENV=production
 CMD npm run startprod

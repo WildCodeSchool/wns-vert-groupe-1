@@ -4,11 +4,8 @@ import Typography from "@mui/material/Typography";
 import { Box, Stack } from "@mui/material";
 import { mainTheme } from "@theme";
 import { ReactTyped } from "react-typed";
-import { useRouter } from "next/router";
 
 const Home = () => {
-	const router = useRouter();
-
 	return (
 		<>
 			<title>Accueil</title>

@@ -10,14 +10,14 @@ import {
 	CircularProgress,
 } from "@mui/material";
 import { GET_POI_BY_ID } from "@queries";
-import { POIInput } from "@types";
+import { POI } from "@types";
 import { mainTheme } from "@theme";
 import PlaceIcon from "@mui/icons-material/Place";
 import { ImagesCarousel } from "@components";
 
 const POIDetails = () => {
 	const router = useRouter();
-	const [POI, setPOI] = useState<POIInput>({
+	const [POI, setPOI] = useState<POI>({
 		name: "",
 		address: "",
 		description: "",
@@ -68,95 +68,95 @@ const POIDetails = () => {
 		objectFit: "cover",
 	};
 
-return loading ? (
-	<CircularProgress />
-) : (
-	<div>
-		<Breadcrumbs
-			aria-label="breadcrumb"
-			separator="›"
-			sx={{ marginTop: "1rem", marginLeft: "1rem" }}
-		>
-			<Link
-				underline="hover"
-				onClick={handleCityClick}
-				sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
-				color={mainTheme.palette.primary.dark}
+	return loading ? (
+		<CircularProgress />
+	) : (
+		<div>
+			<Breadcrumbs
+				aria-label="breadcrumb"
+				separator="›"
+				sx={{ marginTop: "1rem", marginLeft: "1rem" }}
 			>
-				{POI.city}
-			</Link>
-			<Link
-				underline="hover"
-				onClick={handleCategoryClick}
-				sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
-				color={mainTheme.palette.primary.dark}
-			>
-				{POI.category}
-			</Link>
-			<Link
-				underline="hover"
-				sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
-				color={mainTheme.palette.primary.dark}
-			>
-				{POI.name}
-			</Link>
-		</Breadcrumbs>
-		<Grid container spacing={6} sx={{ padding: "1rem" }}>
-			<Grid item xs={6}>
-				<ImagesCarousel images={POI.images} />
-			</Grid>
-			<Grid item xs sx={{ padding: "1rem" }}>
-				<Typography
-					color={mainTheme.palette.primary.main}
-					align="center"
-					sx={{ fontSize: mainTheme.typography.h3, fontWeight: "bold" }}
+				<Link
+					underline="hover"
+					onClick={handleCityClick}
+					sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
+					color={mainTheme.palette.primary.dark}
+				>
+					{POI.city}
+				</Link>
+				<Link
+					underline="hover"
+					onClick={handleCategoryClick}
+					sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
+					color={mainTheme.palette.primary.dark}
+				>
+					{POI.category}
+				</Link>
+				<Link
+					underline="hover"
+					sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
+					color={mainTheme.palette.primary.dark}
 				>
 					{POI.name}
-				</Typography>
-				<Typography
-					align="justify"
-					sx={{ fontSize: mainTheme.typography.h6, marginTop: "3rem" }}
-				>
-					{POI.description}
-				</Typography>
-				<div
-					style={{
-						display: "flex",
-						alignItems: "center",
-						marginTop: "3rem",
-					}}
-				>
-					<PlaceIcon color="primary" />
-					<Typography sx={{ fontSize: mainTheme.typography.h6 }}>
-						{POI.address}
+				</Link>
+			</Breadcrumbs>
+			<Grid container spacing={6} sx={{ padding: "1rem" }}>
+				<Grid item xs={6}>
+					<ImagesCarousel images={POI.images} />
+				</Grid>
+				<Grid item xs sx={{ padding: "1rem" }}>
+					<Typography
+						color={mainTheme.palette.primary.main}
+						align="center"
+						sx={{ fontSize: mainTheme.typography.h3, fontWeight: "bold" }}
+					>
+						{POI.name}
 					</Typography>
-				</div>
-				<Typography
-					color={mainTheme.palette.primary.main}
-					align="left"
-					sx={{
-						fontSize: mainTheme.typography.h4,
-						fontWeight: "bold",
-						marginTop: "3rem",
-					}}
-				>
-					NOTE
-				</Typography>
-				<Typography
-					color={mainTheme.palette.primary.main}
-					align="left"
-					sx={{
-						fontSize: mainTheme.typography.h4,
-						fontWeight: "bold",
-						marginTop: "3rem",
-					}}
-				>
-					COMMENTAIRES
-				</Typography>
+					<Typography
+						align="justify"
+						sx={{ fontSize: mainTheme.typography.h6, marginTop: "3rem" }}
+					>
+						{POI.description}
+					</Typography>
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							marginTop: "3rem",
+						}}
+					>
+						<PlaceIcon color="primary" />
+						<Typography sx={{ fontSize: mainTheme.typography.h6 }}>
+							{POI.address}
+						</Typography>
+					</div>
+					<Typography
+						color={mainTheme.palette.primary.main}
+						align="left"
+						sx={{
+							fontSize: mainTheme.typography.h4,
+							fontWeight: "bold",
+							marginTop: "3rem",
+						}}
+					>
+						NOTE
+					</Typography>
+					<Typography
+						color={mainTheme.palette.primary.main}
+						align="left"
+						sx={{
+							fontSize: mainTheme.typography.h4,
+							fontWeight: "bold",
+							marginTop: "3rem",
+						}}
+					>
+						COMMENTAIRES
+					</Typography>
+				</Grid>
 			</Grid>
-		</Grid>
-	</div>
-);
+		</div>
+	);
 };
 
 export default POIDetails;

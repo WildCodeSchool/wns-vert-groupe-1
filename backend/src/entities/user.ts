@@ -1,72 +1,99 @@
 import { Field, ObjectType, registerEnumType } from "type-graphql";
 import {
-  BaseEntity,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  Unique,
+	BaseEntity,
+	Column,
+	Entity,
+	PrimaryGeneratedColumn,
+	ManyToOne,
+	Unique,
+	JoinColumn,
 } from "typeorm";
 import { City } from "./city";
 import { IsEmail, IsNotEmpty, Length, Matches } from "class-validator";
 
 export enum UserRole {
-  ADMIN = "Administrateur du site",
-  CITYADMIN = "Administrateur de ville",
-  SUPERUSER = "Super utilisateur",
-  USER = "Utilisateur",
+	ADMIN = "ADMIN",
+	CITYADMIN = "CITYADMIN",
+	SUPERUSER = "SUPERUSER",
+	USER = "USER",
 }
+
 registerEnumType(UserRole, {
-  name: "UserRole",
-  description: "Role utilisateur",
+	name: "UserRole",
+	description: "Role utilisateur",
 });
 
 @ObjectType()
 @Entity()
 @Unique(["email"])
 export class User extends BaseEntity {
-  @Field()
-  @PrimaryGeneratedColumn()
-  id: number;
+	@Field()
+	@PrimaryGeneratedColumn()
+	id: number;
 
-  @Field()
-  @Column({ unique: true, length: 100 })
-  @IsEmail({}, { message: "L'email doit être une adresse email valide." })
-  @Length(5, 100, {
-    message: "L'email doit contenir entre 5 et 100 caractères.",
-  })
-  email: string;
+	@Field()
+	@Column({ unique: true, length: 100 })
+	@IsEmail({}, { message: "L'email doit être une adresse email valide." })
+	@Length(5, 100, {
+		message: "Email should have between 5 and 100 characters.",
+	})
+	email: string;
 
-  @Field()
-  @Column({ length: 100 })
-  @Length(2, 100, {
-    message: "Le prénom doit avoir entre 2 et 100 caractères.",
-  })
-  firstName: string;
+	@Field()
+	@Column({ length: 100 })
+	@Length(2, 100, {
+		message: "First name should have between 2 and 100 characters.",
+	})
+	@Matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/, {
+		message: "First name can't contain any number or special character.",
+	})
+	firstName: string;
 
-  @Field()
-  @Column({ length: 100 })
-  @Length(2, 100, { message: "Le nom doit avoir entre 2 et 100 caractères." })
-  lastName: string;
+	@Field()
+	@Column({ length: 100 })
+	@Length(2, 100, {
+		message: "Last name should have between 2 and 100 characters.",
+	})
+	@Matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/, {
+		message: "Last name can't contain any number or special character.",
+	})
+	lastName: string;
 
-  @Column({ length: 150 })
-  @IsNotEmpty({ message: "Le mot de passe ne peut pas être vide." })
-  @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
-    message:
-      "Le mot de passe doit contenir au moins 8 caractères, dont une majuscule, un chiffre et un caractère spécial.",
-  })
-  hashedPassword: string;
+	@Column({ length: 150 })
+	@IsNotEmpty({ message: "Password cannot be an empty value." })
+	@Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+		message:
+			"Password should have  minimum 8 characters, of which at least one is capital, one is a letter and one is a special character.",
+	})
+	hashedPassword: string;
 
-  @Field(() => UserRole)
-  @Column({
-    type: "enum",
-    enum: UserRole,
-    default: UserRole.USER,
-  })
-  role: UserRole;
+	@Field(() => UserRole)
+	@Column({
+		type: "enum",
+		enum: UserRole,
+		default: UserRole.USER,
+	})
+	role: UserRole;
 
-  // Many to One relationship (many users one city)
-  @Field(() => City, { nullable: true })
-  @ManyToOne(() => City, (city) => city.users, { onDelete: "CASCADE" })
-  city?: City;
+	// Many to One relationship (many users one city)
+	@Field(() => City)
+	@JoinColumn({ name: "cityId" })
+	@ManyToOne(() => City, (city) => city.users, {
+		onDelete: "CASCADE",
+		eager: true,
+	})
+	city: City;
+
+	@Column()
+	cityId: number;
+}
+
+@ObjectType()
+export class UserInfo {
+	@Field()
+	isLoggedIn: boolean;
+	@Field({ nullable: true })
+	email: string;
+	@Field({ nullable: true })
+	role: UserRole;
 }
