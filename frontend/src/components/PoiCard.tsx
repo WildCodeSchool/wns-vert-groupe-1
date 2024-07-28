@@ -8,12 +8,14 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import AverageRating from "./AverageRating";
 
 export const PoiCard = ({
 	name,
 	images,
 	category,
 	description,
+	averageNote,
 	id,
 	onMouseOver,
 	onMouseOut,
@@ -150,7 +152,7 @@ export const PoiCard = ({
 					fontWeight: "bold",
 				}}
 			>
-				{category.name}
+				{category?.name}
 			</Typography>
 			<Typography
 				color={mainTheme.palette.primary.dark}
@@ -164,17 +166,7 @@ export const PoiCard = ({
 			</Typography>
 			<Box display="flex" flexDirection="row" justifyContent="space-between">
 				<Box display="flex" alignItems="center" marginBottom={1}>
-					{[...Array(5)].map((_, index) => (
-						<Star
-							key={index}
-							sx={{
-								color:
-									index < Math.floor(rating)
-										? mainTheme.palette.primary.dark
-										: mainTheme.palette.secondary.light,
-							}}
-						/>
-					))}
+					<AverageRating averageRating={averageNote ?? 0} />
 				</Box>
 				<Box
 					flexDirection="row"

@@ -109,7 +109,9 @@ const SearchResults = () => {
 		<CircularProgress />
 	) : (
 		<>
-			<title>Liste des lieux d&#39;intérêts de la ville de {searchedCity.name}</title>
+			<title>
+				Liste des lieux d&#39;intérêts de la ville de {searchedCity.name}
+			</title>
 			<Grid
 				container
 				display="flex"
@@ -175,6 +177,7 @@ const SearchResults = () => {
 											images={poi.images}
 											category={poi.category}
 											description={poi.description}
+											averageNote={poi.averageNote}
 											onMouseOver={() => handleMouseOverPoi(poi.id)}
 											onMouseOut={handleMouseOutPoi}
 										/>

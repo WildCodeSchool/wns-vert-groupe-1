@@ -53,4 +53,21 @@ export const EDIT_CITY_BY_ID = gql`
 	}
 `;
 
-
+export const CREATE_REVIEW_MUTATION = gql`
+	mutation Mutation($ratingData: RatingInput!) {
+		createRating(ratingData: $ratingData) {
+			id
+			text
+			rating
+			poi {
+				name
+				id
+			}
+			user {
+				firstName
+				lastName
+				id
+			}
+		}
+	}
+`;

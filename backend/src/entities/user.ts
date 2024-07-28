@@ -6,10 +6,12 @@ import {
 	PrimaryGeneratedColumn,
 	ManyToOne,
 	Unique,
+	OneToMany,
 	JoinColumn,
 } from "typeorm";
 import { City } from "./city";
 import { IsEmail, IsNotEmpty, Length, Matches } from "class-validator";
+import { Rating } from "./rating";
 
 export enum UserRole {
 	ADMIN = "ADMIN",
@@ -75,7 +77,9 @@ export class User extends BaseEntity {
 	})
 	role: UserRole;
 
-	// Many to One relationship (many users one city)
+	@Field(() => [Rating], { nullable: true })
+	@OneToMany(() => Rating, (rating: Rating) => rating.user, { nullable: true, onDelete: "CASCADE" })
+	ratings?: Rating[];
 	@Field(() => City)
 	@JoinColumn({ name: "cityId" })
 	@ManyToOne(() => City, (city) => city.users, {

@@ -28,6 +28,7 @@ export const GET_ALL_POIS = gql`
 			latitude
 			longitude
 			postalCode
+			averageNote
 			city {
 				id
 				name
@@ -42,7 +43,7 @@ export const GET_ALL_POIS = gql`
 `;
 
 export const GET_ALL_CATEGORIES = gql`
-	query getAllCategories {
+	query GetAllCategories {
 		getAllCategories {
 			name
 			id
@@ -51,7 +52,7 @@ export const GET_ALL_CATEGORIES = gql`
 `;
 
 export const GET_CITY_BY_NAME = gql`
-	query getCityByName($name: String!) {
+	query GetCityByName($name: String!) {
 		getCityByName(name: $name) {
 			name
 			description
@@ -62,6 +63,7 @@ export const GET_CITY_BY_NAME = gql`
 				description
 				latitude
 				longitude
+				averageNote
 				images
 				category {
 					id
@@ -75,7 +77,7 @@ export const GET_CITY_BY_NAME = gql`
 `;
 
 export const GET_POI_BY_ID = gql`
-	query getPoiById($id: Float!) {
+	query GetPoiById($id: Float!) {
 		getPoiById(id: $id) {
 			description
 			address
@@ -83,6 +85,7 @@ export const GET_POI_BY_ID = gql`
 			latitude
 			longitude
 			postalCode
+			averageNote
 			city {
 				id
 				name
@@ -113,8 +116,8 @@ export const CHECK_INFO = gql`
 `;
 
 export const GET_USER = gql`
-	query GetUserById($getUserByIdId: Float!) {
-		getUserById(id: $getUserByIdId) {
+	query GetUserById($id: Float!) {
+		getUserById(id: $id) {
 			id
 			lastName
 			firstName
@@ -128,8 +131,8 @@ export const GET_USER = gql`
 `;
 
 export const GET_CITY_BY_ID = gql`
-	query GetCityById($getCityByIdId: Float!) {
-		getCityById(id: $getCityByIdId) {
+	query GetCityById($id: Float!) {
+		getCityById(id: $id) {
 			id
 			name
 			description
@@ -157,6 +160,21 @@ export const GET_CITY_BY_ID = gql`
 	}
 `;
 
+export const GET_ALL_RATINGS = gql`
+query Query {
+	getAllRatings {
+	  id
+	  user {
+		id
+		firstName
+		lastName
+	  }
+	  rating
+	  text
+	}
+  }
+`;
+
 export const CHECK_EMAIL_UNIQUE = gql`
 	query IsEmailUnique($email: String!) {
 		isEmailUnique(email: $email)
@@ -180,6 +198,20 @@ export const GET_USER_BY_EMAIL = gql`
 			city {
 				id
 				name
+			}
+		}
+	}
+`;
+export const GET_RATINGS_BY_POI = gql`
+	query GetRatingsByPoi($poiId: Float!) {
+		getRatingsByPoi(poiId: $poiId) {
+			id
+			rating
+			text
+			user {
+				id
+				firstName
+				lastName
 			}
 		}
 	}

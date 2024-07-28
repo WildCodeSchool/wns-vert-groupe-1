@@ -1,5 +1,5 @@
 export type PoiType = {
-	id: number;
+	id?: number;
 	name: string;
 	address?: string;
 	description: string;
@@ -8,8 +8,9 @@ export type PoiType = {
 	longitude?: number;
 	images: string[];
 	city?: CityType;
-	category: CategoryType;
+	category?: CategoryType;
 	ratings?: RatingType[];
+	averageNote?: number;
 };
 
 export type CityType = {
@@ -53,6 +54,8 @@ export type CityMapProps = {
 };
 
 export type POIInput = {
+	averageNote: number;
+	ratings: { rating: number }[];
 	id?: number;
 	name: string;
 	address: string;

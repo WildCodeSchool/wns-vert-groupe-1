@@ -41,20 +41,20 @@ export class CityResolver {
 		}
 	}
 
-	@Query(() => City)
-	async getCityByName(@Arg("name") name: string): Promise<City> {
-		try {
-			const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
-			const cacheResult = await redisClient.get(capitalizedName);
-			if (cacheResult !== null) {
-				return JSON.parse(cacheResult);
-			} else {
-				const result = await City.findOne({
-					where: {
-						name: capitalizedName,
-					},
-					relations: ["pois", "pois.category"],
-				});
+  @Query(() => City)
+  async getCityByName(@Arg("name") name: string): Promise<City> {
+    try {
+      const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
+      const cacheResult = await redisClient.get(capitalizedName);
+      if (cacheResult !== null) {
+        return JSON.parse(cacheResult);
+      } else {
+        const result = await City.findOne({
+          where: {
+            name: capitalizedName,
+          },
+          relations: ["pois", "pois.category"],
+        });
 
 				if (!result) {
 					throw new Error(`City with name ${name} not found`);

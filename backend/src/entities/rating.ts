@@ -7,6 +7,7 @@ import {
 } from "typeorm";
 import { Field, ObjectType } from "type-graphql";
 import { Poi } from "./poi";
+import { User } from "./user";
 
 @ObjectType()
 @Entity()
@@ -15,9 +16,10 @@ export class Rating extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
-  @Column({ nullable: true })
-  user: string;
+  @Field(() => User)
+  // @Column({ nullable: true })
+  @ManyToOne(() => User, (user: User) => user.ratings, {})
+  user: User;
 
   @Field()
   @Column({ nullable: true })
@@ -28,6 +30,6 @@ export class Rating extends BaseEntity {
   rating: number;
 
   @Field(() => Poi)
-  @ManyToOne(() => Poi, (poi) => poi.ratings, {})
+  @ManyToOne(() => Poi, (poi: Poi) => poi.ratings, {})
   poi: Poi;
 }
