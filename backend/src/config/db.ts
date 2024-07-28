@@ -9,6 +9,8 @@ const dataSource = new DataSource({
 	database: "postgres",
 	entities: [`${__dirname}/../entities/*{.js,.ts}`],
 	synchronize: false,
+	migrations: [__dirname + "/migrations/*.{js,ts}"],
+	migrationsRun: true,
 	logging: ["error", "query"],
 });
 
