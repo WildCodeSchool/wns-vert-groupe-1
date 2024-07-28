@@ -218,6 +218,7 @@ const POIDetails = () => {
 									<Rating
 										name="rating"
 										value={rating}
+										precision={0.5}
 										onChange={(event: any, newValue) => {
 											setRating(newValue);
 										}}
