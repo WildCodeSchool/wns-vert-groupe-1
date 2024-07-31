@@ -11,3 +11,6 @@ jobs:
 
       - name: Go to frontend and run tests
         run: cd frontend && npm i && npm run test
+      
+      - name: Go to backend and run tests
+        run: cd backend && npm i && npm run test
