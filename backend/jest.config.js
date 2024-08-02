@@ -5,4 +5,5 @@ module.exports = {
     "^.+.tsx?$": ["ts-jest",{}],
   },
   setupFiles: ["<rootDir>/jest.setup.ts"],
+  moduleDirectories: ['node_modules', '<rootDir>/src'],
 };

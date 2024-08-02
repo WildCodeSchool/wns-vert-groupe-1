@@ -1,9 +1,9 @@
+import { describe, expect, it, jest } from "@jest/globals";
 import { UserResolver } from "../src/resolvers/User";
 import { User, UserRole } from "../src/entities";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
 
-jest.mock("../src/entities/User");
 jest.mock("argon2");
 jest.mock("jsonwebtoken");
 

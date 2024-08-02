@@ -1,3 +1,4 @@
+import { describe, expect, it, jest } from "@jest/globals";
 import { UserResolver } from "../src/resolvers/User";
 import { User, UserRole, City } from "../src/entities";
 
