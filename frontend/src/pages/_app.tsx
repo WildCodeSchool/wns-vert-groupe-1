@@ -12,6 +12,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { Layout } from "@components";
 import "../styles/globals.css";
+import { CircularProgress } from "@mui/material";
 
 const httpLink = createHttpLink({
 	uri: "/graphql",
@@ -44,4 +45,7 @@ function App({ Component, pageProps }: AppProps) {
 }
 
 // Disabling SSR
-export default dynamic(() => Promise.resolve(App), { ssr: false });
+export default dynamic(() => Promise.resolve(App), {
+	ssr: false,
+	loading: () => <CircularProgress />,
+});
