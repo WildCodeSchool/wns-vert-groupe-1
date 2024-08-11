@@ -3,13 +3,20 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { NextRouter } from "next/router";
 import { TextEncoder, TextDecoder } from "util";
+import { toast } from "react-toastify";
 
 Object.assign(global, { TextDecoder, TextEncoder });
 
 const mockRouter: Partial<NextRouter> = {
 	push: jest.fn(),
 };
-
+//Mock the react-toastify library
+jest.mock("react-toastify", () => ({
+	toast: {
+		success: jest.fn(),
+		error: jest.fn(),
+	},
+}));
 // Mock the useRouter hook
 jest.mock("next/router", () => ({
 	__esModule: true,
@@ -24,14 +31,14 @@ describe("SearchForm", () => {
 		expect(form).toBeInTheDocument();
 
 		const button = screen.getByRole("button");
+		expect(button).toBeInTheDocument();
 
 		const cityInput = screen.getByPlaceholderText("Cherchez une ville");
 		expect(cityInput).toBeInTheDocument();
 		expect(cityInput).toHaveValue("");
 
-		fireEvent.change(cityInput, { target: { value: "" } });
-
 		fireEvent.click(button);
+		expect(toast.error).toHaveBeenCalled();
 	});
 	it("renders the search form component, checks the form to be present, checks the input to has value, then clicks the submit button and checks the redirection to the new page", () => {
 		render(<SearchForm />);
@@ -40,6 +47,7 @@ describe("SearchForm", () => {
 		expect(form).toBeInTheDocument();
 
 		const button = screen.getByRole("button");
+		expect(button).toBeInTheDocument();
 
 		const cityInput = screen.getByPlaceholderText("Cherchez une ville");
 		expect(cityInput).toBeInTheDocument();

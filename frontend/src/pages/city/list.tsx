@@ -129,6 +129,7 @@ const CityList = () => {
 								Liste des villes :
 							</Typography>
 							<AddCircleIcon
+								data-testid="add_city_button"
 								onClick={() => router.push("/city/new")}
 								sx={{
 									color: mainTheme.palette.primary.light,
@@ -141,7 +142,7 @@ const CityList = () => {
 					{citiesData?.getAllCities?.length > 0 ? (
 						<>
 							<Grid item width="95%" mx="auto">
-								<TableContainer>
+								<TableContainer id="users-list" data-testid="users-list">
 									<Table
 										aria-label="simple table"
 										sx={{

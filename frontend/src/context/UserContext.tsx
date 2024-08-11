@@ -80,8 +80,8 @@ function UserProvider({ children }: PropsWithChildren) {
 							setUser(res?.data?.getUserByEmail);
 							localStorage.setItem("jwt", data.token);
 							setIsLoadingSession(false);
+							toast.success("Connexion réussie !");
 						})
-
 						.catch(() => {
 							setError(errors.getUser);
 							setIsLoadingSession(false);

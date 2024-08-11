@@ -19,7 +19,6 @@ import Logo from "./Logo";
 export const Header = () => {
 	const { onLogout, isAuthenticated, user, isLoadingSession } = useAuth();
 	const router = useRouter();
-	console.log("user", user);
 	return isLoadingSession ? (
 		<CircularProgress />
 	) : (
@@ -72,6 +71,7 @@ export const Header = () => {
 							{(user?.role === "ADMIN" || user?.role === "CITYADMIN") && (
 								<>
 									<AdminPanelSettingsIcon
+										data-testid="admin-button"
 										onClick={() => {
 											// router.push("/admin");
 											router.push("/city/list");
@@ -84,6 +84,7 @@ export const Header = () => {
 								</>
 							)}
 							<AccountCircleIcon
+								// data-testid="user-button"
 								onClick={() => router.push("/profil")}
 								sx={{
 									fontSize: mainTheme.typography.h3,

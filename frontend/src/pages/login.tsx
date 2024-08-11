@@ -102,6 +102,7 @@ const LoginPage = () => {
 							}}
 						>
 							<TextField
+								data-testid="input-email"
 								name="email"
 								autoComplete="email"
 								fullWidth
@@ -112,6 +113,7 @@ const LoginPage = () => {
 								margin="normal"
 							/>
 							<TextField
+								data-testid="input-password"
 								name="password"
 								autoComplete="current-password"
 								fullWidth
