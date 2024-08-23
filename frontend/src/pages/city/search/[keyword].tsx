@@ -7,6 +7,8 @@ import { CategoryType, CityType, PoiType } from "@types";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { mainTheme } from "@theme";
 import { toast } from "react-toastify";
+import Head from "next/head";
+import { capitalizeFirstLetter } from "utils";
 
 const defaultState: CityType = {
 	name: "",
@@ -17,8 +19,6 @@ const defaultState: CityType = {
 };
 
 const SearchResults = () => {
-	const latFrance = 46.603354;
-	const lonFrance = 1.888334;
 	const router = useRouter();
 	const [searchedCity, setSearchedCity] = useState<CityType>(defaultState);
 	const [activePoiId, setActivePoiId] = useState<number | null>(null);
@@ -109,7 +109,25 @@ const SearchResults = () => {
 		<CircularProgress />
 	) : (
 		<>
-			<title>Liste des lieux d&#39;intérêts de la ville de {searchedCity.name}</title>
+			<Head>
+				<title>
+					Liste des lieux d&#39;intérêts de la ville de {searchedCity.name} |
+					CityGuide
+				</title>
+				<meta
+					name="title"
+					content={`Liste des lieux d'intérêts de la ville de ${searchedCity.name}`}
+				/>
+				<meta
+					name="description"
+					content={`Explorez, partagez et découvrez ${searchedCity.name}`}
+				/>
+				<meta name="author" content="CityGuide Team" />
+				<meta
+					name="keywords"
+					content={`CityGuide, explorez, partagez, découvrez, ville, point d'intérêt, POI,${searchedCity.name}`}
+				/>
+			</Head>
 			<Grid
 				container
 				display="flex"
@@ -140,14 +158,16 @@ const SearchResults = () => {
 							isActive={activeCategories.length === 0}
 							onClick={() => handleCategoryTagClick("Tous les catégories")}
 						/>
-						{categoryTags.map((category) => (
-							<Tag
-								key={category.id}
-								name={category.name}
-								isActive={activeCategories.includes(category.name)}
-								onClick={() => handleCategoryTagClick(category.name)}
-							/>
-						))}
+						{categoryTags.map((category) => {
+							return (
+								<Tag
+									key={category.id}
+									name={capitalizeFirstLetter(category.name)}
+									isActive={activeCategories.includes(category.name)}
+									onClick={() => handleCategoryTagClick(category.name)}
+								/>
+							);
+						})}
 					</Box>
 					{searchedCity.name !== "" && data!! ? (
 						<Box

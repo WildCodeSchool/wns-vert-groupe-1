@@ -4,10 +4,11 @@ import { EDIT_CITY_BY_ID } from "@mutations";
 import { GET_CITY_BY_ID } from "@queries";
 import { mainTheme } from "@theme";
 import { CityInput } from "@types";
-import { useAuth } from "../../../context";
+import { useAuth } from "context";
 import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
+import { capitalizeFirstLetter } from "utils";
 
 const EditCityByID = () => {
 	const { isAuthenticated } = useAuth();
@@ -34,7 +35,7 @@ const EditCityByID = () => {
 		editCity({
 			variables: {
 				cityData: {
-					name: form.name.charAt(0).toUpperCase() + form.name.slice(1),
+					name: capitalizeFirstLetter(form.name),
 					description: form.description,
 				},
 				updateCityId: cityData?.getCityById?.id,
