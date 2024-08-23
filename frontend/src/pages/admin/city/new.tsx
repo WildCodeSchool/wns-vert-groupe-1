@@ -27,7 +27,7 @@ const NewCity = () => {
 		onCompleted: () => {
 			toast.success("La ville a été créée avec succès!");
 			reset();
-			router.push("/city/list");
+			router.push("/admin/city/list");
 		},
 		onError: (error) => {
 			console.error("Error creating city:", error, error.message);

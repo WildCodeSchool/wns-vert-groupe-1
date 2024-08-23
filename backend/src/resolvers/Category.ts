@@ -63,7 +63,7 @@ export class CategoryResolver {
 		}
 	}
 
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => String)
 	async deleteCategoryById(@Arg("id") id: number) {
 		const categoryToDelete = await Category.findOneByOrFail({

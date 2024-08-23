@@ -15,6 +15,11 @@ import { createClient } from "redis";
 import * as dotenv from "dotenv";
 dotenv.config();
 
+import {
+	ApolloServerPluginLandingPageLocalDefault,
+	ApolloServerPluginLandingPageProductionDefault,
+} from "@apollo/server/plugin/landingPage/default";
+
 export const redisClient = createClient({ url: "redis://redis" });
 
 redisClient.on("error", (err: any) => {
@@ -56,6 +61,14 @@ const start = async () => {
 
 	const server = new ApolloServer({
 		schema,
+		plugins: [
+			process.env.NODE_ENV === "production"
+				? ApolloServerPluginLandingPageProductionDefault({
+						graphRef: "my-graph-id@my-graph-variant",
+						footer: false,
+				  })
+				: ApolloServerPluginLandingPageLocalDefault({ footer: false }),
+		],
 	});
 	const { url } = await startStandaloneServer(server, {
 		listen: { port: 4000 },

@@ -5,7 +5,6 @@ services:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
-
     ports:
       - 4000:4000
     volumes:
@@ -40,7 +39,7 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
       interval: 10s
@@ -48,6 +47,8 @@ services:
       retries: 20
     volumes:
       - pgdata:/var/lib/postgresql/data
+    env_file:
+      - ./backend/.env
   redis:
     image: redis
   redis-commander:

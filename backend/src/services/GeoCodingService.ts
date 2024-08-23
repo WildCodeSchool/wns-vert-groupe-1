@@ -25,8 +25,8 @@ export class GeoCodingService {
   ): Promise<{ latitude: number; longitude: number } | null> {
     try {
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${city}.json?access_token=${process.env.MAPBOX_API_KEY}`
-      );
+				`https://api.mapbox.com/geocoding/v5/mapbox.places/${city}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`
+			);
       if (response.ok) {
         const data = await response.json();
 
