@@ -206,9 +206,13 @@ export class UserResolver {
 		try {
 			const user = await User.findOneByOrFail({ email });
 			if (!user) {
-				throw new Error("Email not found");
+				throw new GraphQLError(`Email not found`, {
+					extensions: {
+						code: "UNAUTHORIZED",
+						http: { status: 401 },
+					},
+				});
 			}
-
 			if (await argon2.verify(user.hashedPassword, password)) {
 				payload = {
 					email: user.email,
@@ -217,11 +221,15 @@ export class UserResolver {
 				const token: string = jwt.sign(payload, SECRET_KEY);
 				return JSON.stringify({ token: token });
 			} else {
-				throw new Error("Invalid password");
+				throw new GraphQLError(`Invalid password`, {
+					extensions: {
+						code: "UNAUTHORIZED",
+						http: { status: 401 },
+					},
+				});
 			}
-		} catch (err) {
-			console.log("Error authenticating user:", err);
-			return "Invalid credentials";
+		} catch (error) {
+			throw new Error(`Error : ${error.message}`);
 		}
 	}
 

@@ -1,4 +1,3 @@
-import { mainTheme } from "@theme";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
@@ -12,6 +11,7 @@ export const BackButton = ({ color }: BackButtonProps) => {
 	return (
 		<Box width="100%" paddingY={10} display="flex" justifyContent="flex-start">
 			<ArrowBackIosIcon
+				aria-label="Retourner à la page précédente"
 				onClick={() => router.back()}
 				sx={{ cursor: "pointer", color: color ? color : "primary.main" }}
 			/>

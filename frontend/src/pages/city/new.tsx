@@ -2,7 +2,6 @@ import {
 	Typography,
 	Button,
 	TextField,
-	Paper,
 	Box,
 	Grid,
 	CircularProgress,
@@ -87,6 +86,7 @@ const NewCity = () => {
 				}
 			}
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated, isLoadingSession, user?.role]);
 
 	return isLoadingSession ? (
@@ -145,6 +145,11 @@ const NewCity = () => {
 								margin="normal"
 								{...register("name", {
 									required: "Le nom de la ville est requis",
+									pattern: {
+										value: /^[A-Za-zÀ-ÖØ-öø-ÿ'’\-\s]+$/,
+										message:
+											"Le nom de la ville ne peut contenir que des lettres, des espaces, des traits d'union, des apostrophes ou des caractères accentués.",
+									},
 									minLength: {
 										value: 1,
 										message: "Le nom doit comporter au moins 1 caractère",
@@ -160,6 +165,7 @@ const NewCity = () => {
 									"& .MuiInputBase-root": {
 										backgroundColor: "white",
 										borderRadius: "2rem",
+										paddingLeft: 5,
 									},
 								}}
 							/>
@@ -188,14 +194,19 @@ const NewCity = () => {
 									"& .MuiInputBase-root": {
 										backgroundColor: "white",
 										borderRadius: "2rem",
+										paddingLeft: 7,
 									},
 								}}
 							/>
 							<Button
+								data-testid="send_form"
+								aria-label="Soumettre le formulaire de création de ville"
 								disabled={isDisabled}
 								type="submit"
 								variant="contained"
 								color="primary"
+								size="large"
+								style={{ borderRadius: "24px" }}
 							>
 								Créer
 							</Button>

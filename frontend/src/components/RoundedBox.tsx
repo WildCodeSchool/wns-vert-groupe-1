@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import { mainTheme } from "@theme";
 
 type RoundedBoxProps = {
 	children?: React.ReactNode;
@@ -9,7 +8,7 @@ type RoundedBoxProps = {
 		| "center"
 		| "space-between"
 		| "space-evenly"
-		| "space-aroundly"
+		| "space-around"
 		| "end"
 		| "right"
 		| "start"
@@ -19,9 +18,9 @@ type RoundedBoxProps = {
 
 export default function RoundedBox({
 	children,
-	color,
-	align,
-	justify,
+	color = "white",
+	align = "left",
+	justify = "space-between",
 	row,
 }: RoundedBoxProps) {
 	return (
@@ -30,11 +29,11 @@ export default function RoundedBox({
 			padding={3}
 			border={1}
 			borderRadius={10}
-			borderColor={color ? color : "white"}
-			bgcolor={color ? color : "white"}
-			textAlign={align ? align : "left"}
+			borderColor={color}
+			bgcolor={color}
+			textAlign={align}
 			paddingLeft={10}
-			justifyContent={justify ? justify : "space-between"}
+			justifyContent={justify}
 			flexDirection={row ? "row" : "column"}
 			display="flex"
 		>

@@ -92,7 +92,10 @@ export const Header = () => {
 								}}
 							/>
 							<LogoutIcon
-								onClick={onLogout}
+								onClick={() => {
+									onLogout();
+									router.push("/");
+								}}
 								sx={{
 									fontSize: mainTheme.typography.h3,
 									cursor: "pointer",

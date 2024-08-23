@@ -222,7 +222,10 @@ const Register = () => {
 							>
 								{cities.map((city) => (
 									<MenuItem key={city.id} value={city.id}>
-										{city.name}
+										{city.name
+											? city.name.charAt(0).toUpperCase() +
+												city.name.slice(1).toLowerCase()
+											: undefined}
 									</MenuItem>
 								))}
 							</Select>

@@ -5,7 +5,6 @@ import {
 	CircularProgress,
 	Grid,
 	Modal,
-	Paper,
 	Table,
 	TableBody,
 	TableCell,
@@ -34,10 +33,14 @@ const style = {
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
-	width: 400,
+	display: "flex",
+	flexDirection: "column",
+	alignItems: "center",
 	bgcolor: "background.paper",
-	border: "2px solid #000",
-	p: 4,
+	borderRadius: "2rem",
+	border: "2px solid white",
+	p: 7,
+	gap: 5,
 };
 
 const CityList = () => {
@@ -57,14 +60,8 @@ const CityList = () => {
 		fetchPolicy: "cache-and-network",
 	});
 
-	const [
-		deleteCity,
-		{
-			data: deleteCityData,
-			loading: deleteCityLoading,
-			error: deleteCityError,
-		},
-	] = useMutation(DELETE_CITY_BY_ID);
+	const [deleteCity, { error: deleteCityError }] =
+		useMutation(DELETE_CITY_BY_ID);
 
 	React.useLayoutEffect(() => {
 		if (!isLoadingSession) {
@@ -76,6 +73,7 @@ const CityList = () => {
 				}
 			}
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated, isLoadingSession, user?.role]);
 
 	React.useEffect(() => {
@@ -129,6 +127,7 @@ const CityList = () => {
 								Liste des villes :
 							</Typography>
 							<AddCircleIcon
+								aria-label="Ajouter une ville"
 								data-testid="add_city_button"
 								onClick={() => router.push("/city/new")}
 								sx={{
@@ -142,56 +141,40 @@ const CityList = () => {
 					{citiesData?.getAllCities?.length > 0 ? (
 						<>
 							<Grid item width="95%" mx="auto">
-								<TableContainer id="users-list" data-testid="users-list">
-									<Table
-										aria-label="simple table"
-										sx={{
-											minWidth: 650,
-											borderRadius: "1rem",
-											"& .MuiTableHead-root": {
-												backgroundColor: `${mainTheme.palette.primary.light}`,
-												borderRadius: "1rem 1rem 0 0",
-											},
-										}}
-									>
-										<TableHead>
-											<TableRow
-												sx={{
-													backgroundColor: "white",
-													borderRadius: "1rem 1rem 0 0",
-													"& .MuiTableCell-root": {
-														borderBottom: "none",
-														padding: "16px",
-														fontWeight: "bold",
-														fontSize: "1rem",
-														color: mainTheme.palette.primary.main,
-													},
-												}}
-											>
-												<TableCell
+								{citiesLoading ? (
+									<CircularProgress />
+								) : (
+									<TableContainer id="city-list" sx={{ borderRadius: "1rem" }}>
+										<Table
+											aria-label="Liste des villes sous format tableau"
+											sx={{
+												minWidth: 650,
+												borderRadius: "1rem",
+											}}
+										>
+											<TableHead>
+												<TableRow
 													sx={{
-														borderRadius: "1rem 0 0 0",
+														backgroundColor: "white",
+														borderRadius: "1rem 1rem 0 0",
 													}}
-													align="center"
 												>
-													Nom
-												</TableCell>
-												<TableCell align="center">Description</TableCell>
-												<TableCell align="center">Latitude</TableCell>
-												<TableCell align="center">Longitude</TableCell>
-												<TableCell
-													sx={{
-														borderRadius: "0 1rem 0 0",
-													}}
-													align="center"
-												>
-													Actions
-												</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{citiesData?.getAllCities?.map(
-												(city: CityType, index: number) => {
+													<TableCell align="center">Nom</TableCell>
+													<TableCell align="center">Description</TableCell>
+													<TableCell align="center">Latitude</TableCell>
+													<TableCell align="center">Longitude</TableCell>
+													<TableCell
+														sx={{
+															borderRadius: "0 1rem 0 0",
+														}}
+														align="center"
+													>
+														Actions
+													</TableCell>
+												</TableRow>
+											</TableHead>
+											<TableBody>
+												{citiesData?.getAllCities?.map((city: CityType) => {
 													return (
 														<TableRow
 															key={city.name}
@@ -202,13 +185,6 @@ const CityList = () => {
 																"&:nth-of-type(odd)": {
 																	backgroundColor:
 																		mainTheme.palette.primary.light,
-																},
-																"&:last-child td, &:last-child th": {
-																	border: 0,
-																},
-																"& .MuiTableCell-root": {
-																	padding: "16px",
-																	fontSize: "1rem",
 																},
 															}}
 														>
@@ -276,47 +252,50 @@ const CityList = () => {
 															</TableCell>
 														</TableRow>
 													);
-												}
-											)}
-										</TableBody>
-									</Table>
-								</TableContainer>
+												})}
+											</TableBody>
+										</Table>
+									</TableContainer>
+								)}
 								<Modal
 									key={city?.id}
 									open={open}
 									onClose={() => setOpen(false)}
-									aria-labelledby="modal-modal-title"
-									aria-describedby="modal-modal-description"
+									aria-labelledby="delete-city-modal-title"
 								>
 									<Box sx={style}>
 										<Typography
-											id="modal-modal-title"
-											variant="h6"
+											id="delete-city-modal-title"
+											variant="h4"
 											component="h2"
 										>
-											{`Voulez vous vraiment supprimer ${city?.name} ?`}
+											{`Voulez-vous vraiment supprimer la ville ${city?.name} ?`}
 										</Typography>
-										<Button
-											onClick={() => {
-												deleteCity({
-													variables: { deleteCityByIdId: city?.id },
-												}).then((res) => {
-													refetch();
-													setOpen(false);
-													toast.success(
-														`La ville ${city?.name} a bien été supprimé !`
-													);
-												});
-											}}
-										>
-											Confirmer
-										</Button>
-										<Button
-											sx={{ color: mainTheme.palette.error.main }}
-											onClick={() => setOpen(false)}
-										>
-											Annuler
-										</Button>
+										<Box gap={mainTheme.spacing(8)} display="flex">
+											<Button
+												aria-label="Confirmer la suppression"
+												onClick={() => {
+													deleteCity({
+														variables: { deleteCityByIdId: city?.id },
+													}).then((res) => {
+														refetch();
+														setOpen(false);
+														toast.success(
+															`La ville ${city?.name} a bien été supprimée !`
+														);
+													});
+												}}
+											>
+												Confirmer
+											</Button>
+											<Button
+												aria-label="Annuler la suppression"
+												sx={{ color: mainTheme.palette.error.main }}
+												onClick={() => setOpen(false)}
+											>
+												Annuler
+											</Button>
+										</Box>
 									</Box>
 								</Modal>
 							</Grid>

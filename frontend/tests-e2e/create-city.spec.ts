@@ -25,22 +25,22 @@ test("Login as admin, open the page from create a new city and add a short descr
 	const form = await page.getByTestId("city-form");
 	await expect(form).toBeTruthy();
 
-	const name = await page.getByPlaceholder("Nom de la ville");
-	const description = await page.getByPlaceholder("Description");
+	const name = await page.getByPlaceholder("Nom de la ville *");
+	const description = await page.getByPlaceholder("Description *");
 
 	await expect(name).toBeVisible();
 	await expect(name).toBeEmpty();
 	await expect(description).toBeVisible();
 	await expect(description).toBeEmpty();
 
-	const button = await page.getByRole("button", { name: "Créer" });
-
-	await expect(button).toBeDisabled();
-
 	await name.fill("Metz");
 	await description.fill(
 		"Metz [mɛs] est une commune française située dans le département de la Moselle, en Lorraine. Préfecture de département, elle fait partie, depuis le 1ᵉʳ janvier 2016, de la région administrative Grand Est, dont elle accueille les assemblées plénières. "
 	);
+
+	const button = await page.getByTestId("send_form");
+	await expect(button).toBeVisible();
+	await expect(button).toBeEnabled();
 
 	await button.click();
 	await expect(
@@ -73,20 +73,20 @@ test("Login as admin, open the page from create a new city and add a short descr
 	const form = await page.getByTestId("city-form");
 	await expect(form).toBeTruthy();
 
-	const name = await page.getByPlaceholder("Nom de la ville");
-	const description = await page.getByPlaceholder("Description");
+	const name = await page.getByPlaceholder("Nom de la ville *");
+	const description = await page.getByPlaceholder("Description *");
 
 	await expect(name).toBeVisible();
 	await expect(name).toBeEmpty();
 	await expect(description).toBeVisible();
 	await expect(description).toBeEmpty();
 
-	const button = await page.getByRole("button", { name: "Créer" });
-
-	await expect(button).toBeDisabled();
-
 	await name.fill("Metz");
 	await description.fill("Ville Nord Est");
+
+	const button = await page.getByTestId("send_form");
+	await expect(button).toBeVisible();
+	await expect(button).toBeEnabled();
 
 	await button.click();
 	await expect(
@@ -121,22 +121,22 @@ test("Logged as admin, goes to the page for create a city and add a long descrip
 	const form = await page.getByTestId("city-form");
 	await expect(form).toBeTruthy();
 
-	const name = await page.getByPlaceholder("Nom de la ville");
-	const description = await page.getByPlaceholder("Description");
+	const name = await page.getByPlaceholder("Nom de la ville *");
+	const description = await page.getByPlaceholder("Description *");
 
 	await expect(name).toBeVisible();
 	await expect(name).toBeEmpty();
 	await expect(description).toBeVisible();
 	await expect(description).toBeEmpty();
 
-	const button = await page.getByRole("button", { name: "Créer" });
-
-	await expect(button).toBeDisabled();
-
 	await name.fill("Troyes");
 	await description.fill(
 		"Troyes est une ville française de la région Grand Est. Sa vieille ville médiévale est sillonné bordées de maisons à colombages colorées, construites pour la plupart au XVIe siècle. La ville est agrémentée de plusieurs églises gothiques aux remarquables vitraux, notamment la cathédrale de Troyes, l'église Sainte-Madeleine et la basilique Saint-Urbain. "
 	);
+
+	const button = await page.getByTestId("send_form");
+	await expect(button).toBeVisible();
+	await expect(button).toBeEnabled();
 	await button.click();
 
 	await expect(

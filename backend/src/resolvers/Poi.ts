@@ -8,9 +8,8 @@ import { GraphQLError } from "graphql";
 @Resolver()
 export class PoiResolver {
 	@Query(() => [Poi])
-	async getAllPois(@Arg("city", { nullable: true }) city?: number) {
+	async getAllPois() {
 		const result = await Poi.find({
-			where: { city: { id: city } },
 			relations: ["category", "city"],
 		});
 		return result;

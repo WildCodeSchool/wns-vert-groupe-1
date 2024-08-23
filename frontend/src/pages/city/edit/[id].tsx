@@ -89,6 +89,7 @@ const EditCityByID = () => {
 				}
 			}
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated, isLoadingSession, user?.role]);
 
 	return isLoadingSession || cityLoading ? (
@@ -162,17 +163,20 @@ const EditCityByID = () => {
 							"& .MuiInputBase-root": {
 								backgroundColor: "white",
 								borderRadius: "2rem",
-								paddingX: "1rem",
+								paddingX: "2rem",
 							},
 						}}
 					/>
 					<Button
+						aria-label="Enregistrer les modifications"
 						disabled={isDisabled}
 						type="submit"
 						variant="contained"
 						color="primary"
+						size="large"
+						style={{ borderRadius: "24px" }}
 					>
-						{loading ? "Enregistrer " : "Enregistrement en cours ..."}
+						{!loading ? "Enregistrer " : "Enregistrement en cours ..."}
 					</Button>
 				</Box>
 			</Grid>

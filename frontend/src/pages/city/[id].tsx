@@ -7,7 +7,8 @@ import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { BackButton } from "@components";
+import RoundedBox from "components/RoundedBox";
 
 const DisplayCityByID = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
@@ -45,95 +46,67 @@ const DisplayCityByID = () => {
 				<Box flex={1} paddingX={10} width="100%">
 					<>
 						{data?.getCityById ? (
-							<Grid container direction="column" gap={10} paddingY={10}>
+							<Grid container direction="column" gap={5}>
+								<BackButton />
 								<Grid item>
-									<ArrowBackIosIcon
-										onClick={() => router.back()}
-										sx={{ cursor: "pointer", color: "primary.main" }}
-									/>
-								</Grid>
-								<Grid item>
-									<Typography
-										component="h1"
-										width="auto"
-										fontSize={{
-											sx: mainTheme.typography.h6.fontSize,
-											sm: mainTheme.typography.h5.fontSize,
-											md: mainTheme.typography.h4.fontSize,
-											lg: mainTheme.typography.h3.fontSize,
-										}}
-										color={mainTheme.palette.primary.contrastText}
-										fontWeight={mainTheme.typography.fontWeightMedium}
-										alignContent="center"
-										padding={3}
-										borderRadius={10}
-										bgcolor={mainTheme.palette.primary.main}
-										textAlign="left"
-										paddingLeft={10}
-									>
-										Ville : {data?.getCityById?.name}
-									</Typography>
+									<RoundedBox color={mainTheme.palette.primary.main}>
+										<Typography
+											component="h1"
+											width="auto"
+											fontSize={{
+												sx: mainTheme.typography.h6.fontSize,
+												sm: mainTheme.typography.h5.fontSize,
+												md: mainTheme.typography.h4.fontSize,
+												lg: mainTheme.typography.h3.fontSize,
+											}}
+											color={mainTheme.palette.primary.contrastText}
+											fontWeight={mainTheme.typography.fontWeightMedium}
+											alignContent="center"
+										>
+											Ville : {data?.getCityById?.name}
+										</Typography>
+									</RoundedBox>
 								</Grid>
 								<Grid
 									item
 									justifyContent="space-between"
 									display="flex"
 									direction="column"
-									gap={10}
+									gap={5}
 								>
-									<Typography
-										color={mainTheme.palette.secondary.dark}
-										padding={4}
-										border={1}
-										borderColor={mainTheme.palette.secondary.light}
-										borderRadius={10}
-										bgcolor="white"
-										textAlign="left"
-										paddingLeft={10}
-									>
-										Description : {data?.getCityById?.description}
-									</Typography>
-									<Typography
-										color={mainTheme.palette.secondary.dark}
-										padding={3}
-										border={1}
-										borderColor={mainTheme.palette.secondary.light}
-										borderRadius={10}
-										bgcolor="white"
-										textAlign="left"
-										paddingLeft={10}
-									>
-										Latitude : {data?.getCityById?.lat}
-									</Typography>
-									<Typography
-										color={mainTheme.palette.secondary.dark}
-										padding={3}
-										border={1}
-										borderColor={mainTheme.palette.secondary.light}
-										borderRadius={10}
-										bgcolor="white"
-										textAlign="left"
-										paddingLeft={10}
-									>
-										Longitude : {data?.getCityById?.lon}
-									</Typography>
+									<RoundedBox>
+										<Typography color={mainTheme.palette.secondary.dark}>
+											Description : {data?.getCityById?.description}
+										</Typography>
+									</RoundedBox>
+									<RoundedBox>
+										<Typography color={mainTheme.palette.secondary.dark}>
+											Latitude : {data?.getCityById?.lat}
+										</Typography>
+									</RoundedBox>
+									<RoundedBox>
+										<Typography color={mainTheme.palette.secondary.dark}>
+											Longitude : {data?.getCityById?.lon}
+										</Typography>
+									</RoundedBox>
 								</Grid>
-								<Grid item display="flex" direction="column" gap={10}>
-									<Typography
-										fontSize={20}
-										component="h3"
-										padding={4}
-										border={1}
-										borderRadius={10}
-										borderColor={mainTheme.palette.primary.light}
-										bgcolor={mainTheme.palette.primary.light}
-										textAlign="left"
-										paddingLeft={10}
-										fontWeight="bold"
-										color={mainTheme.palette.primary.dark}
-									>
-										Point d&apos;intérêt :{" "}
-									</Typography>
+								<Grid
+									item
+									display="flex"
+									direction="column"
+									gap={5}
+									paddingTop={10}
+								>
+									<RoundedBox color={mainTheme.palette.primary.light}>
+										<Typography
+											fontSize={20}
+											component="h3"
+											fontWeight="bold"
+											color={mainTheme.palette.primary.dark}
+										>
+											Point d&apos;intérêt :{" "}
+										</Typography>
+									</RoundedBox>
 									<Grid item display="flex" direction="column" gap={10}>
 										{data?.getCityById?.pois.length > 0 ? (
 											<>
@@ -172,19 +145,11 @@ const DisplayCityByID = () => {
 												})}
 											</>
 										) : (
-											<Typography
-												padding={4}
-												border={1}
-												borderColor={mainTheme.palette.secondary.light}
-												borderRadius={10}
-												bgcolor="white"
-												textAlign="left"
-												paddingX={10}
-												flexDirection="row"
-												display="flex"
-											>
-												Aucun point d&apos;intrêt pour l&apos;instant
-											</Typography>
+											<RoundedBox>
+												<Typography flexDirection="row" display="flex">
+													Aucun point d&apos;intrêt pour l&apos;instant
+												</Typography>
+											</RoundedBox>
 										)}
 									</Grid>
 								</Grid>
