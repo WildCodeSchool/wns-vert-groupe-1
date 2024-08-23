@@ -134,7 +134,7 @@ export class UserResolver {
 		try {
 			const loggedUser = await User.findOneByOrFail({ email: ctx.email });
 			const oldUser = await User.findOneByOrFail({ id: id });
-
+			console.log("loggedUser", loggedUser.city?.id);
 			if (
 				ctx.role === "ADMIN" ||
 				oldUser?.email === ctx.email ||
