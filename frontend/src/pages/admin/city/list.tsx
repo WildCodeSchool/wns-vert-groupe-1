@@ -131,7 +131,7 @@ const CityList = () => {
 							<AddCircleIcon
 								aria-label="Ajouter une ville"
 								data-testid="add_city_button"
-								onClick={() => router.push("admin/city/new")}
+								onClick={() => router.push("new")}
 								sx={{
 									color: mainTheme.palette.primary.light,
 									fontSize: "50px",
