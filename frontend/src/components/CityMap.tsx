@@ -20,7 +20,6 @@ export const CityMap = ({
 	const handleMarkerClick = (poiId: number) => {
 		onMarkerClick(poiId);
 	};
-
 	return (
 		<Map
 			key={key}

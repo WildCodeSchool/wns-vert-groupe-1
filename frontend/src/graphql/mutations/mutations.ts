@@ -53,4 +53,11 @@ export const EDIT_CITY_BY_ID = gql`
 	}
 `;
 
-
+export const UPDATE_USER_BY_ID = gql`
+	mutation UpdateUserById(
+		$newUserInput: UserUpdateInput!
+		$updateUserByIdId: Float!
+	) {
+		updateUserById(newUserInput: $newUserInput, id: $updateUserByIdId)
+	}
+`;

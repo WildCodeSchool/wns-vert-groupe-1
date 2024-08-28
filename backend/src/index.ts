@@ -42,15 +42,13 @@ const start = async () => {
 			RatingResolver,
 		],
 		authChecker: ({ context }, roles) => {
-			if (context.email && roles.length > 0) {
-				if (roles.includes(context.role)) {
+			if (context.email) {
+				if (
+					roles.length === 0 ||
+					(roles.length > 0 && roles.includes(context.role))
+				) {
 					return true;
-				} else {
-					return false;
 				}
-			}
-			if (roles.length === 0 && context.email) {
-				return true;
 			}
 			return false;
 		},

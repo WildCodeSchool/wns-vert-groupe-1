@@ -25,7 +25,7 @@ import Logo from "./Logo";
 export const Header = () => {
 	const { onLogout, isAuthenticated, user, isLoadingSession } = useAuth();
 	const router = useRouter();
-	const [menuOpen, setMenuOpen] = React.useState(false);
+	const [menuOpen, setMenuOpen] = React.useState<boolean>(false);
 
 	const handleMenuToggle = () => {
 		setMenuOpen(!menuOpen);
@@ -38,7 +38,6 @@ export const Header = () => {
 		{ name: "Utilisateurs" },
 		{ name: "Catégories" },
 	];
-
 
 	return isLoadingSession ? (
 		<CircularProgress />
@@ -103,9 +102,9 @@ export const Header = () => {
 							{(user?.role === "ADMIN" || user?.role === "CITYADMIN") && (
 								<>
 									<AdminPanelSettingsIcon
+										data-testid="admin-button"
 										onClick={() => {
-											// router.push("/admin");
-											router.push("/city/list");
+											router.push("/admin");
 										}}
 										sx={{
 											fontSize: mainTheme.typography.h3,
@@ -115,6 +114,7 @@ export const Header = () => {
 								</>
 							)}
 							<AccountCircleIcon
+								// data-testid="user-button"
 								onClick={() => router.push("/profil")}
 								sx={{
 									fontSize: mainTheme.typography.h3,
@@ -122,7 +122,10 @@ export const Header = () => {
 								}}
 							/>
 							<LogoutIcon
-								onClick={onLogout}
+								onClick={() => {
+									onLogout();
+									router.push("/");
+								}}
 								sx={{
 									fontSize: mainTheme.typography.h3,
 									cursor: "pointer",
@@ -161,28 +164,29 @@ export const Header = () => {
 								display: "flex",
 								flexDirection: "column",
 								alignItems: "center",
+								gap: 10,
+								paddingY: 10,
 							}}
 						>
-							<Box
+							<Logo />
+							<List
 								sx={{
-									marginTop: "5vh",
-									marginBottom: "15vh",
+									flex: 1,
+									width: "100%",
+									display: "flex",
+									flexDirection: "column",
+									alignContent: "center",
+									paddingX: 5,
+									gap: 10,
 								}}
 							>
-								<Logo />
-							</Box>
-
-							<List>
 								{menuItems.map((menuItem, index) => (
 									<Link href={menuItem.link ?? ""} key={index} passHref>
 										<ListItem
 											key={index}
 											sx={{
 												backgroundColor: mainTheme.palette.primary.light,
-												marginBottom: "3rem",
 												borderRadius: "24px",
-												marginLeft: "0.5rem",
-												marginRight: "0.5rem",
 												maxWidth: "calc(100% - 1rem)",
 											}}
 										>
