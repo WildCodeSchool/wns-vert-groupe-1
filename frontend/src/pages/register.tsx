@@ -31,7 +31,7 @@ const Register = () => {
 		reset,
 		setError,
 		formState: { errors },
-	} = useForm<UserInput>();
+	} = useForm<UserInput>({ mode: "onBlur" });
 
 	const [cities, setCities] = useState<CityType[]>([]);
 	const [showPassword, setShowPassword] = useState<boolean>(false);

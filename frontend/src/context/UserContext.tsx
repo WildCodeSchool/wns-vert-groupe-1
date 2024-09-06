@@ -60,8 +60,12 @@ function UserProvider({ children }: PropsWithChildren) {
 	const [jwt, setJwt] = React.useState(defaultStore["jwt"]);
 	const [login, { loading: loadingLogin }] = useLazyQuery(LOGIN);
 	const [register, { loading: loadingRegister }] = useMutation(REGISTER);
-	const [getUserByEmail, { loading: loadingGetUser }] =
-		useLazyQuery(GET_USER_BY_EMAIL);
+	const [getUserByEmail, { loading: loadingGetUser }] = useLazyQuery(
+		GET_USER_BY_EMAIL,
+		{
+			fetchPolicy: "cache-and-network",
+		}
+	);
 	const [isLoadingSession, setIsLoadingSession] = React.useState<boolean>(true);
 
 	const onLogin = React.useCallback(
@@ -81,6 +85,16 @@ function UserProvider({ children }: PropsWithChildren) {
 							localStorage.setItem("jwt", data.token);
 							setIsLoadingSession(false);
 							toast.success("Connexion réussie !");
+							if (
+								res?.data?.getUserByEmail.role === "ADMIN" ||
+								res?.data?.getUserByEmail.role === "CITYADMIN"
+							) {
+								router.replace("/admin/user/list");
+							} else if (res?.data?.getUserByEmail?.role === "SUPERUSER") {
+								router.replace("/admin/poi/list");
+							} else {
+								router.replace("/");
+							}
 						})
 						.catch(() => {
 							setError(errors.getUser);

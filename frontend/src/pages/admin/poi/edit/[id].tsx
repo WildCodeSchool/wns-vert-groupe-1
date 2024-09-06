@@ -11,7 +11,7 @@ import {
 	InputLabel,
 	Select,
 	MenuItem,
-    CircularProgress,
+	CircularProgress,
 } from "@mui/material";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import axios from "axios";
@@ -22,6 +22,7 @@ import { mainTheme } from "@theme";
 import { CategoryType, CityInput, POIInput } from "@types";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { capitalizeFirstLetter } from "utils";
 
 const EditPoiByID = () => {
 	const router = useRouter();
@@ -45,11 +46,11 @@ const EditPoiByID = () => {
 		address: "",
 		postalCode: "",
 		description: "",
-		city: "",
+		city: undefined,
 		latitude: 0,
 		longitude: 0,
 		images: [],
-		category: "",
+		category: undefined,
 	});
 
 	useEffect(() => {
@@ -86,10 +87,9 @@ const EditPoiByID = () => {
 				formData.append("file", file, file.name);
 				try {
 					const response = await axios.post(url, formData);
-					console.log(response);
 					return response.data.filename;
 				} catch (err) {
-					console.log("error", err);
+					console.error("Error uploading image:", err);
 					return null;
 				}
 			});
@@ -122,23 +122,23 @@ const EditPoiByID = () => {
 						images: form.images,
 						category: Number(form.category),
 					},
-					id: Number(id),
+					updatePoiByIdId: Number(id),
 				},
 			});
-			toast.success("POI updated successfully");
+			toast.success("Le POI a bien été mis à jour !");
 			router.push(`/poi/${id}`);
 		} catch (error) {
 			console.error("Error updating POI: ", error);
-			toast.error("Error updating POI");
+			toast.error("Une erreur ets survenue lors de la modification du POI");
 		}
 	};
 
-	if (poiError) return toast.error("Une erreur est survenue.");;
+	if (poiError) return toast.error("Une erreur est survenue.");
 
-return poiLoading || !cityData || !categoryData ? (
+	return poiLoading || !cityData || !categoryData ? (
 		<CircularProgress />
-	) :	(
-    	<Paper
+	) : (
+		<Paper
 			component={Box}
 			elevation={5}
 			square={false}
@@ -202,12 +202,14 @@ return poiLoading || !cityData || !categoryData ? (
 									labelId="city-label"
 									name="city"
 									value={form.city}
-									onChange={(e) => setForm({ ...form, city: e.target.value })}
+									onChange={(e) =>
+										setForm({ ...form, city: Number(e.target.value) })
+									}
 									label="Ville"
 								>
 									{cityData.getAllCities.map((city: CityInput) => (
 										<MenuItem key={city.id} value={city.id}>
-											{city.name}
+											{capitalizeFirstLetter(city.name)}
 										</MenuItem>
 									))}
 								</Select>
@@ -241,14 +243,14 @@ return poiLoading || !cityData || !categoryData ? (
 									name="category"
 									value={form.category}
 									onChange={(e) =>
-										setForm({ ...form, category: e.target.value })
+										setForm({ ...form, category: Number(e.target.value) })
 									}
 									label="Catégorie"
 								>
 									{categoryData.getAllCategories.map(
 										(category: CategoryType) => (
 											<MenuItem key={category.id} value={category.id}>
-												{category.name}
+												{capitalizeFirstLetter(category.name)}
 											</MenuItem>
 										)
 									)}
@@ -333,7 +335,6 @@ return poiLoading || !cityData || !categoryData ? (
 				</Grid>
 			</Grid>
 		</Paper>
-    
 	);
 };
 

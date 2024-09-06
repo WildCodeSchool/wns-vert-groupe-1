@@ -14,6 +14,10 @@ type RoundedBoxProps = {
 		| "start"
 		| "left";
 	row?: boolean;
+	width?: number | string;
+	display?: string;
+	gap?: number | string;
+	paddingX?: number | string;
 };
 
 export default function RoundedBox({
@@ -22,20 +26,26 @@ export default function RoundedBox({
 	align = "left",
 	justify = "space-between",
 	row,
+	width = "100%",
+	paddingX = 0,
+	display = "flex",
+	gap = 0,
 }: RoundedBoxProps) {
 	return (
 		<Box
-			width="100%"
-			padding={3}
+			width={width}
+			paddingY={4}
 			border={1}
 			borderRadius={10}
 			borderColor={color}
 			bgcolor={color}
 			textAlign={align}
-			paddingLeft={10}
-			justifyContent={justify}
 			flexDirection={row ? "row" : "column"}
-			display="flex"
+			paddingX={paddingX}
+			display={display}
+			gap={gap}
+			justifyContent={justify}
+			alignItems="center"
 		>
 			{children}
 		</Box>

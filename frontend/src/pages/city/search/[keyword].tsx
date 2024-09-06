@@ -59,6 +59,7 @@ const SearchResults = () => {
 			setFilteredPois(cityData.pois!);
 			setDataFetched(true);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, error, loading, router.query.keyword]);
 
 	useEffect(() => {
@@ -111,8 +112,11 @@ const SearchResults = () => {
 		<>
 			<Head>
 				<title>
-					Liste des lieux d&#39;intérêts de la ville de {searchedCity.name} |
-					CityGuide
+					Liste des lieux d&#39;intérêts{" "}
+					{searchedCity?.name
+						? `de la ville de ${capitalizeFirstLetter(searchedCity.name)}`
+						: ""}{" "}
+					| CityGuide
 				</title>
 				<meta
 					name="title"
@@ -183,7 +187,10 @@ const SearchResults = () => {
 									fontWeight: "bold",
 								}}
 							>
-								{searchedCity.name} ({filteredPois.length})
+								{searchedCity.name
+									? capitalizeFirstLetter(searchedCity.name)
+									: ""}{" "}
+								({filteredPois.length})
 							</Typography>
 							{filteredPois.length > 0 ? (
 								<>

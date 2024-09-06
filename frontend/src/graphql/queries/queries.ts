@@ -19,8 +19,8 @@ export const GET_ALL_CITIES = gql`
 `;
 
 export const GET_ALL_POIS = gql`
-	query GetAllPois {
-		getAllPois {
+	query GetAllPois($city: Float) {
+		getAllPois(city: $city) {
 			id
 			description
 			address
@@ -182,5 +182,27 @@ export const GET_USER_BY_EMAIL = gql`
 				name
 			}
 		}
+	}
+`;
+
+export const GET_ALL_USERS = gql`
+	query GetAllUsers {
+		getAllUsers {
+			id
+			firstName
+			lastName
+			email
+			city {
+				id
+				name
+			}
+			role
+		}
+	}
+`;
+
+export const CHECK_CATEGORY_UNIQUE = gql`
+	query Query($name: String!) {
+		isCategoryNameUnique(name: $name)
 	}
 `;

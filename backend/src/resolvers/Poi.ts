@@ -8,9 +8,11 @@ import { GraphQLError } from "graphql";
 @Resolver()
 export class PoiResolver {
 	@Query(() => [Poi])
-	async getAllPois() {
+	async getAllPois(@Arg("city", { nullable: true }) cityId: number) {
+		const whereCondition = cityId ? { city: { id: cityId } } : {};
 		const result = await Poi.find({
 			relations: ["category", "city"],
+			where: whereCondition,
 		});
 		return result;
 	}
@@ -142,7 +144,7 @@ export class PoiResolver {
 	@Mutation(() => String)
 	async updatePoiById(
 		@Arg("id") id: number,
-		@Arg("PoiInput") PoiInput: PoiUpdateInput,
+		@Arg("newPoiInput") newPoiInput: PoiUpdateInput,
 		@Ctx() ctx: { role: UserRole; email: string }
 	) {
 		try {
@@ -159,19 +161,19 @@ export class PoiResolver {
 				ctx.role === "ADMIN" ||
 				(ctx.role === "CITYADMIN" && oldPoi.city.id === loggedUser.city.id)
 			) {
-				const city = PoiInput.city
-					? await City.findOneByOrFail({ id: PoiInput.city })
+				const city = newPoiInput.city
+					? await City.findOneByOrFail({ id: newPoiInput.city })
 					: oldPoi.city;
 				if (!city) {
-					throw new Error(`City with ID ${PoiInput.city} not found`);
+					throw new Error(`City with ID ${newPoiInput.city} not found`);
 				}
 
-				const fullAddress = `${PoiInput.address}, ${city.name} ${PoiInput.postalCode}`;
+				const fullAddress = `${newPoiInput.address}, ${city.name} ${newPoiInput.postalCode}`;
 
 				if (
-					PoiInput.address &&
-					(oldPoi.address !== PoiInput.address ||
-						oldPoi.city.id !== PoiInput.city)
+					newPoiInput.address &&
+					(oldPoi.address !== newPoiInput.address ||
+						oldPoi.city.id !== newPoiInput.city)
 				) {
 					const coordinates = await GeoCodingService.getCoordinatesByAddress(
 						fullAddress
@@ -184,7 +186,7 @@ export class PoiResolver {
 					}
 				}
 
-				Object.assign(oldPoi, PoiInput);
+				Object.assign(oldPoi, newPoiInput);
 				await oldPoi.save();
 				return `POI with id ${id} have been updated`;
 			} else {

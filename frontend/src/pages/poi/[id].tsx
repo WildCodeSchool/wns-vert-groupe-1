@@ -14,6 +14,7 @@ import { POI } from "@types";
 import { mainTheme } from "@theme";
 import PlaceIcon from "@mui/icons-material/Place";
 import { ImagesCarousel } from "@components";
+import { capitalizeFirstLetter } from "utils";
 
 const POIDetails = () => {
 	const router = useRouter();
@@ -27,6 +28,7 @@ const POIDetails = () => {
 	});
 
 	const { loading, error, data } = useQuery(GET_POI_BY_ID, {
+		fetchPolicy: "cache-and-network",
 		variables: { id: parseInt(router.query.id as string) },
 	});
 
@@ -62,11 +64,6 @@ const POIDetails = () => {
 	const handleCategoryClick = () => {
 		router.push(`/city/search/${POI.city}/category/${POI.category}`);
 	};
-	const carouselImageStyle = {
-		width: "100%",
-		height: "300px",
-		objectFit: "cover",
-	};
 
 	return loading ? (
 		<CircularProgress />
@@ -83,7 +80,7 @@ const POIDetails = () => {
 					sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
 					color={mainTheme.palette.primary.dark}
 				>
-					{POI.city}
+					{POI.city ? capitalizeFirstLetter(POI.city) : ""}
 				</Link>
 				<Link
 					underline="hover"
@@ -91,7 +88,7 @@ const POIDetails = () => {
 					sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
 					color={mainTheme.palette.primary.dark}
 				>
-					{POI.category}
+					{POI.category ? capitalizeFirstLetter(POI.category) : ""}
 				</Link>
 				<Link
 					underline="hover"

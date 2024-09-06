@@ -19,8 +19,27 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import { mainTheme } from "@theme";
 import { useAuth } from "../context";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Logo from "./Logo";
+
+type MenuItem = {
+	name: string;
+	link: string;
+	type: string[];
+};
+const menuItemsData: MenuItem[] = [
+	{
+		name: "Utilisateurs",
+		link: "/admin/user/list",
+		type: ["ADMIN", "CITYADMIN"],
+	},
+	{ name: "Villes", link: "/admin/city/list", type: ["ADMIN"] },
+	{
+		name: "Points d'intérêts",
+		link: "/admin/poi/list",
+		type: ["ADMIN", "CITYADMIN", "SUPERUSER"],
+	},
+	{ name: "Catégories", link: "/admin/category/list", type: ["ADMIN"] },
+];
 
 export const Header = () => {
 	const { onLogout, isAuthenticated, user, isLoadingSession } = useAuth();
@@ -29,15 +48,7 @@ export const Header = () => {
 
 	const handleMenuToggle = () => {
 		setMenuOpen(!menuOpen);
-		console.log(menuOpen);
 	};
-
-	const menuItems = [
-		{ name: "Villes", link: "/admin/city/list" },
-		{ name: "Points d'intérêt", link: "/admin/poi/list" },
-		{ name: "Utilisateurs" },
-		{ name: "Catégories" },
-	];
 
 	return isLoadingSession ? (
 		<CircularProgress />
@@ -60,13 +71,17 @@ export const Header = () => {
 						alignItems: "center",
 					}}
 				>
-					{router.pathname.startsWith("/admin") && (
+					{isAuthenticated && (
 						<IconButton
 							color="inherit"
-							aria-label="open menu"
+							aria-label="Ouverture du menu"
 							onClick={handleMenuToggle}
 						>
-							<MenuIcon />
+							<MenuIcon
+								sx={{
+									fontSize: mainTheme.typography.h3,
+								}}
+							/>
 						</IconButton>
 					)}
 					<Link href="/" passHref>
@@ -88,6 +103,7 @@ export const Header = () => {
 						left: "50%",
 						transform: "translateX(-50%)",
 					}}
+					onClick={() => router.push("/")}
 				>
 					<Logo />
 				</Box>
@@ -98,54 +114,49 @@ export const Header = () => {
 					}}
 				>
 					{isAuthenticated ? (
-						<Stack flexDirection="row" gap={4}>
-							{(user?.role === "ADMIN" || user?.role === "CITYADMIN") && (
-								<>
-									<AdminPanelSettingsIcon
-										data-testid="admin-button"
-										onClick={() => {
-											router.push("/admin");
-										}}
-										sx={{
-											fontSize: mainTheme.typography.h3,
-											cursor: "pointer",
-										}}
-									/>
-								</>
-							)}
-							<AccountCircleIcon
-								// data-testid="user-button"
+						<Stack display="flex" flexDirection="row" alignContent="center">
+							<IconButton
+								color="inherit"
+								aria-label="Profile"
 								onClick={() => router.push("/profil")}
-								sx={{
-									fontSize: mainTheme.typography.h3,
-									cursor: "pointer",
-								}}
-							/>
-							<LogoutIcon
+							>
+								<AccountCircleIcon
+									data-testid="user-button"
+									sx={{
+										fontSize: mainTheme.typography.h3,
+									}}
+								/>
+							</IconButton>
+							<IconButton
+								color="inherit"
+								aria-label="Déconnexion"
 								onClick={() => {
 									onLogout();
 									router.push("/");
 								}}
-								sx={{
-									fontSize: mainTheme.typography.h3,
-									cursor: "pointer",
-									mr: mainTheme.spacing(3),
-								}}
-							/>
+							>
+								<LogoutIcon
+									sx={{
+										fontSize: mainTheme.typography.h3,
+									}}
+								/>
+							</IconButton>
 						</Stack>
 					) : (
 						<Link href="/login" passHref aria-label="Se connecter">
-							<AccountCircleIcon
-								sx={{
-									fontSize: mainTheme.typography.h2,
-									mr: mainTheme.spacing(3),
-								}}
-							/>
+							<IconButton color="inherit" aria-label="Connexion">
+								<AccountCircleIcon
+									data-testid="user-button"
+									sx={{
+										fontSize: mainTheme.typography.h3,
+									}}
+								/>
+							</IconButton>
 						</Link>
 					)}
 				</Box>
 			</Toolbar>
-			{router.pathname.startsWith("/admin") && (
+			{isAuthenticated && (
 				<React.Fragment key={"left"}>
 					<SwipeableDrawer
 						anchor={"left"}
@@ -157,10 +168,10 @@ export const Header = () => {
 							role="presentation"
 							onClick={() => setMenuOpen(false)}
 							onKeyDown={() => setMenuOpen(true)}
+							width={{ xs: "100%", md: "20vw" }}
 							sx={{
 								backgroundColor: mainTheme.palette.primary.dark,
-								height: "100vh",
-								width: "20vw",
+								height: "100%",
 								display: "flex",
 								flexDirection: "column",
 								alignItems: "center",
@@ -180,7 +191,7 @@ export const Header = () => {
 									gap: 10,
 								}}
 							>
-								{menuItems.map((menuItem, index) => (
+								{menuItemsData.map((menuItem, index) => (
 									<Link href={menuItem.link ?? ""} key={index} passHref>
 										<ListItem
 											key={index}

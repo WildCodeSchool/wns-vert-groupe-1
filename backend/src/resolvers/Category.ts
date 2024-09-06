@@ -11,19 +11,33 @@ export class CategoryResolver {
 		const result = await Category.find({ relations: ["pois"] });
 		return result;
 	}
+
+	@Query(() => Category)
+	async getCategoryById(@Arg("id") id: number) {
+		const result = await Category.findOne({
+			where: { id: id },
+			relations: { pois: true },
+		});
+		if (!result) {
+			throw new Error(`Category with ID ${id} not found`);
+		}
+		return result;
+	}
+
 	@Authorized("ADMIN")
 	@Mutation(() => Category)
 	async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
-		const categoryName = categoryData.name.trim().toLowerCase();
-		const existingCatgeory = await Category.findOne({
-			where: { name: categoryName },
-		});
+		const categoryName = categoryData.name.trim().toLocaleLowerCase();
 
-		if (existingCatgeory) {
-			throw new Error("Category name already exists.");
-		}
+		// const existingCatgeory = await Category.findOne({
+		// 	where: { name: categoryName },
+		// });
 
-		const category = await Category.create({
+		// if (existingCatgeory) {
+		// 	throw new Error("Category name already exists.");
+		// }
+
+		const category = Category.create({
 			...categoryData,
 			name: categoryName,
 		});
@@ -33,14 +47,14 @@ export class CategoryResolver {
 			throw new Error(`Validation failed: ${errors}`);
 		}
 
-		category.save();
+		await category.save();
 
 		return category;
 	}
 
 	@Authorized("ADMIN")
 	@Mutation(() => String)
-	async updateCategory(
+	async updateCategoryById(
 		@Arg("categoryData") categoryData: CategoryInput,
 		@Arg("id") id: number
 	) {
@@ -71,5 +85,14 @@ export class CategoryResolver {
 		});
 		categoryToDelete.remove();
 		return "The Category has been deleted";
+	}
+
+	@Query(() => Boolean)
+	async isCategoryNameUnique(@Arg("name") name: string): Promise<boolean> {
+		const category = await Category.findOne({
+			where: { name: name },
+		});
+
+		return !category;
 	}
 }

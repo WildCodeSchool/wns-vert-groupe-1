@@ -4,7 +4,6 @@ import {
 	Button,
 	CircularProgress,
 	Grid,
-	Modal,
 	Table,
 	TableBody,
 	TableCell,
@@ -19,29 +18,34 @@ import { errors, useAuth } from "../../../context";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DELETE_CITY_BY_ID } from "@mutations";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { CityType } from "@types";
 import RoundedBox from "components/RoundedBox";
-import { BackButton } from "@components";
+import { IconButton } from "@components";
+import AddIcon from "@mui/icons-material/Add";
+import { Modal } from "@components";
+import { capitalizeFirstLetter } from "utils";
 
-const style = {
-	position: "absolute" as "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	display: "flex",
-	flexDirection: "column",
-	alignItems: "center",
-	bgcolor: "background.paper",
-	borderRadius: "2rem",
-	border: "2px solid white",
-	p: 7,
-	gap: 5,
-};
+const columns: { key: any; name: string }[] = [
+	{
+		key: "name",
+		name: "Nom",
+	},
+	{
+		key: "description",
+		name: "Description",
+	},
+	{
+		key: "lat",
+		name: "Latitude",
+	},
+	{
+		key: "lon",
+		name: "Longitude",
+	},
+];
 
 const CityList = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
@@ -49,7 +53,7 @@ const CityList = () => {
 
 	const [open, setOpen] = React.useState<boolean>(false);
 
-	const [city, setCity] = React.useState<CityType>();
+	const [selectedCity, setSelectedCity] = React.useState<CityType>();
 
 	const {
 		data: citiesData,
@@ -60,8 +64,12 @@ const CityList = () => {
 		fetchPolicy: "cache-and-network",
 	});
 
-	const [deleteCity, { error: deleteCityError }] =
-		useMutation(DELETE_CITY_BY_ID);
+	const [deleteCity, { error: deleteCityError }] = useMutation(
+		DELETE_CITY_BY_ID,
+		{
+			refetchQueries: [{ query: GET_ALL_CITIES }],
+		}
+	);
 
 	React.useLayoutEffect(() => {
 		if (!isLoadingSession) {
@@ -90,6 +98,23 @@ const CityList = () => {
 		}
 	}, [citiesError, deleteCityError]);
 
+	const handleDeleteCity = (cityId: number) => {
+		deleteCity({
+			variables: { deleteCityByIdId: cityId },
+		})
+			.then(() => {
+				refetch();
+				setOpen(false);
+				toast.success(`La ville ${selectedCity?.name} a bien été supprimée !`);
+			})
+			.catch((err) => {
+				toast.error(
+					`Une erreur est survenue lors de la suppression de la ville ${selectedCity?.name}.`
+				);
+				console.error(err);
+			});
+	};
+
 	return isLoadingSession ? (
 		<CircularProgress />
 	) : !isAuthenticated ? (
@@ -100,211 +125,219 @@ const CityList = () => {
 				<Typography>{errors.role}</Typography>
 			) : (
 				<Grid
-					paddingX={10}
 					container
+					marginX={10}
+					paddingX={10}
+					paddingBottom={5}
+					paddingTop={10}
 					flex={1}
 					flexDirection="column"
-					alignItems="center"
-					gap={mainTheme.spacing(6)}
+					gap={mainTheme.spacing(4)}
 				>
-					<BackButton />
-					<Grid item width="100%" display="flex" paddingX={8}>
-						<RoundedBox
+					<Grid
+						item
+						width="100%"
+						direction="row"
+						flexDirection="row"
+						display="flex"
+						alignItems="center"
+						justifyContent="space-between"
+					>
+						<Typography
+							variant="h1"
 							color={mainTheme.palette.primary.main}
-							justify="space-between"
-							row
+							fontSize={mainTheme.typography.h3.fontSize}
+							textTransform="uppercase"
 						>
-							<Typography
-								fontFamily={mainTheme.typography.fontFamily}
-								fontSize={{
-									sx: mainTheme.typography.h6.fontSize,
-									sm: mainTheme.typography.h5.fontSize,
-									md: mainTheme.typography.h4.fontSize,
-									lg: mainTheme.typography.h3.fontSize,
-								}}
-								color={mainTheme.palette.primary.light}
-								fontWeight={mainTheme.typography.fontWeightMedium}
-								alignContent="center"
-							>
-								Liste des villes :
-							</Typography>
-							<AddCircleIcon
-								aria-label="Ajouter une ville"
-								data-testid="add_city_button"
-								onClick={() => router.push("new")}
-								sx={{
-									color: mainTheme.palette.primary.light,
-									fontSize: "50px",
-									cursor: "pointer",
-								}}
-							/>
-						</RoundedBox>
+							VILLES
+						</Typography>
+						<IconButton
+							aria-label="Ajouter une ville"
+							data-testid="add_city_button"
+							size={40}
+							onClick={() => {
+								router.push("new");
+							}}
+							icon={
+								<AddIcon
+									fontSize="large"
+									titleAccess="Button ajouter une ville"
+								/>
+							}
+						/>
 					</Grid>
-					{citiesData?.getAllCities?.length > 0 ? (
-						<>
-							<Grid item width="95%" mx="auto">
-								{citiesLoading ? (
-									<CircularProgress />
-								) : (
-									<TableContainer id="city-list" sx={{ borderRadius: "1rem" }}>
-										<Table
-											aria-label="Liste des villes sous format tableau"
-											sx={{
-												minWidth: 650,
-												borderRadius: "1rem",
-											}}
-										>
-											<TableHead>
-												<TableRow
-													sx={{
-														backgroundColor: "white",
-														borderRadius: "1rem 1rem 0 0",
-													}}
-												>
-													<TableCell align="center">Nom</TableCell>
-													<TableCell align="center">Description</TableCell>
-													<TableCell align="center">Latitude</TableCell>
-													<TableCell align="center">Longitude</TableCell>
-													<TableCell
-														sx={{
-															borderRadius: "0 1rem 0 0",
-														}}
-														align="center"
-													>
-														Actions
-													</TableCell>
-												</TableRow>
-											</TableHead>
-											<TableBody>
-												{citiesData?.getAllCities?.map((city: CityType) => {
-													return (
-														<TableRow
-															key={city.name}
-															sx={{
-																backgroundColor: "white",
-																borderRadius: "1rem",
-																marginBottom: "16px",
-																"&:nth-of-type(odd)": {
-																	backgroundColor:
-																		mainTheme.palette.primary.light,
-																},
-															}}
-														>
-															<TableCell align="center">{city.name}</TableCell>
-															<TableCell
-																sx={{
-																	maxWidth: 300,
-																	whiteSpace: "nowrap",
-																	overflow: "hidden",
-																	textOverflow: "ellipsis",
-																}}
-																align="center"
-															>
-																{city?.description}
-															</TableCell>
-															<TableCell align="center">{city?.lat}</TableCell>
-															<TableCell align="center">{city?.lon}</TableCell>
-
-															<TableCell
-																sx={{
-																	borderLeft: "none",
-																	borderRight: "1rem",
-																}}
-																align="center"
-															>
-																<Box
-																	display="flex"
-																	flexDirection="row"
-																	justifyContent="space-evenly"
-																	alignContent="center"
-																	gap={mainTheme.spacing(2)}
-																>
-																	<RemoveRedEyeIcon
-																		sx={{
-																			color: mainTheme.palette.primary.main,
-																			fontSize: "25px",
-																			cursor: "pointer",
-																		}}
-																		onClick={() => {
-																			router.push(`/admin/city/${city.id}`);
-																		}}
-																	/>
-																	<EditIcon
-																		sx={{
-																			color: mainTheme.palette.primary.main,
-																			fontSize: "25px",
-																			cursor: "pointer",
-																		}}
-																		onClick={() =>
-																			router.push(`/admin/city/edit/${city.id}`)
-																		}
-																	/>
-																	<DeleteIcon
-																		sx={{
-																			color: mainTheme.palette.primary.main,
-																			fontSize: "25px",
-																			cursor: "pointer",
-																		}}
-																		onClick={() => {
-																			setOpen(true);
-																			setCity(city);
-																		}}
-																	/>
-																</Box>
-															</TableCell>
-														</TableRow>
-													);
-												})}
-											</TableBody>
-										</Table>
-									</TableContainer>
-								)}
-								<Modal
-									key={city?.id}
-									open={open}
-									onClose={() => setOpen(false)}
-									aria-labelledby="delete-city-modal-title"
+					<Grid item width="100%" display="flex" flexDirection="column">
+						<Box
+							sx={{
+								overflowX: "auto",
+								whiteSpace: "nowrap",
+								width: "100%",
+							}}
+						>
+							<Box
+								display="flex"
+								flex={1}
+								flexDirection="row"
+								gap={mainTheme.spacing(4)}
+								minWidth={"1500px"}
+							>
+								<RoundedBox
+									row
+									color="transparent"
+									width="85%"
+									align="center"
+									gap={mainTheme.spacing(8)}
+									paddingX={mainTheme.spacing(2)}
 								>
-									<Box sx={style}>
-										<Typography
-											id="delete-city-modal-title"
-											variant="h4"
-											component="h2"
-										>
-											{`Voulez-vous vraiment supprimer la ville ${city?.name} ?`}
-										</Typography>
-										<Box gap={mainTheme.spacing(8)} display="flex">
-											<Button
-												aria-label="Confirmer la suppression"
-												onClick={() => {
-													deleteCity({
-														variables: { deleteCityByIdId: city?.id },
-													}).then((res) => {
-														refetch();
-														setOpen(false);
-														toast.success(
-															`La ville ${city?.name} a bien été supprimée !`
-														);
-													});
+									{columns.map((column, index) => {
+										return (
+											<Box
+												key={index}
+												width={column.key === "description" ? "60%" : "20%"}
+												maxWidth={
+													column.key === "description" ? 600 : undefined
+												}
+												sx={{
+													maxWidth: 600,
+													overflow: "hidden",
+													textOverflow: "ellipsis",
+													whiteSpace: "nowrap",
 												}}
 											>
-												Confirmer
-											</Button>
-											<Button
-												aria-label="Annuler la suppression"
-												sx={{ color: mainTheme.palette.error.main }}
-												onClick={() => setOpen(false)}
+												<Typography
+													key={index}
+													accessibility-label={column.key}
+													fontWeight="bold"
+												>
+													{column.name}
+												</Typography>
+											</Box>
+										);
+									})}
+								</RoundedBox>
+								<Box width="15%" alignContent="center" textAlign="center">
+									<Typography accessibility-label="actions" fontWeight="bold">
+										Actions
+									</Typography>
+								</Box>
+							</Box>
+
+							<Box
+								display="flex"
+								flex={1}
+								flexDirection="column"
+								justifyContent="space-between"
+								gap={mainTheme.spacing(6)}
+								paddingY={10}
+							>
+								{citiesData?.getAllCities?.map(
+									(city: CityType, index: number) => {
+										return (
+											<Box
+												key={index}
+												display="flex"
+												flexDirection="row"
+												gap={mainTheme.spacing(6)}
+												minWidth="1500px"
 											>
-												Annuler
-											</Button>
-										</Box>
-									</Box>
-								</Modal>
-							</Grid>
-						</>
-					) : (
-						<></>
-					)}
+												<RoundedBox
+													row
+													key={index}
+													align="center"
+													gap={mainTheme.spacing(8)}
+													width="85%"
+													paddingX={mainTheme.spacing(2)}
+												>
+													<Box width="20%" minWidth={"200px"}>
+														<Typography>
+															{city?.name
+																? capitalizeFirstLetter(city.name)
+																: ""}
+														</Typography>
+													</Box>
+													<Box
+														width="60%"
+														sx={{
+															maxWidth: 600,
+															overflow: "hidden",
+														}}
+													>
+														<Typography
+															sx={{
+																whiteSpace: "nowrap",
+																overflow: "hidden",
+																textOverflow: "ellipsis",
+															}}
+														>
+															{city.description}
+														</Typography>
+													</Box>
+													<Box width="20%" minWidth={"200px"}>
+														<Typography>{city.lat}</Typography>
+													</Box>
+													<Box width="20%" minWidth={"200px"}>
+														<Typography>{city.lon}</Typography>
+													</Box>
+												</RoundedBox>
+
+												<Box
+													textAlign="center"
+													alignContent="center"
+													alignItems="center"
+													width="15%"
+													minWidth={"150px"}
+													display="flex"
+													flexDirection="row"
+													justifyContent="space-evenly"
+												>
+													<IconButton
+														onClick={() => {
+															router.push(`/admin/city/edit/${city.id}`);
+														}}
+														icon={<EditIcon fontSize="small" />}
+													/>
+													<IconButton
+														onClick={() => {
+															setSelectedCity(city);
+															setOpen(true);
+														}}
+														icon={<DeleteIcon fontSize="small" />}
+													/>
+												</Box>
+												<Modal open={open} setOpen={setOpen}>
+													<Typography
+														id="delete-city-modal-title"
+														variant="h4"
+														component="h2"
+													>
+														{`Voulez-vous vraiment supprimer la ville ${selectedCity?.name} ?`}
+													</Typography>
+													<Box gap={mainTheme.spacing(8)} display="flex">
+														<Button
+															aria-label="Annuler la suppression"
+															sx={{ color: mainTheme.palette.error.main }}
+															onClick={() => setOpen(false)}
+														>
+															Annuler
+														</Button>
+														<Button
+															aria-label="Confirmer la suppression"
+															onClick={() => {
+																if (selectedCity?.id)
+																	handleDeleteCity(selectedCity.id);
+															}}
+														>
+															Confirmer
+														</Button>
+													</Box>
+												</Modal>
+											</Box>
+										);
+									}
+								)}
+							</Box>
+						</Box>
+					</Grid>
 				</Grid>
 			)}
 		</>

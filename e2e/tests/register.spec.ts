@@ -9,7 +9,7 @@ test.describe("User tests", () => {
 	test("User subscription", async ({ page }) => {
 		await page.goto("http://localhost:7000/", { waitUntil: "networkidle" });
 
-		await page.getByTestId("AccountCircleIcon").click();
+		await page.getByTestId("user-button").click();
 
 		await expect(page).toHaveURL("http://localhost:7000/login");
 
@@ -31,7 +31,7 @@ test.describe("User tests", () => {
 		const email = await page.waitForSelector('[data-testid="email"]', {
 			state: "visible",
 		});
-    	await email.fill(generateUniqueEmail());
+		await email.fill(generateUniqueEmail());
 
 		const password = await page.waitForSelector('[data-testid="password"]', {
 			state: "visible",
@@ -48,7 +48,4 @@ test.describe("User tests", () => {
 
 		await expect(page).toHaveURL("http://localhost:7000/login");
 	});
-
 });
-
-

@@ -1,31 +1,55 @@
-import { useQuery, useMutation } from "@apollo/client";
-import {
-	Box,
-	Button,
-	CircularProgress,
-	Grid,
-	Modal,
-	Paper,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
-} from "@mui/material";
+import { useMutation, useLazyQuery } from "@apollo/client";
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { GET_ALL_POIS } from "@queries";
 import { DELETE_POI_BY_ID } from "@mutations";
 import { mainTheme } from "@theme";
-import { useAuth } from "context";
+import { errors, useAuth } from "context";
 import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { PoiType } from "@types";
+import { IconButton } from "@components";
+import RoundedBox from "components/RoundedBox";
+import AddIcon from "@mui/icons-material/Add";
+import { capitalizeFirstLetter } from "utils";
+import { Modal } from "@components";
+
+const columns: { key: any; name: string }[] = [
+	{
+		key: "name",
+		name: "Nom",
+	},
+	{
+		key: "description",
+		name: "Description",
+	},
+	{
+		key: "address",
+		name: "Adresse",
+	},
+	{
+		key: "postalCode",
+		name: "Code postal",
+	},
+	{
+		key: "city",
+		name: "Ville",
+	},
+	{
+		key: "category",
+		name: "Catégorie",
+	},
+	{
+		key: "lat",
+		name: "Latitude",
+	},
+	{
+		key: "lon",
+		name: "Longitude",
+	},
+];
 
 const style = {
 	position: "absolute" as "absolute",
@@ -40,242 +64,292 @@ const style = {
 
 const POIList = () => {
 	const router = useRouter();
+	const { isAuthenticated, isLoadingSession, user } = useAuth();
 
 	const [open, setOpen] = React.useState<boolean>(false);
-	const [poi, setPOI] = React.useState<PoiType>();
 
-	const { data: poisData, loading, error } = useQuery(GET_ALL_POIS);
+	const [getPOIS, { data: poisData, loading, error }] = useLazyQuery(
+		GET_ALL_POIS,
+		{
+			fetchPolicy: "cache-and-network",
+		}
+	);
+	const [selectedPOI, setSelectedPOI] = React.useState<PoiType>();
 
-	const [
-		deletePOI,
-		{ data: deletePOIData, loading: deletePOILoading, error: deletePOIError },
-	] = useMutation(DELETE_POI_BY_ID);
+	const [deletePOI] = useMutation(DELETE_POI_BY_ID, {
+		refetchQueries: [{ query: GET_ALL_POIS }],
+	});
 
+	React.useEffect(() => {
+		if (error) {
+			toast.error(
+				"Une erreur est survenue lors de la récupération des données de POI."
+			);
+		}
+	}, [error]);
 
-	if (error) toast.error("Une erreur est survenue.");
+	const handleDeletePOI = (poi: PoiType) => {
+		deletePOI({
+			variables: { id: poi.id },
+		})
+			.then(() => {
+				setOpen(false);
+				toast.success(
+					`Le point d'intérêt ${selectedPOI?.name} a bien été supprimée !`
+				);
+			})
+			.catch((err) => {
+				toast.error(
+					`Une erreur est survenue lors de la suppression du POI ${selectedPOI?.name}.`
+				);
+				console.error(err);
+			});
+	};
 
-return loading ? (
-	<CircularProgress />
-) : (
-	<Paper
-		component={Box}
-		elevation={5}
-		square={false}
-		width="90%"
-		height="auto"
-		mx="auto"
-		sx={{
-			display: "flex",
-			flexDirection: "column",
-		}}
-	>
-		<Grid
-			container
-			width="100%"
-			display="flex"
-			flexDirection="column"
-			alignContent="flex-start"
-			gap={mainTheme.spacing(6)}
-		>
+	React.useLayoutEffect(() => {
+		if (!isLoadingSession) {
+			if (!isAuthenticated) {
+				router.replace("/");
+			} else {
+				if (user?.role === "USER") {
+					router.replace("/");
+				} else {
+					const variables =
+						user?.role !== "ADMIN" ? { city: user?.city?.id } : {};
+					getPOIS({
+						variables,
+					});
+				}
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isAuthenticated, isLoadingSession, user?.role]);
+
+	return loading ? (
+		<CircularProgress />
+	) : user?.role !== "USER" ? (
+		<>
 			<Grid
-				item
-				width="100%"
-				display="flex"
-				sx={{
-					backgroundColor: mainTheme.palette.primary.light,
-				}}
+				container
+				marginX={10}
+				paddingX={10}
+				paddingBottom={5}
+				paddingTop={10}
+				flex={1}
+				flexDirection="column"
+				gap={mainTheme.spacing(4)}
 			>
-				<Box
-					flex={1}
-					display="flex"
-					alignContent="center"
+				<Grid
+					item
+					width="100%"
+					direction="row"
 					flexDirection="row"
+					display="flex"
+					alignItems="center"
 					justifyContent="space-between"
-					padding={mainTheme.spacing(6)}
 				>
 					<Typography
-						fontFamily={mainTheme.typography.fontFamily}
-						fontSize={{
-							sx: mainTheme.typography.h6.fontSize,
-							sm: mainTheme.typography.h5.fontSize,
-							md: mainTheme.typography.h4.fontSize,
-							lg: mainTheme.typography.h3.fontSize,
-						}}
+						variant="h1"
 						color={mainTheme.palette.primary.main}
-						fontWeight={mainTheme.typography.fontWeightMedium}
-						alignContent="center"
+						fontSize={mainTheme.typography.h3.fontSize}
+						textTransform="uppercase"
 					>
-						Liste des POIs :
+						point d&apos;intérêts
 					</Typography>
-					<AddCircleIcon
-						onClick={() => router.push("/admin/poi/new")}
-						sx={{
-							color: mainTheme.palette.primary.main,
-							fontSize: "50px",
-							cursor: "pointer",
+					<IconButton
+						aria-label="Ajouter un POI"
+						data-testid="add_poi_button"
+						size={40}
+						onClick={() => {
+							router.push("new");
 						}}
+						icon={<AddIcon fontSize="large" titleAccess="Ajouter un POI" />}
 					/>
-				</Box>
-			</Grid>
-			{!loading && poisData?.getAllPois && poisData?.getAllPois?.length > 0 ? (
-				<>
-					<Grid item width="95%" mx="auto">
-						<TableContainer component={Paper}>
-							<Table
-								sx={{
-									minWidth: 650,
-									marginY: "2rem",
-									border: `2px solid ${mainTheme.palette.primary.main}`,
-									borderRadius: "20rem",
-									"& .MuiTableHead-root": {
-										backgroundColor: ` ${mainTheme.palette.primary.light}`,
-									},
-								}}
-								aria-label="simple table"
-							>
-								<TableHead>
-									<TableRow>
-										<TableCell align="center">Nom</TableCell>
-										<TableCell align="center">Description</TableCell>
-										<TableCell align="center">Adresse</TableCell>
-										<TableCell align="center">Code Postal</TableCell>
-										<TableCell align="center">Ville</TableCell>
-										<TableCell align="center">Catégorie</TableCell>
-										<TableCell align="center">Actions</TableCell>
-										<TableCell align="center">Latitude</TableCell>
-										<TableCell align="center">Longitude</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{poisData?.getAllPois?.map((poi: PoiType, index: number) => {
-										return (
-											<TableRow
-												key={poi.name}
+				</Grid>
+				<Grid item width="100%" display="flex" flexDirection="column">
+					<Box
+						display="flex"
+						flex={1}
+						flexDirection="row"
+						gap={mainTheme.spacing(4)}
+					>
+						<RoundedBox
+							row
+							color="transparent"
+							width="85%"
+							align="center"
+							gap={mainTheme.spacing(8)}
+							paddingX={mainTheme.spacing(2)}
+						>
+							{columns.map((column, index) => {
+								return (
+									<Box
+										key={index}
+										width={
+											column.key === "description"
+												? "30%"
+												: column.key === "name"
+													? "15%"
+													: "10%"
+										}
+									>
+										<Typography
+											key={index}
+											accessibility-label={column.key}
+											fontWeight="bold"
+										>
+											{column.name}
+										</Typography>
+									</Box>
+								);
+							})}
+						</RoundedBox>
+						{user?.role !== "SUPERUSER" ? (
+							<Box width="10%" alignContent="center" textAlign="center">
+								<Typography accessibility-label="actions" fontWeight="bold">
+									Actions
+								</Typography>
+							</Box>
+						) : (
+							<></>
+						)}
+					</Box>
+					<Box
+						display="flex"
+						flex={1}
+						flexDirection="column"
+						justifyContent="space-between"
+						gap={mainTheme.spacing(6)}
+						paddingY={10}
+					>
+						{poisData?.getAllPois?.map((poi: PoiType, index: number) => {
+							return (
+								<Box
+									key={index}
+									display="flex"
+									flexDirection="row"
+									gap={mainTheme.spacing(6)}
+								>
+									<RoundedBox
+										row
+										key={index}
+										align="center"
+										gap={mainTheme.spacing(8)}
+										width="85%"
+										paddingX={mainTheme.spacing(2)}
+									>
+										<Box width="15%">
+											<Typography>
+												{poi?.name ? capitalizeFirstLetter(poi.name) : ""}
+											</Typography>
+										</Box>
+										<Box
+											width="30%"
+											sx={{
+												maxWidth: 600,
+												overflow: "hidden",
+											}}
+										>
+											<Typography
 												sx={{
-													"&:last-child td, &:last-child th": {
-														border: 0,
-													},
+													whiteSpace: "nowrap",
+													overflow: "hidden",
+													textOverflow: "ellipsis",
 												}}
 											>
-												<TableCell align="center">{poi.name}</TableCell>
-												<TableCell
-													sx={{
-														maxWidth: 300,
-														whiteSpace: "nowrap",
-														overflow: "hidden",
-														textOverflow: "ellipsis",
-													}}
-													align="center"
-												>
-													{poi?.description}
-												</TableCell>
-												<TableCell align="center">{poi?.address}</TableCell>
-												<TableCell align="center">{poi?.postalCode}</TableCell>
-												<TableCell align="center">{poi?.city?.name}</TableCell>
-												<TableCell align="center">
-													{poi?.category.name}
-												</TableCell>
-												<TableCell align="center">{poi?.latitude}</TableCell>
-												<TableCell align="center">{poi?.longitude}</TableCell>
-												<TableCell align="center">
-													<Box
-														display="flex"
-														flexDirection="row"
-														justifyContent="space-evenly"
-														alignContent="center"
-														gap={mainTheme.spacing(2)}
-													>
-														<RemoveRedEyeIcon
-															sx={{
-																color: mainTheme.palette.primary.main,
-																fontSize: "25px",
-																cursor: "pointer",
-															}}
-															onClick={() => router.push(`/poi/${poi.id}`)}
-														/>
-														<EditIcon
-															sx={{
-																color: mainTheme.palette.primary.main,
-																fontSize: "25px",
-																cursor: "pointer",
-															}}
-															onClick={() => router.push(`/admin/poi/edit/${poi.id}`)}
-														/>
-														<DeleteIcon
-															sx={{
-																color: mainTheme.palette.primary.main,
-																fontSize: "25px",
-																cursor: "pointer",
-															}}
-															onClick={() => {
-																setOpen(true);
-																setPOI(poi);
-															}}
-														/>
-													</Box>
-												</TableCell>
-											</TableRow>
-										);
-									})}
-								</TableBody>
-							</Table>
-						</TableContainer>
-
-						<Modal
-							key={poi?.id}
-							open={open}
-							onClose={() => setOpen(false)}
-							aria-labelledby="modal-modal-title"
-							aria-describedby="modal-modal-description"
-						>
-							<Box sx={style}>
-								<Typography id="modal-modal-title" variant="h6" component="h2">
-									{`Voulez-vous vraiment supprimer ${poi?.name} ?`}
-								</Typography>
-								<Button
-									onClick={() => {
-										deletePOI({
-											variables: { id: poi?.id },
-										}).then((res) => {
-											setOpen(false);
-											toast.success(
-												`Le POI ${poi?.name} a bien été supprimé !`
-											);
-										});
-									}}
-								>
-									Confirmer
-								</Button>
-								<Button
-									sx={{ color: mainTheme.palette.error.main }}
-									onClick={() => setOpen(false)}
-								>
-									Annuler
-								</Button>
-							</Box>
-						</Modal>
-					</Grid>
-				</>
-			) : (
-				<Typography
-					fontFamily={mainTheme.typography.fontFamily}
-					fontSize={{
-						sx: mainTheme.typography.h6.fontSize,
-						sm: mainTheme.typography.h5.fontSize,
-						md: mainTheme.typography.h4.fontSize,
-						lg: mainTheme.typography.h3.fontSize,
-					}}
-					color={mainTheme.palette.primary.main}
-					fontWeight={mainTheme.typography.fontWeightMedium}
-					alignContent="center"
-					sx={{ mt: 4 }}
-				>
-					Aucun POI trouvé.
-				</Typography>
-			)}
-		</Grid>
-	</Paper>
-);
+												{poi.description}
+											</Typography>
+										</Box>
+										<Box width="10%">
+											<Typography>{poi.address}</Typography>
+										</Box>
+										<Box width="10%">
+											<Typography>{poi.postalCode}</Typography>
+										</Box>
+										<Box width="10%">
+											<Typography>
+												{poi?.city?.name
+													? capitalizeFirstLetter(poi.city.name)
+													: ""}
+											</Typography>
+										</Box>
+										<Box width="10%">
+											<Typography>
+												{poi.category?.name
+													? capitalizeFirstLetter(poi.category.name)
+													: ""}
+											</Typography>
+										</Box>
+										<Box width="10%">
+											<Typography>{poi.latitude}</Typography>
+										</Box>
+										<Box width="10%">
+											<Typography>{poi.longitude}</Typography>
+										</Box>
+									</RoundedBox>
+									{user?.role !== "SUPERUSER" ? (
+										<Box
+											textAlign="center"
+											alignContent="center"
+											alignItems="center"
+											width="10%"
+											display="flex"
+											flexDirection="row"
+											justifyContent="space-evenly"
+										>
+											<IconButton
+												onClick={() => {
+													router.push(`/admin/poi/edit/${poi.id}`);
+												}}
+												icon={<EditIcon fontSize="small" />}
+											/>
+											<IconButton
+												onClick={() => {
+													setSelectedPOI(poi);
+													setOpen(true);
+												}}
+												icon={<DeleteIcon fontSize="small" />}
+											/>
+										</Box>
+									) : (
+										<></>
+									)}
+									<Modal open={open} setOpen={setOpen}>
+										<Typography
+											id="delete-poi-modal-title"
+											variant="h4"
+											component="h2"
+										>
+											{`Voulez-vous vraiment supprimer le POI ${selectedPOI?.name} ?`}
+										</Typography>
+										<Box gap={mainTheme.spacing(8)} display="flex">
+											<Button
+												aria-label="Annuler la suppression"
+												sx={{ color: mainTheme.palette.error.main }}
+												onClick={() => setOpen(false)}
+											>
+												Annuler
+											</Button>
+											<Button
+												aria-label="Confirmer la suppression"
+												onClick={() => {
+													if (selectedPOI?.id) handleDeletePOI(selectedPOI);
+												}}
+											>
+												{!loading ? "Confirmer" : "Confirmation en cours..."}
+											</Button>
+										</Box>
+									</Modal>
+								</Box>
+							);
+						})}
+					</Box>
+				</Grid>
+			</Grid>
+		</>
+	) : (
+		<Typography>{errors.role}</Typography>
+	);
 };
 
 export default POIList;

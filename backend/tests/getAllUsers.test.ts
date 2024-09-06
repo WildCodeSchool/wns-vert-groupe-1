@@ -16,15 +16,14 @@ describe("UserResolver", () => {
 			mockUser2.email = "user2@example.com";
 
 			jest.spyOn(User, "findOneByOrFail").mockResolvedValue(mockAdmin);
-			jest
-				.spyOn(User, "find")
-				.mockResolvedValue([mockAdmin, mockUser1, mockUser2]);
+			jest.spyOn(User, "find").mockResolvedValue([mockUser1, mockUser2]);
 
 			const resolver = new UserResolver();
 			const ctx = { role: UserRole.ADMIN, email: "admin@example.com" };
-			const result = await resolver.getAllUsers(ctx);
 
-			expect(result).toEqual([mockAdmin, mockUser1, mockUser2]);
+			const result = await resolver.getAllUsers("email", "ASC", ctx);
+
+			expect(result).toEqual([mockUser1, mockUser2]);
 		});
 
 		it("should return users from the same city for CITYADMIN role", async () => {
@@ -52,15 +51,13 @@ describe("UserResolver", () => {
 			mockUser3.city = mockCity2;
 
 			jest.spyOn(User, "findOneByOrFail").mockResolvedValue(mockCityAdmin);
-			jest
-				.spyOn(User, "find")
-				.mockResolvedValue([mockCityAdmin, mockUser1, mockUser2]);
+			jest.spyOn(User, "find").mockResolvedValue([mockUser1, mockUser2]);
 
 			const resolver = new UserResolver();
 			const ctx = { role: UserRole.CITYADMIN, email: "cityadmin@example.com" };
-			const result = await resolver.getAllUsers(ctx);
+			const result = await resolver.getAllUsers("email", "ASC", ctx);
 
-			expect(result).toEqual([mockCityAdmin, mockUser1, mockUser2]);
+			expect(result).toEqual([mockUser1, mockUser2]);
 		});
 	});
 });

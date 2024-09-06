@@ -51,7 +51,7 @@ export class CityResolver {
 			} else {
 				const result = await City.findOne({
 					where: {
-						name: capitalizedName,
+						name: name.trim().toLocaleLowerCase(),
 					},
 					relations: ["pois", "pois.category"],
 				});
@@ -135,6 +135,8 @@ export class CityResolver {
 				throw new Error(`City with ID ${id} not found`);
 			}
 
+			//Appel api pour updater lat et lon si différent de la valeur actuelle
+
 			const updatedCity = await City.save({
 				...existingCity,
 				...cityData,
@@ -145,9 +147,12 @@ export class CityResolver {
 			throw new Error(`Error : ${error}`);
 		}
 	}
+
 	@Query(() => Boolean)
 	async isCityNameUnique(@Arg("name") name: string): Promise<boolean> {
-		const user = await City.findOne({ where: { name } });
-		return !user;
+		const city = await City.findOne({
+			where: { name: name },
+		});
+		return !city;
 	}
 }

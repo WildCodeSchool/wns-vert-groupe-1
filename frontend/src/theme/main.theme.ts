@@ -36,30 +36,30 @@ export const mainTheme = createTheme({
 		fontSize: 16,
 		h1: {
 			fontFamily: "Lexend, sans-serif",
-			fontSize: "90px",
+			fontSize: "5.625rem",
 			fontWeight: 500,
 		},
 		h2: {
 			fontFamily: "Lexend, sans-serif",
-			fontSize: "40px",
+			fontSize: "2.5rem",
 			fontWeight: 500,
 		},
 		h3: {
 			fontFamily: "Lexend, sans-serif",
-			fontSize: "34px",
+			fontSize: "2.125rem",
 			fontWeight: 500,
 		},
 		h4: {
 			fontFamily: "Lexend, sans-serif",
-			fontSize: "20px",
+			fontSize: "1.25rem",
 			fontWeight: 500,
 		},
 		h5: {
-			fontSize: "16px",
+			fontSize: "1rem",
 			fontWeight: 300,
 		},
 		h6: {
-			fontSize: "14px",
+			fontSize: "0.875rem",
 			fontWeight: 300,
 		},
 	},

@@ -7,10 +7,9 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import { EDIT_CITY_BY_ID } from "@mutations";
-import { GET_CITY_BY_ID } from "@queries";
+import { EDIT_CATEGORY_BY_ID, GET_CATEGORY_BY_ID } from "@mutations";
 import { mainTheme } from "@theme";
-import { CityInput } from "@types";
+import { CategoryInput } from "@types";
 import { errors, useAuth } from "context";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -37,68 +36,66 @@ const commonTextFieldStyles = {
 	},
 };
 
-const EditCityByID = () => {
+const EditCategoryByID = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
 	const router = useRouter();
 	const { id } = router.query;
 
 	const {
-		data: cityData,
-		error: cityError,
-		loading: cityLoading,
-	} = useQuery(GET_CITY_BY_ID, {
-		variables: { getCityByIdId: Number(id) },
+		data: categoryData,
+		error: categoryError,
+		loading: categoryLoading,
+	} = useQuery(GET_CATEGORY_BY_ID, {
+		variables: { getCategoryByIdId: Number(id) },
 	});
 
-	const [editCity, { data, error, loading }] = useMutation(EDIT_CITY_BY_ID);
+	const [editCategory, { data, error, loading }] =
+		useMutation(EDIT_CATEGORY_BY_ID);
 
-	const [form, setForm] = React.useState<CityInput>({
+	const [form, setForm] = React.useState<CategoryInput>({
 		name: "",
-		description: "",
 	});
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		editCity({
+		editCategory({
 			variables: {
-				cityData: {
-					name: form.name.trim().toLocaleLowerCase(),
-					description: form.description,
+				categoryData: {
+					name: form.name,
 				},
-				updateCityId: cityData?.getCityById?.id,
+				updateCategoryByIdId: categoryData?.getCategoryById?.id,
 			},
 		})
-			.then((res: any) => {
+			.then(() => {
 				toast.success(
-					`La ville ${capitalizeFirstLetter(form.name)} a bien été modifié.`
+					`La catégorie ${capitalizeFirstLetter(form.name)} a bien été modifié.`
 				);
-				router.push(`/admin/city/list`);
+				router.push(`/admin/category/list`);
 			})
 			.catch(() => {
 				toast.error(
-					"Une erreur est survenue lors de la modification de la ville"
+					"Une erreur est survenue lors de la modification de la catégorie"
 				);
 			});
 	};
 
-	const isDisabled = React.useMemo(() => {
-		return !(form.name && form.description);
-	}, [form]);
-
 	useEffect(() => {
 		if (error) {
-			toast.error("Erreur lors de la modification des données de la ville.");
+			toast.error(
+				"Erreur lors de la modification des données de la catégorie."
+			);
 		}
-		if (cityError) {
-			toast.error("Erreur lors de la récupération des données de la ville.");
+		if (categoryError) {
+			toast.error(
+				"Erreur lors de la récupération des données de la catégorie."
+			);
 		}
-		if (cityData?.getCityById) {
+		if (categoryData?.getCategoryById) {
 			setForm({
-				name: cityData.getCityById.name,
-				description: cityData.getCityById.description,
+				name: categoryData.getCategoryById.name,
 			});
 		}
-	}, [error, cityError, cityData]);
+	}, [error, categoryError, categoryData]);
 
 	React.useLayoutEffect(() => {
 		if (!isLoadingSession) {
@@ -113,7 +110,7 @@ const EditCityByID = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated, isLoadingSession, user?.role]);
 
-	return isLoadingSession || cityLoading ? (
+	return isLoadingSession || categoryLoading ? (
 		<CircularProgress />
 	) : !isAuthenticated ? (
 		<Typography>{errors.connected}</Typography>
@@ -143,7 +140,7 @@ const EditCityByID = () => {
 					fontSize={mainTheme.typography.h3.fontSize}
 					textTransform="uppercase"
 				>
-					Modification de la ville {cityData?.name}
+					Modification de la catégorie {categoryData?.name}
 				</Typography>
 			</Grid>
 			<Grid item width="100%" paddingX={4}>
@@ -169,27 +166,17 @@ const EditCityByID = () => {
 						fullWidth
 						margin="normal"
 						value={form?.name ? capitalizeFirstLetter(form.name) : ""}
-						onChange={(e) => setForm({ ...form, name: e.target.value })}
-						sx={commonTextFieldStyles}
-					/>
-					<TextField
-						data-testid="input_description"
-						id="description"
-						variant="outlined"
-						placeholder="Description *"
-						multiline
-						rows={5}
-						required
-						size="medium"
-						fullWidth
-						margin="normal"
-						value={form?.description ?? form.description}
-						onChange={(e) => setForm({ ...form, description: e.target.value })}
+						onChange={(e) =>
+							setForm({
+								...form,
+								name: e.target.value.trim().toLocaleLowerCase(),
+							})
+						}
 						sx={commonTextFieldStyles}
 					/>
 					<Button
 						aria-label="Enregistrer les modifications"
-						disabled={isDisabled}
+						disabled={!form.name}
 						type="submit"
 						variant="contained"
 						color="primary"
@@ -206,4 +193,4 @@ const EditCityByID = () => {
 	);
 };
 
-export default EditCityByID;
+export default EditCategoryByID;

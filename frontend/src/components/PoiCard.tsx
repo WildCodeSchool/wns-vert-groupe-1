@@ -8,6 +8,7 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { capitalizeFirstLetter } from "../utils";
 
 export const PoiCard = ({
 	name,
@@ -150,7 +151,7 @@ export const PoiCard = ({
 					fontWeight: "bold",
 				}}
 			>
-				{category.name}
+				{capitalizeFirstLetter(category.name)}
 			</Typography>
 			<Typography
 				color={mainTheme.palette.primary.dark}

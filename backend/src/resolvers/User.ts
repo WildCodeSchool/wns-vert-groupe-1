@@ -14,6 +14,7 @@ import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
 import { UserUpdateInput } from "../inputs/UserUpdate";
 import { GraphQLError } from "graphql";
+import { Not } from "typeorm";
 
 if (!process.env.SECRET_KEY) {
 	throw new Error("SECRET_KEY environment variable is not defined");
@@ -24,16 +25,23 @@ const SECRET_KEY = process.env.SECRET_KEY;
 export class UserResolver {
 	@Authorized(["ADMIN", "CITYADMIN"])
 	@Query(() => [User])
-	async getAllUsers(@Ctx() ctx: { role: UserRole; email: string }) {
+	async getAllUsers(
+		@Arg("orderBy", { nullable: true }) orderBy: string = "lastName",
+		@Arg("order", { nullable: true }) order: string = "ASC",
+		@Ctx() ctx: { role: UserRole; email: string }
+	) {
 		try {
 			const user = await User.findOneByOrFail({ email: ctx.email });
 			if (ctx.role === "ADMIN" || ctx.role === "CITYADMIN") {
 				const users = await User.find({
-					where:
-						ctx.role === "CITYADMIN"
+					where: {
+						...(ctx.role === "CITYADMIN"
 							? { city: { id: user?.city?.id } }
-							: { city: { id: undefined } },
+							: {}),
+						email: Not(user.email),
+					},
 					relations: { city: true },
+					order: { [orderBy]: order },
 				});
 				return users;
 			} else {
@@ -125,24 +133,41 @@ export class UserResolver {
 	}
 
 	@Authorized()
-	@Mutation(() => String)
+	@Mutation(() => User)
 	async updateUserById(
 		@Arg("id") id: number,
 		@Arg("newUserInput") newUserInput: UserUpdateInput,
 		@Ctx() ctx: { email: string; role: UserRole }
 	) {
 		try {
-			const loggedUser = await User.findOneByOrFail({ email: ctx.email });
-			const oldUser = await User.findOneByOrFail({ id: id });
-			console.log("loggedUser", loggedUser.city?.id);
+			const loggedUser = await User.findOneByOrFail({
+				email: ctx.email,
+			});
+			const oldUser = await User.findOneByOrFail({
+				id: id,
+			});
 			if (
 				ctx.role === "ADMIN" ||
 				oldUser?.email === ctx.email ||
 				(ctx.role === "CITYADMIN" && oldUser.city.id === loggedUser?.city.id)
 			) {
-				Object.assign(oldUser, newUserInput);
+				Object.assign(oldUser, {
+					firstName: newUserInput.firstName ?? oldUser.firstName,
+					lastName: newUserInput.lastName ?? oldUser.lastName,
+					email: newUserInput.email ?? oldUser.email,
+					role: newUserInput.role ?? oldUser.role,
+				});
+
+				if (newUserInput.city) {
+					const city = await City.findOneByOrFail({
+						id: Number(newUserInput.city),
+					});
+					oldUser.city = city;
+				}
+
 				await oldUser.save();
-				return "User updated";
+
+				return oldUser;
 			} else {
 				throw new GraphQLError("You are not authorized to update user", {
 					extensions: {

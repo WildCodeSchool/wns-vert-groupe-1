@@ -16,8 +16,26 @@ import { toast } from "react-toastify";
 import { errors as ErrorContext, useAuth } from "context";
 import { useRouter } from "next/navigation";
 import { CHECK_CITY_UNIQUE } from "@queries";
-import RoundedBox from "components/RoundedBox";
 import { BackButton } from "@components";
+
+const commonTextFieldStyles = {
+	"& .MuiOutlinedInput-root": {
+		backgroundColor: "white",
+		borderRadius: "2rem",
+		"& fieldset": {
+			borderColor: "transparent",
+		},
+		"&:hover fieldset": {
+			borderColor: "transparent",
+		},
+		"&.Mui-focused fieldset": {
+			borderColor: "transparent",
+		},
+		"& .MuiOutlinedInput-input": {
+			paddingLeft: "2rem",
+		},
+	},
+};
 
 const NewCity = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
@@ -43,35 +61,57 @@ const NewCity = () => {
 		reset,
 		watch,
 		setError,
+		clearErrors,
 		formState: { errors },
 	} = useForm<CityInput>({
 		defaultValues: {
 			name: "",
 			description: "",
 		},
+		mode: "onBlur",
 	});
 
 	const watchedName = watch("name");
 	const watchedDescription = watch("description");
 
-	const isDisabled = !watchedName || !watchedDescription;
+	const isDisabled =
+		!watchedName || !watchedDescription || Object.keys(errors).length > 0;
 
 	const onSubmit: SubmitHandler<CityInput> = async (formData) => {
-		const { data } = await checkCityUnique({
-			variables: { name: formData.name },
-		});
-
-		if (data && !data.isCityNameUnique) {
-			setError("name", {
-				type: "manual",
-				message: "La ville avec ce nom existe déjà",
-			});
-			return;
-		}
+		const formattedName = formData.name.trim().toLocaleLowerCase();
 
 		if (!errors.name && Object.keys(errors).length === 0) {
 			await createNewCity({
-				variables: { cityData: formData },
+				variables: { cityData: { ...formData, name: formattedName } },
+			});
+		}
+	};
+
+	const onBlur = async (cityName: string) => {
+		if (cityName) {
+			try {
+				const { data } = await checkCityUnique({
+					variables: { name: cityName },
+				});
+				if (data && data.isCityNameUnique === false) {
+					setError("name", {
+						type: "manual",
+						message:
+							"Ce nom de ville existe déjà. Veuillez en choisir un autre.",
+					});
+				} else {
+					clearErrors("name");
+				}
+			} catch (error) {
+				console.error(
+					"Erreur lors de la vérification d'unicité du nom de ville",
+					error
+				);
+			}
+		} else {
+			setError("name", {
+				type: "manual",
+				message: "Le nom de la ville est requis",
 			});
 		}
 	};
@@ -100,13 +140,33 @@ const NewCity = () => {
 			) : (
 				<Grid
 					container
+					padding={8}
 					flex={1}
-					paddingX={10}
+					flexDirection="column"
 					alignItems="center"
-					direction="column"
+					gap={mainTheme.spacing(8)}
 				>
 					<BackButton />
-					<Grid item flex={1} width="100%">
+					<Grid
+						item
+						width="100%"
+						direction="row"
+						flexDirection="row"
+						display="flex"
+						paddingX={8}
+						alignItems="center"
+						justifyContent="space-between"
+					>
+						<Typography
+							variant="h1"
+							color={mainTheme.palette.primary.main}
+							fontSize={mainTheme.typography.h3.fontSize}
+							textTransform="uppercase"
+						>
+							Création d&apos;une nouvelle ville
+						</Typography>
+					</Grid>
+					<Grid item width="100%" paddingX={4}>
 						<Box
 							component="form"
 							onSubmit={handleSubmit(onSubmit)}
@@ -119,21 +179,6 @@ const NewCity = () => {
 							padding={5}
 							gap={6}
 						>
-							<RoundedBox color={mainTheme.palette.primary.main}>
-								<Typography
-									fontFamily={mainTheme.typography.fontFamily}
-									fontSize={{
-										sx: mainTheme.typography.h6.fontSize,
-										sm: mainTheme.typography.h5.fontSize,
-										md: mainTheme.typography.h4.fontSize,
-										lg: mainTheme.typography.h3.fontSize,
-									}}
-									color={mainTheme.palette.primary.light}
-									fontWeight={mainTheme.typography.fontWeightMedium}
-								>
-									Création d&apos;une nouvelle ville
-								</Typography>
-							</RoundedBox>
 							<TextField
 								data-testid="input_name"
 								id="name"
@@ -161,12 +206,9 @@ const NewCity = () => {
 								})}
 								error={!!errors.name}
 								helperText={errors.name?.message}
-								sx={{
-									"& .MuiInputBase-root": {
-										backgroundColor: "white",
-										borderRadius: "2rem",
-										paddingLeft: 5,
-									},
+								sx={commonTextFieldStyles}
+								onBlur={(e) => {
+									onBlur(e.target.value.trim().toLocaleLowerCase());
 								}}
 							/>
 							<TextField
@@ -190,13 +232,7 @@ const NewCity = () => {
 								})}
 								error={!!errors.description}
 								helperText={errors.description?.message}
-								sx={{
-									"& .MuiInputBase-root": {
-										backgroundColor: "white",
-										borderRadius: "2rem",
-										paddingLeft: 7,
-									},
-								}}
+								sx={commonTextFieldStyles}
 							/>
 							<Button
 								data-testid="send_form"

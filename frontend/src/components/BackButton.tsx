@@ -9,7 +9,7 @@ type BackButtonProps = {
 export const BackButton = ({ color }: BackButtonProps) => {
 	const router = useRouter();
 	return (
-		<Box width="100%" paddingY={10} display="flex" justifyContent="flex-start">
+		<Box width="100%" paddingY={5} display="flex" justifyContent="flex-start">
 			<ArrowBackIosIcon
 				aria-label="Retourner à la page précédente"
 				onClick={() => router.back()}

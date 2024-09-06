@@ -21,24 +21,13 @@ const LoginPage = () => {
 	const [checked, setIsChecked] = useState<boolean>(false);
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 
-	const router = useRouter();
-	const { onLogin, user, loading } = useAuth();
+	const { onLogin, loading } = useAuth();
 	const { height } = useWindowDimensions();
 
 	const handleClick = (event: React.MouseEvent) => {
 		event.preventDefault();
 		setShowPassword(!showPassword);
 	};
-
-	useEffect(() => {
-		if (user) {
-			if (user.role === "ADMIN" || user.role === "CITYADMIN") {
-				router.replace("/admin");
-			} else {
-				router.replace("/");
-			}
-		}
-	}, [user]);
 
 	return (
 		<Box

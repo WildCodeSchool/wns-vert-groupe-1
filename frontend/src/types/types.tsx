@@ -28,6 +28,11 @@ export type CityInput = {
 	lat?: number;
 	lon?: number;
 };
+
+export type CategoryInput = {
+	name: string;
+};
+
 export type RatingType = {
 	id: number;
 	rating: number;
@@ -57,10 +62,12 @@ export type POIInput = {
 	name: string;
 	address: string;
 	description: string;
-	city: number;
-	category: number;
+	city: number | undefined;
+	category: number | undefined;
 	images: string[];
 	postalCode: string;
+	latitude?: number;
+	longitude?: number;
 };
 
 export type POI = {
@@ -83,7 +90,7 @@ export type UserInput = {
 export type UserType = {
 	id: string;
 	firstName: string;
-	lastName: number;
+	lastName: string;
 	email: string;
 	password: string;
 	city: CityType;
