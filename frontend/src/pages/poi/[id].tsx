@@ -5,7 +5,6 @@ import {
 	Breadcrumbs,
 	Typography,
 	Grid,
-	Paper,
 	Link,
 	CircularProgress,
 } from "@mui/material";
@@ -44,18 +43,6 @@ const POIDetails = () => {
 			});
 		}
 	}, [data, error, router.query.id, loading]);
-
-	function Item(props: { item: string; index: number }) {
-		return (
-			<Paper>
-				<img
-					src={props.item}
-					alt={`Image ${props.index}`}
-					style={{ width: "100%" }}
-				/>
-			</Paper>
-		);
-	}
 
 	const handleCityClick = () => {
 		router.push(`/city/search/${POI.city}`);
@@ -100,7 +87,11 @@ const POIDetails = () => {
 			</Breadcrumbs>
 			<Grid container spacing={6} sx={{ padding: "1rem" }}>
 				<Grid item xs={6}>
-					<ImagesCarousel images={POI.images} />
+					{POI.images && POI.images.length > 0 ? (
+						<ImagesCarousel images={POI.images} />
+					) : (
+						<></>
+					)}
 				</Grid>
 				<Grid item xs sx={{ padding: "1rem" }}>
 					<Typography

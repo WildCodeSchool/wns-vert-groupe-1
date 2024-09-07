@@ -1,6 +1,5 @@
 import {
 	Typography,
-	Button,
 	TextField,
 	Box,
 	Grid,
@@ -16,7 +15,7 @@ import { toast } from "react-toastify";
 import { errors as ErrorContext, useAuth } from "context";
 import { useRouter } from "next/navigation";
 import { CHECK_CITY_UNIQUE } from "@queries";
-import { BackButton } from "@components";
+import { BackButton, RoundedButton } from "@components";
 
 const commonTextFieldStyles = {
 	"& .MuiOutlinedInput-root": {
@@ -234,18 +233,14 @@ const NewCity = () => {
 								helperText={errors.description?.message}
 								sx={commonTextFieldStyles}
 							/>
-							<Button
+							<RoundedButton
 								data-testid="send_form"
-								aria-label="Soumettre le formulaire de création de ville"
-								disabled={isDisabled}
 								type="submit"
-								variant="contained"
-								color="primary"
-								size="large"
-								style={{ borderRadius: "24px" }}
+								disabled={isDisabled}
+								label="Soumettre le formulaire de création de ville"
 							>
 								Créer
-							</Button>
+							</RoundedButton>
 						</Box>
 					</Grid>
 				</Grid>

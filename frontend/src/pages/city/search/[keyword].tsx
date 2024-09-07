@@ -29,6 +29,7 @@ const SearchResults = () => {
 
 	const { loading, error, data } = useQuery(GET_CITY_BY_NAME, {
 		variables: { name: router.query.keyword },
+		fetchPolicy: "cache-and-network",
 	});
 
 	useEffect(() => {

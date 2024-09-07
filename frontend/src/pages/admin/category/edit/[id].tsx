@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
 	Box,
-	Button,
 	CircularProgress,
 	Grid,
 	TextField,
@@ -15,7 +14,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 import { capitalizeFirstLetter } from "utils";
-import { BackButton } from "@components";
+import { BackButton, RoundedButton } from "@components";
 
 const commonTextFieldStyles = {
 	"& .MuiOutlinedInput-root": {
@@ -174,17 +173,13 @@ const EditCategoryByID = () => {
 						}
 						sx={commonTextFieldStyles}
 					/>
-					<Button
-						aria-label="Enregistrer les modifications"
-						disabled={!form.name}
+					<RoundedButton
 						type="submit"
-						variant="contained"
-						color="primary"
-						size="large"
-						style={{ borderRadius: "24px" }}
+						disabled={!form.name}
+						label="Enregistrer les modifications"
 					>
 						{!loading ? "Enregistrer " : "Enregistrement en cours ..."}
-					</Button>
+					</RoundedButton>
 				</Box>
 			</Grid>
 		</Grid>

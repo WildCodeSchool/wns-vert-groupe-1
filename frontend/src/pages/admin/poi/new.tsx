@@ -4,26 +4,26 @@ import { useMutation } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 import { styled } from "@mui/material/styles";
 import {
-	Paper,
 	TextField,
 	Select,
 	MenuItem,
-	Button,
 	Grid,
 	InputLabel,
 	Typography,
 	FormControl,
 	Box,
+	Button,
+	FormHelperText,
 } from "@mui/material";
 import { mainTheme } from "@theme";
 import { CREATE_NEW_POI } from "@mutations";
 import { GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
-import { POIInput } from "@types";
+import { CategoryType, CityType, POIInput } from "@types";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { BackButton, ImagesCarousel } from "@components";
+import { BackButton, ImagesCarousel, RoundedButton } from "@components";
 import { capitalizeFirstLetter } from "utils";
 import { useAuth } from "../../../context";
 import React from "react";
@@ -31,7 +31,6 @@ import React from "react";
 const NewPoi = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
 	const [imageURLs, setImageURLs] = useState<string[]>([]);
-	const [imageErrors, setImageErrors] = useState<string | null>(null);
 	const router = useRouter();
 
 	const {
@@ -47,16 +46,16 @@ const NewPoi = () => {
 			id: number;
 			name: string;
 		}[];
-	}>(GET_ALL_CITIES);
+	}>(GET_ALL_CITIES, { fetchPolicy: "cache-and-network" });
 
 	const { data: categoryData } = useQuery<{
 		getAllCategories: {
 			id: number;
 			name: string;
 		}[];
-	}>(GET_ALL_CATEGORIES);
+	}>(GET_ALL_CATEGORIES, { fetchPolicy: "cache-and-network" });
 
-	const [createNewPoi] = useMutation(CREATE_NEW_POI);
+	const [createNewPoi, { loading }] = useMutation(CREATE_NEW_POI);
 
 	const watchedName = watch("name");
 	const watchedDescription = watch("description");
@@ -152,54 +151,42 @@ const NewPoi = () => {
 	}, [isLoadingSession, isAuthenticated, user?.role]);
 
 	return (
-		<Grid
-			container
-			justifyContent="space-evenly"
-			alignItems="center"
-			padding={8}
-		>
+		<Grid container padding={8} flex={1} display="flex" flexDirection={"row"}>
 			<BackButton />
-			<Grid item xs={6}>
+			<Grid
+				item
+				xs={12}
+				md={6}
+				paddingX={2}
+				display="flex"
+				justifyContent="center"
+				alignItems="center"
+				bgcolor={mainTheme.palette.primary.light}
+				borderRadius="45px"
+			>
 				{imageURLs.length > 0 ? (
-					<Paper
-						sx={{
-							padding: mainTheme.spacing(3),
-							borderRadius: mainTheme.spacing(2),
-							boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
-							marginTop: "1rem",
-							height: "70vh",
-						}}
-					>
-						<ImagesCarousel images={imageURLs.map((image) => `${image}`)} />
-					</Paper>
-				) : (
-					<Paper
-						sx={{
-							padding: mainTheme.spacing(3),
-							borderRadius: mainTheme.spacing(2),
-							boxShadow: "0px 5px 12px rgba(0, 0, 0, 0.15)",
-							marginTop: "1rem",
-							height: "70vh",
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-						}}
-					>
-						<AddPhotoAlternateOutlinedIcon
-							sx={{
-								color: mainTheme.palette.primary.main,
-								fontSize: "100px",
-							}}
+					<Box>
+						<ImagesCarousel
+							images={imageURLs.map((image) => `${image}`)}
+							isEditable
 						/>
-					</Paper>
+					</Box>
+				) : (
+					<AddPhotoAlternateOutlinedIcon
+						sx={{
+							color: mainTheme.palette.primary.main,
+							fontSize: "100px",
+						}}
+					/>
 				)}
 			</Grid>
-			<Grid item xs={12} sm={5}>
+			<Grid item xs={12} md={6} padding={8}>
 				<Box component="form" onSubmit={handleSubmit(onSubmit)}>
 					<Typography
 						color={mainTheme.palette.primary.main}
 						align="center"
-						sx={{ fontSize: mainTheme.typography.h4, fontWeight: "bold" }}
+						fontSize={mainTheme.typography.h4.fontSize}
+						textTransform="uppercase"
 					>
 						Ajouter un POI
 					</Typography>
@@ -230,10 +217,10 @@ const NewPoi = () => {
 							<TextField
 								label="Adresse"
 								{...register("address", {
-									required: "L'adresse est réquise",
+									required: "L'adresse est réquise.",
 									minLength: {
 										value: 5,
-										message: "L'adresse doit comporter au moins 5 caractères",
+										message: "L'adresse doit comporter au moins 5 caractères.",
 									},
 								})}
 								error={!!errors.address}
@@ -248,7 +235,7 @@ const NewPoi = () => {
 							<TextField
 								label="Code Postal"
 								{...register("postalCode", {
-									required: "Le code postal est réquis",
+									required: "Le code postal est réquis.",
 									pattern: {
 										value: /^\d{5}$/,
 										message: "Format de code postal invalide.",
@@ -274,7 +261,7 @@ const NewPoi = () => {
 									label="Ville"
 									labelId="city"
 									{...register("city", {
-										required: "Une ville doit être sélectionnée",
+										required: "Une ville doit être sélectionnée.",
 									})}
 									defaultValue=""
 									fullWidth
@@ -290,12 +277,17 @@ const NewPoi = () => {
 											: false
 									}
 								>
-									{cityData?.getAllCities?.map((city) => (
+									{cityData?.getAllCities?.map((city: CityType) => (
 										<MenuItem key={city.id} value={city.id}>
-											{capitalizeFirstLetter(city.name)}
+											{city.name ? capitalizeFirstLetter(city.name) : ""}
 										</MenuItem>
 									))}
 								</Select>
+								{errors.city && (
+									<FormHelperText sx={{ color: "error.main" }}>
+										{errors.city.message}
+									</FormHelperText>
+								)}
 							</FormControl>
 						</Grid>
 						<Grid item xs={4}>
@@ -316,12 +308,19 @@ const NewPoi = () => {
 									fullWidth
 									color="primary"
 								>
-									{categoryData?.getAllCategories?.map((category) => (
-										<MenuItem key={category.id} value={category.id}>
-											{capitalizeFirstLetter(category.name)}
-										</MenuItem>
-									))}
+									{categoryData?.getAllCategories?.map(
+										(category: CategoryType) => (
+											<MenuItem key={category.id} value={category.id}>
+												{capitalizeFirstLetter(category.name)}
+											</MenuItem>
+										)
+									)}
 								</Select>
+								{errors.category && (
+									<FormHelperText sx={{ color: "error.main" }}>
+										{errors.category.message}
+									</FormHelperText>
+								)}
 							</FormControl>
 						</Grid>
 						<Grid item xs={12}>
@@ -350,9 +349,9 @@ const NewPoi = () => {
 							xs={12}
 							sx={{
 								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
 								marginTop: "1rem",
+								justifyContent: "center",
+								alignItems: "center",
 							}}
 						>
 							<Button
@@ -361,12 +360,12 @@ const NewPoi = () => {
 								role={undefined}
 								variant="contained"
 								tabIndex={-1}
+								size="large"
 								startIcon={<AddPhotoAlternateOutlinedIcon />}
 								style={{
-									marginBottom: "2rem",
-									marginTop: "1rem",
 									borderRadius: "24px",
-									padding: "0.7rem",
+									cursor: "pointer",
+									margin: "16px",
 								}}
 							>
 								Ajouter des images
@@ -407,28 +406,9 @@ const NewPoi = () => {
 									multiple
 								/>
 							</Button>
-						</Grid>
-
-						<Grid
-							item
-							xs={12}
-							sx={{
-								display: "flex",
-								justifyContent: "center",
-								marginTop: "1rem",
-							}}
-						>
-							<Button
-								type="submit"
-								variant="contained"
-								disabled={isDisabled}
-								color="primary"
-								style={{
-									borderRadius: "24px",
-								}}
-							>
-								Valider
-							</Button>
+							<RoundedButton type="submit" disabled={isDisabled}>
+								{!loading ? "Valider" : "Enregistrement en cours..."}
+							</RoundedButton>
 						</Grid>
 					</Grid>
 				</Box>

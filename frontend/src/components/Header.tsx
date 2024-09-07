@@ -46,9 +46,13 @@ export const Header = () => {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = React.useState<boolean>(false);
 
-	const handleMenuToggle = () => {
-		setMenuOpen(!menuOpen);
-	};
+	const filteredsMenuItems = React.useMemo(() => {
+		if (user) {
+			return menuItemsData.filter((menuItem) =>
+				menuItem.type.includes(user.role)
+			);
+		}
+	}, [user]);
 
 	return isLoadingSession ? (
 		<CircularProgress />
@@ -71,11 +75,11 @@ export const Header = () => {
 						alignItems: "center",
 					}}
 				>
-					{isAuthenticated && (
+					{isAuthenticated && user?.role !== "USER" ? (
 						<IconButton
 							color="inherit"
 							aria-label="Ouverture du menu"
-							onClick={handleMenuToggle}
+							onClick={() => setMenuOpen(!menuOpen)}
 						>
 							<MenuIcon
 								sx={{
@@ -83,6 +87,8 @@ export const Header = () => {
 								}}
 							/>
 						</IconButton>
+					) : (
+						<></>
 					)}
 					<Link href="/" passHref>
 						<Typography
@@ -176,49 +182,54 @@ export const Header = () => {
 								flexDirection: "column",
 								alignItems: "center",
 								gap: 10,
+								justifyContent: "flex-start",
 								paddingY: 10,
+								paddingX: 5,
 							}}
 						>
 							<Logo />
 							<List
 								sx={{
-									flex: 1,
+									// flex: 1,
 									width: "100%",
 									display: "flex",
 									flexDirection: "column",
 									alignContent: "center",
-									paddingX: 5,
+									paddingTop: 10,
+									marginTop: 10,
+									justifyContent: "flex-start",
 									gap: 10,
 								}}
 							>
-								{menuItemsData.map((menuItem, index) => (
-									<Link href={menuItem.link ?? ""} key={index} passHref>
-										<ListItem
-											key={index}
-											sx={{
-												backgroundColor: mainTheme.palette.primary.light,
-												borderRadius: "24px",
-												maxWidth: "calc(100% - 1rem)",
-											}}
-										>
-											<ListItemText
-												disableTypography
-												primary={
-													<Typography
-														sx={{
-															fontSize: mainTheme.typography.h4,
-														}}
-													>
-														{menuItem?.name}
-													</Typography>
-												}
+								{filteredsMenuItems &&
+									filteredsMenuItems.map((menuItem, index) => (
+										<Link href={menuItem.link ?? ""} key={index} passHref>
+											<ListItem
+												key={index}
 												sx={{
-													textAlign: "center",
+													backgroundColor: mainTheme.palette.primary.light,
+													borderRadius: "24px",
+													maxWidth: "calc(100% - 1rem)",
 												}}
-											/>
-										</ListItem>
-									</Link>
-								))}
+											>
+												<ListItemText
+													disableTypography
+													primary={
+														<Typography
+															sx={{
+																fontSize: mainTheme.typography.h4,
+															}}
+														>
+															{menuItem?.name}
+														</Typography>
+													}
+													sx={{
+														textAlign: "center",
+													}}
+												/>
+											</ListItem>
+										</Link>
+									))}
 							</List>
 						</Box>{" "}
 					</SwipeableDrawer>

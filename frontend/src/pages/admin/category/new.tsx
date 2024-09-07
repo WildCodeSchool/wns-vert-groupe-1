@@ -1,6 +1,5 @@
 import {
 	Typography,
-	Button,
 	TextField,
 	Box,
 	Grid,
@@ -16,7 +15,7 @@ import { toast } from "react-toastify";
 import { errors as ErrorContext, useAuth } from "context";
 import { useRouter } from "next/navigation";
 import { CHECK_CATEGORY_UNIQUE } from "@queries";
-import { BackButton } from "@components";
+import { BackButton, RoundedButton } from "@components";
 
 const commonTextFieldStyles = {
 	"& .MuiOutlinedInput-root": {
@@ -220,18 +219,14 @@ const NewCategory = () => {
 								helperText={errors.name?.message}
 								sx={commonTextFieldStyles}
 							/>
-							<Button
+							<RoundedButton
 								data-testid="send_form"
-								aria-label="Soumettre le formulaire de création de catégorie"
-								disabled={isDisabled}
 								type="submit"
-								variant="contained"
-								color="primary"
-								size="large"
-								style={{ borderRadius: "24px" }}
+								label="Soumettre le formulaire de création de catégorie"
+								disabled={isDisabled}
 							>
 								Créer
-							</Button>
+							</RoundedButton>
 						</Box>
 					</Grid>
 				</Grid>

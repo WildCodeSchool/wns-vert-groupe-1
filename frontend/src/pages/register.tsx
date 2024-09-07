@@ -20,6 +20,8 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useAuth } from "context";
+import { RoundedButton } from "@components";
+import { capitalizeFirstLetter } from "utils";
 
 const Register = () => {
 	const { onRegister, loading } = useAuth();
@@ -225,12 +227,9 @@ const Register = () => {
 								defaultValue=""
 								sx={{ width: "100%" }}
 							>
-								{cities.map((city) => (
+								{cities.map((city: CityType) => (
 									<MenuItem key={city.id} value={city.id}>
-										{city.name
-											? city.name.charAt(0).toUpperCase() +
-												city.name.slice(1).toLowerCase()
-											: undefined}
+										{city.name ? capitalizeFirstLetter(city.name) : ""}
 									</MenuItem>
 								))}
 							</Select>
@@ -241,20 +240,13 @@ const Register = () => {
 							)}
 						</FormControl>
 
-						<Button
+						<RoundedButton
 							data-testid="submit"
-							variant="contained"
-							color="primary"
 							type="submit"
-							fullWidth
-							style={{
-								marginBottom: "2rem",
-								marginTop: "1rem",
-								borderRadius: "24px",
-							}}
+							label="S'inscrire"
 						>
 							{!loading ? "S'inscrire" : "Inscription en cours ..."}
-						</Button>
+						</RoundedButton>
 
 						<Typography
 							gutterBottom
@@ -267,7 +259,7 @@ const Register = () => {
 								paddingBottom: "1rem",
 							}}
 						>
-							Vous avez déjà un compte?
+							Vous avez déjà un compte ?{" "}
 							<Link
 								href="/login"
 								underline="hover"

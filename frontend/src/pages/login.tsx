@@ -1,8 +1,6 @@
-import { useRouter } from "next/router";
 import {
 	Grid,
 	TextField,
-	Button,
 	Paper,
 	Box,
 	FormControlLabel,
@@ -12,10 +10,11 @@ import {
 	IconButton,
 } from "@mui/material";
 import { useAuth } from "context/UserContext";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useWindowDimensions from "utils/windowDimensions";
 import { mainTheme } from "@theme";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { RoundedButton } from "@components";
 
 const LoginPage = () => {
 	const [checked, setIsChecked] = useState<boolean>(false);
@@ -54,6 +53,7 @@ const LoginPage = () => {
 						alignItems="center"
 						justifyContent="center"
 						bgcolor={mainTheme.palette.primary.light}
+						padding={10}
 					>
 						<Box>
 							<img
@@ -64,7 +64,7 @@ const LoginPage = () => {
 						</Box>
 					</Grid>
 
-					<Grid item xs={12} md={6} p={6}>
+					<Grid item xs={12} md={6} p={10}>
 						<Typography
 							variant="h3"
 							color="primary"
@@ -74,7 +74,9 @@ const LoginPage = () => {
 						>
 							Connexion
 						</Typography>
-						<form
+						<Box
+							component="form"
+							padding={4}
 							onSubmit={(e) => {
 								e.preventDefault();
 								const form = e.target;
@@ -136,19 +138,10 @@ const LoginPage = () => {
 								}
 								label="Se souvenir de moi"
 							/>
-							<Button
-								variant="contained"
-								color="primary"
-								type="submit"
-								fullWidth
-								style={{
-									marginBottom: "2rem",
-									marginTop: "1rem",
-									borderRadius: "24px",
-								}}
-							>
+							<RoundedButton type="submit" label="Se connecter">
 								{!loading ? "Se connecter" : "Connexion en cours..."}
-							</Button>
+							</RoundedButton>
+
 							<Typography
 								gutterBottom
 								color="primary"
@@ -183,7 +176,7 @@ const LoginPage = () => {
 									Réinitialiser
 								</Link>
 							</Typography>
-						</form>
+						</Box>
 					</Grid>
 				</Grid>
 			</Paper>

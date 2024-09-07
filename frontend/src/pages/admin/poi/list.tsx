@@ -1,5 +1,5 @@
 import { useMutation, useLazyQuery } from "@apollo/client";
-import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { GET_ALL_POIS } from "@queries";
 import { DELETE_POI_BY_ID } from "@mutations";
 import { mainTheme } from "@theme";
@@ -10,11 +10,9 @@ import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PoiType } from "@types";
-import { IconButton } from "@components";
-import RoundedBox from "components/RoundedBox";
 import AddIcon from "@mui/icons-material/Add";
 import { capitalizeFirstLetter } from "utils";
-import { Modal } from "@components";
+import { Modal, RoundedBox, IconButton } from "@components";
 
 const columns: { key: any; name: string }[] = [
 	{
@@ -178,7 +176,7 @@ const POIList = () => {
 							color="transparent"
 							width="85%"
 							align="center"
-							gap={mainTheme.spacing(8)}
+							gap={mainTheme.spacing(4)}
 							paddingX={mainTheme.spacing(2)}
 						>
 							{columns.map((column, index) => {
@@ -188,7 +186,7 @@ const POIList = () => {
 										width={
 											column.key === "description"
 												? "30%"
-												: column.key === "name"
+												: column.key === "address" || column.key === "name"
 													? "15%"
 													: "10%"
 										}
@@ -234,7 +232,7 @@ const POIList = () => {
 										row
 										key={index}
 										align="center"
-										gap={mainTheme.spacing(8)}
+										gap={mainTheme.spacing(4)}
 										width="85%"
 										paddingX={mainTheme.spacing(2)}
 									>
@@ -260,7 +258,7 @@ const POIList = () => {
 												{poi.description}
 											</Typography>
 										</Box>
-										<Box width="10%">
+										<Box width="15%">
 											<Typography>{poi.address}</Typography>
 										</Box>
 										<Box width="10%">
@@ -314,31 +312,27 @@ const POIList = () => {
 									) : (
 										<></>
 									)}
-									<Modal open={open} setOpen={setOpen}>
+									<Modal
+										open={open}
+										setOpen={setOpen}
+										onClose={() => {
+											setSelectedPOI(undefined);
+											setOpen(false);
+										}}
+										onSubmit={() => {
+											if (selectedPOI?.id) handleDeletePOI(selectedPOI);
+										}}
+										submitLabel={
+											!loading ? "Confirmer" : "Confirmation en cours..."
+										}
+									>
 										<Typography
 											id="delete-poi-modal-title"
 											variant="h4"
 											component="h2"
 										>
-											{`Voulez-vous vraiment supprimer le POI ${selectedPOI?.name} ?`}
+											{`Voulez-vous vraiment supprimer le POI : ${selectedPOI?.name} ?`}
 										</Typography>
-										<Box gap={mainTheme.spacing(8)} display="flex">
-											<Button
-												aria-label="Annuler la suppression"
-												sx={{ color: mainTheme.palette.error.main }}
-												onClick={() => setOpen(false)}
-											>
-												Annuler
-											</Button>
-											<Button
-												aria-label="Confirmer la suppression"
-												onClick={() => {
-													if (selectedPOI?.id) handleDeletePOI(selectedPOI);
-												}}
-											>
-												{!loading ? "Confirmer" : "Confirmation en cours..."}
-											</Button>
-										</Box>
 									</Modal>
 								</Box>
 							);

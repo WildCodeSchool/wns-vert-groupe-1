@@ -20,7 +20,7 @@ type RoundedBoxProps = {
 	paddingX?: number | string;
 };
 
-export default function RoundedBox({
+export const RoundedBox = ({
 	children,
 	color = "white",
 	align = "left",
@@ -30,7 +30,7 @@ export default function RoundedBox({
 	paddingX = 0,
 	display = "flex",
 	gap = 0,
-}: RoundedBoxProps) {
+}: RoundedBoxProps) => {
 	return (
 		<Box
 			width={width}
@@ -50,4 +50,4 @@ export default function RoundedBox({
 			{children}
 		</Box>
 	);
-}
+};

@@ -39,6 +39,7 @@ export class UserResolver {
 							? { city: { id: user?.city?.id } }
 							: {}),
 						email: Not(user.email),
+						role: Not(UserRole.ADMIN),
 					},
 					relations: { city: true },
 					order: { [orderBy]: order },
@@ -158,11 +159,14 @@ export class UserResolver {
 					role: newUserInput.role ?? oldUser.role,
 				});
 
-				if (newUserInput.city) {
+				if (newUserInput.city != loggedUser.city?.id) {
 					const city = await City.findOneByOrFail({
 						id: Number(newUserInput.city),
 					});
 					oldUser.city = city;
+					if (oldUser.role !== "ADMIN") {
+						oldUser.role = "USER" as UserRole;
+					}
 				}
 
 				await oldUser.save();

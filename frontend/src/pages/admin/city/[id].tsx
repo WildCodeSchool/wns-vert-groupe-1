@@ -7,8 +7,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
-import { BackButton } from "@components";
-import RoundedBox from "components/RoundedBox";
+import { BackButton, RoundedBox } from "@components";
 
 const DisplayCityByID = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
@@ -34,6 +33,7 @@ const DisplayCityByID = () => {
 				}
 			}
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated, isLoadingSession, user?.role]);
 
 	return isLoadingSession ? (

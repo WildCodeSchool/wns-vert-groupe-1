@@ -1,17 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import {
-	Box,
-	Button,
-	CircularProgress,
-	Grid,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { GET_ALL_CITIES } from "@queries";
 import { mainTheme } from "@theme";
 import { errors, useAuth } from "../../../context";
@@ -22,8 +10,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DELETE_CITY_BY_ID } from "@mutations";
 import { CityType } from "@types";
-import RoundedBox from "components/RoundedBox";
-import { IconButton } from "@components";
+import { IconButton, RoundedBox } from "@components";
 import AddIcon from "@mui/icons-material/Add";
 import { Modal } from "@components";
 import { capitalizeFirstLetter } from "utils";
@@ -64,12 +51,10 @@ const CityList = () => {
 		fetchPolicy: "cache-and-network",
 	});
 
-	const [deleteCity, { error: deleteCityError }] = useMutation(
-		DELETE_CITY_BY_ID,
-		{
+	const [deleteCity, { loading: deleteCityLoading, error: deleteCityError }] =
+		useMutation(DELETE_CITY_BY_ID, {
 			refetchQueries: [{ query: GET_ALL_CITIES }],
-		}
-	);
+		});
 
 	React.useLayoutEffect(() => {
 		if (!isLoadingSession) {
@@ -250,7 +235,7 @@ const CityList = () => {
 												>
 													<Box width="20%" minWidth={"200px"}>
 														<Typography>
-															{city?.name
+															{city.name
 																? capitalizeFirstLetter(city.name)
 																: ""}
 														</Typography>
@@ -304,32 +289,30 @@ const CityList = () => {
 														icon={<DeleteIcon fontSize="small" />}
 													/>
 												</Box>
-												<Modal open={open} setOpen={setOpen}>
+												<Modal
+													open={open}
+													setOpen={setOpen}
+													onClose={() => {
+														setSelectedCity(undefined);
+														setOpen(false);
+													}}
+													onSubmit={() => {
+														if (selectedCity?.id)
+															handleDeleteCity(selectedCity.id);
+													}}
+													submitLabel={
+														deleteCityLoading
+															? "Confirmation en cours..."
+															: "Confirmer"
+													}
+												>
 													<Typography
 														id="delete-city-modal-title"
 														variant="h4"
 														component="h2"
 													>
-														{`Voulez-vous vraiment supprimer la ville ${selectedCity?.name} ?`}
+														{`Voulez-vous vraiment supprimer la ville ${selectedCity?.name ? capitalizeFirstLetter(selectedCity?.name) : ""} ?`}
 													</Typography>
-													<Box gap={mainTheme.spacing(8)} display="flex">
-														<Button
-															aria-label="Annuler la suppression"
-															sx={{ color: mainTheme.palette.error.main }}
-															onClick={() => setOpen(false)}
-														>
-															Annuler
-														</Button>
-														<Button
-															aria-label="Confirmer la suppression"
-															onClick={() => {
-																if (selectedCity?.id)
-																	handleDeleteCity(selectedCity.id);
-															}}
-														>
-															Confirmer
-														</Button>
-													</Box>
 												</Modal>
 											</Box>
 										);

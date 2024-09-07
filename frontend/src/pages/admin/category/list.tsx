@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { GET_ALL_CATEGORIES } from "@queries";
 import { mainTheme } from "@theme";
 import { errors, useAuth } from "../../../context";
@@ -10,9 +10,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DELETE_CATEGORY_BY_ID } from "@mutations";
 import { CategoryType, CityType } from "@types";
-import RoundedBox from "components/RoundedBox";
 import AddIcon from "@mui/icons-material/Add";
-import { IconButton, Modal } from "@components";
+import { IconButton, Modal, RoundedBox, RoundedButton } from "@components";
 import { capitalizeFirstLetter } from "utils";
 
 const columns: { key: any; name: string }[] = [
@@ -38,7 +37,7 @@ const CategoryList = () => {
 		fetchPolicy: "cache-and-network",
 	});
 
-	const [deleteCategory] = useMutation(DELETE_CATEGORY_BY_ID, {
+	const [deleteCategory, { loading }] = useMutation(DELETE_CATEGORY_BY_ID, {
 		refetchQueries: [{ query: GET_ALL_CATEGORIES }],
 	});
 
@@ -75,7 +74,7 @@ const CategoryList = () => {
 			})
 			.catch((err) => {
 				toast.error(
-					`Une erreur est survenue lors de la suppression de la catégorie ${selectedCategory?.name}.`
+					`Une erreur est survenue lors de la suppression de la catégorie ${selectedCategory?.name ? capitalizeFirstLetter(selectedCategory.name) : ""}.`
 				);
 				console.error(err);
 			});
@@ -220,37 +219,28 @@ const CategoryList = () => {
 													icon={<DeleteIcon fontSize="small" />}
 												/>
 											</Box>
-											<Modal open={open} setOpen={setOpen}>
+											<Modal
+												open={open}
+												setOpen={setOpen}
+												onClose={() => {
+													setSelectedCategory(undefined);
+													setOpen(false);
+												}}
+												onSubmit={() => {
+													if (selectedCategory?.id)
+														handleDeleteCategory(selectedCategory.id as number);
+												}}
+												submitLabel={
+													loading ? "Confirmation en cours..." : "Confirmer"
+												}
+											>
 												<Typography
 													id="delete-category-modal-title"
 													variant="h4"
 													component="h2"
 												>
-													{`Voulez-vous vraiment supprimer la catégorie ${selectedCategory?.name} ?`}
+													{`Voulez-vous vraiment supprimer la catégorie ${selectedCategory?.name ? capitalizeFirstLetter(selectedCategory?.name) : ""} ?`}
 												</Typography>
-												<Box gap={mainTheme.spacing(8)} display="flex">
-													<Button
-														aria-label="Annuler la suppression"
-														sx={{ color: mainTheme.palette.error.main }}
-														onClick={() => {
-															setSelectedCategory(undefined);
-															setOpen(false);
-														}}
-													>
-														Annuler
-													</Button>
-													<Button
-														aria-label="Confirmer la suppression"
-														onClick={() => {
-															if (selectedCategory?.id)
-																handleDeleteCategory(
-																	selectedCategory.id as number
-																);
-														}}
-													>
-														Confirmer
-													</Button>
-												</Box>
 											</Modal>
 										</Box>
 									);

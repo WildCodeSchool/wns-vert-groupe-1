@@ -14,3 +14,4 @@ export * from "./BackButton";
 export * from "./Select";
 export * from "./Icon";
 export * from "./Modal";
+export * from "./RoundedButton";

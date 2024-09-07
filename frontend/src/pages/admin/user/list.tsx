@@ -1,8 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { IconButton, Modal, Select } from "@components";
+import { IconButton, Modal, Select, RoundedBox } from "@components";
 import {
 	Box,
-	Button,
 	CircularProgress,
 	Grid,
 	MenuItem,
@@ -12,7 +11,6 @@ import {
 import { GET_ALL_USERS } from "@queries";
 import { mainTheme } from "@theme";
 import { UserType } from "@types";
-import RoundedBox from "components/RoundedBox";
 import { errors, useAuth } from "context";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect, useState } from "react";
@@ -64,14 +62,11 @@ const UsersList = () => {
 	const router = useRouter();
 
 	const [open, setOpen] = useState<boolean>(false);
-	const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
+	const [selectedUser, setSelectedUser] = useState<UserType | undefined>(
+		undefined
+	);
 
-	const {
-		data: users,
-		loading,
-		error,
-		refetch,
-	} = useQuery(GET_ALL_USERS, {
+	const { data: users, loading } = useQuery(GET_ALL_USERS, {
 		fetchPolicy: "cache-and-network",
 	});
 	const [deleteUser] = useMutation(DELETE_USER_BY_ID, {
@@ -93,7 +88,7 @@ const UsersList = () => {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isLoadingSession, isAuthenticated]);
+	}, [isLoadingSession, isAuthenticated, user?.role]);
 
 	const handleDeleteUser = (userId: string) => {
 		deleteUser({
@@ -104,7 +99,7 @@ const UsersList = () => {
 				toast.success(
 					`L'utilisateur ${selectedUser?.firstName} ${selectedUser?.lastName} a bien été supprimé !`
 				);
-				setSelectedUser(null);
+				setSelectedUser(undefined);
 			})
 			.catch((err) => {
 				toast.error(
@@ -131,7 +126,7 @@ const UsersList = () => {
 				console.error(err);
 			})
 			.finally(() => {
-				setSelectedUser(null);
+				setSelectedUser(undefined);
 			});
 	};
 
@@ -216,114 +211,116 @@ const UsersList = () => {
 					gap={mainTheme.spacing(6)}
 					paddingY={10}
 				>
-					{users?.getAllUsers.map((el: UserType, index: number) => {
-						return (
-							<Box
-								key={index}
-								display="flex"
-								flexDirection="row"
-								gap={mainTheme.spacing(6)}
-							>
-								<RoundedBox
-									row
-									key={index}
-									align="center"
-									gap={mainTheme.spacing(8)}
-									width="70%"
-								>
-									<Box width="20%">
-										<Typography>{el.lastName}</Typography>
-									</Box>
-									<Box width="20%">
-										<Typography>{el.firstName}</Typography>
-									</Box>
-									<Box width="30%">
-										<Typography>{el.email}</Typography>
-									</Box>
-									<Box width="20%">
-										<Typography>
-											{el?.city?.name
-												? capitalizeFirstLetter(el.city.name)
-												: ""}
-										</Typography>
-									</Box>
-								</RoundedBox>
-								<Box textAlign="center" width="20%">
-									<Select
-										value={el?.role}
-										onOpen={() => setSelectedUser(el)}
-										onChange={(event: SelectChangeEvent) => {
-											if (selectedUser) {
-												handleUpdateUserRole(el.id, event.target.value);
-											}
-										}}
-									>
-										{roles
-											.filter((role) => {
-												if (user?.role === "CITYADMIN") {
-													return (
-														role.key === "SUPERUSER" || role.key === "USER"
-													);
-												}
-												return true;
-											})
-											.map((role, index) => (
-												<MenuItem key={index} value={role.key}>
-													{role.name}
-												</MenuItem>
-											))}
-									</Select>
-								</Box>
-								{user?.role === "ADMIN" ? (
+					{users?.getAllUsers?.length > 0 ? (
+						<>
+							{users?.getAllUsers.map((el: UserType, index: number) => {
+								return (
 									<Box
-										textAlign="center"
-										alignContent="center"
-										alignItems="center"
-										width="10%"
+										key={index}
 										display="flex"
 										flexDirection="row"
-										justifyContent="space-evenly"
+										gap={mainTheme.spacing(6)}
 									>
-										<IconButton
-											onClick={() => {
-												setSelectedUser(el);
-												setOpen(true);
-											}}
-											icon={<DeleteIcon fontSize="small" />}
-										/>
-									</Box>
-								) : (
-									<></>
-								)}
-								<Modal open={open} setOpen={setOpen}>
-									<Typography
-										id="delete-city-modal-title"
-										variant="h4"
-										component="h2"
-									>
-										{`Voulez-vous vraiment supprimer l'utilisateur ${selectedUser?.firstName} ${selectedUser?.lastName} ?`}
-									</Typography>
-									<Box gap={mainTheme.spacing(8)} display="flex">
-										<Button
-											aria-label="Annuler la suppression"
-											sx={{ color: mainTheme.palette.error.main }}
-											onClick={() => setOpen(false)}
+										<RoundedBox
+											row
+											key={index}
+											align="center"
+											gap={mainTheme.spacing(8)}
+											width="70%"
 										>
-											Annuler
-										</Button>
-										<Button
-											aria-label="Confirmer la suppression"
-											onClick={() => {
+											<Box width="20%">
+												<Typography>{el.lastName}</Typography>
+											</Box>
+											<Box width="20%">
+												<Typography>{el.firstName}</Typography>
+											</Box>
+											<Box width="30%">
+												<Typography>{el.email}</Typography>
+											</Box>
+											<Box width="20%">
+												<Typography>
+													{el?.city?.name
+														? capitalizeFirstLetter(el.city.name)
+														: ""}
+												</Typography>
+											</Box>
+										</RoundedBox>
+										<Box textAlign="center" width="20%">
+											<Select
+												value={el?.role}
+												onOpen={() => setSelectedUser(el)}
+												onChange={(event: SelectChangeEvent) => {
+													if (selectedUser) {
+														handleUpdateUserRole(el.id, event.target.value);
+													}
+												}}
+											>
+												{roles
+													.filter((role) => {
+														if (user?.role === "CITYADMIN") {
+															return (
+																role.key === "SUPERUSER" || role.key === "USER"
+															);
+														}
+														return true;
+													})
+													.map((role, index) => (
+														<MenuItem key={index} value={role.key}>
+															{role.name}
+														</MenuItem>
+													))}
+											</Select>
+										</Box>
+										{user?.role === "ADMIN" ? (
+											<Box
+												textAlign="center"
+												alignContent="center"
+												alignItems="center"
+												width="10%"
+												display="flex"
+												flexDirection="row"
+												justifyContent="space-evenly"
+											>
+												<IconButton
+													onClick={() => {
+														setSelectedUser(el);
+														setOpen(true);
+													}}
+													icon={<DeleteIcon fontSize="small" />}
+												/>
+											</Box>
+										) : (
+											<></>
+										)}
+										<Modal
+											open={open}
+											setOpen={setOpen}
+											onClose={() => {
+												setSelectedUser(undefined);
+												setOpen(false);
+											}}
+											onSubmit={() => {
 												if (selectedUser) handleDeleteUser(selectedUser.id);
 											}}
+											submitLabel={
+												loading ? "Confirmation en cours..." : "Confirmer"
+											}
 										>
-											Confirmer
-										</Button>
+											<Typography
+												id="delete-city-modal-title"
+												variant="h4"
+												component="h2"
+											>
+												{`Voulez-vous vraiment supprimer l'utilisateur ${selectedUser?.firstName} ${selectedUser?.lastName} ?`}
+											</Typography>
+										</Modal>
 									</Box>
-								</Modal>
-							</Box>
-						);
-					})}
+								);
+							})}
+						</>
+					) : (
+						<Typography variant="h4">Aucun utilisateur</Typography>
+					)}
 				</Box>
 			</Grid>
 		</Grid>

@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
 	Box,
-	Button,
 	Grid,
-	Paper,
 	TextField,
 	Typography,
 	FormControl,
@@ -12,17 +10,19 @@ import {
 	Select,
 	MenuItem,
 	CircularProgress,
+	Button,
 } from "@mui/material";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import axios from "axios";
-
 import { EDIT_POI_BY_ID } from "@mutations";
 import { GET_POI_BY_ID, GET_ALL_CITIES, GET_ALL_CATEGORIES } from "@queries";
 import { mainTheme } from "@theme";
-import { CategoryType, CityInput, POIInput } from "@types";
+import { CategoryType, CityType, POIInput } from "@types";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { capitalizeFirstLetter } from "utils";
+import { BackButton, IconButton, RoundedButton } from "@components";
+import CloseIcon from "@mui/icons-material/Close";
 
 const EditPoiByID = () => {
 	const router = useRouter();
@@ -34,6 +34,7 @@ const EditPoiByID = () => {
 		loading: poiLoading,
 	} = useQuery(GET_POI_BY_ID, {
 		variables: { id: Number(id) },
+		fetchPolicy: "cache-and-network",
 	});
 
 	const { data: cityData } = useQuery(GET_ALL_CITIES);
@@ -93,16 +94,16 @@ const EditPoiByID = () => {
 					return null;
 				}
 			});
+			const filenames = await Promise.all(uploadPromises);
+			console.log("filenames", filenames);
 
-			Promise.all(uploadPromises).then((filenames) => {
-				setForm((prev) => ({
-					...prev,
-					images: [
-						...prev.images,
-						...filenames.filter((filename) => filename !== null),
-					],
-				}));
-			});
+			setForm((prev) => ({
+				...prev,
+				images: [
+					...prev.images,
+					...filenames.filter((filename) => filename !== null),
+				],
+			}));
 		}
 	};
 
@@ -129,212 +130,215 @@ const EditPoiByID = () => {
 			router.push(`/poi/${id}`);
 		} catch (error) {
 			console.error("Error updating POI: ", error);
-			toast.error("Une erreur ets survenue lors de la modification du POI");
+			toast.error(
+				`Une erreur est survenue lors de la modification du POI. ${error}`
+			);
 		}
 	};
+	useEffect(() => {
+		console.log("cityData", cityData);
+		console.log("categoryData", categoryData);
+	}, [cityData, categoryData]);
 
-	if (poiError) return toast.error("Une erreur est survenue.");
+	if (poiError) return toast.error(`Une erreur est survenue.${poiError}`);
 
 	return poiLoading || !cityData || !categoryData ? (
 		<CircularProgress />
-	) : (
-		<Paper
-			component={Box}
-			elevation={5}
-			square={false}
-			width={{ xs: "85%", lg: "60%" }}
-			display="flex"
-			alignItems="center"
-			justifyContent="center"
-		>
-			<Grid container spacing={6}>
-				<Grid item>
-					<Paper sx={{ padding: "1rem" }}>
-						<Typography
-							color={mainTheme.palette.primary.main}
-							align="center"
-							sx={{ fontSize: mainTheme.typography.h3, fontWeight: "bold" }}
+	) : cityData?.getCityById && categoryData?.getCategoryById ? (
+		<Grid container paddingX={10} paddingY={10}>
+			<BackButton />
+			<Grid item display="flex" flexDirection="column" gap={6} paddingX={6}>
+				<Typography
+					color={mainTheme.palette.primary.main}
+					fontSize={mainTheme.typography.h3.fontSize}
+				>
+					Modifier un POI
+				</Typography>
+				<Box component="form" onSubmit={handleSubmit}>
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Nom"
+						name="name"
+						value={form.name}
+						onChange={(e) => setForm({ ...form, name: e.target.value })}
+					/>
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Adresse"
+						name="address"
+						value={form.address}
+						onChange={(e) => setForm({ ...form, address: e.target.value })}
+					/>
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Code Postal"
+						name="postalCode"
+						value={form.postalCode}
+						onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
+					/>
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Description"
+						name="description"
+						value={form.description}
+						multiline
+						minRows={4}
+						onChange={(e) => setForm({ ...form, description: e.target.value })}
+					/>
+					<FormControl fullWidth margin="normal">
+						<InputLabel id="city-label">Ville</InputLabel>
+						<Select
+							labelId="city-label"
+							name="city"
+							value={form.city}
+							onChange={(e) =>
+								setForm({ ...form, city: Number(e.target.value) })
+							}
+							label="Ville"
+							readOnly={true}
 						>
-							Modifier un POI
-						</Typography>
-						<form onSubmit={handleSubmit}>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Nom"
-								name="name"
-								value={form.name}
-								onChange={(e) => setForm({ ...form, name: e.target.value })}
-							/>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Adresse"
-								name="address"
-								value={form.address}
-								onChange={(e) => setForm({ ...form, address: e.target.value })}
-							/>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Code Postal"
-								name="postalCode"
-								value={form.postalCode}
-								onChange={(e) =>
-									setForm({ ...form, postalCode: e.target.value })
-								}
-							/>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Description"
-								name="description"
-								value={form.description}
-								multiline
-								minRows={4}
-								onChange={(e) =>
-									setForm({ ...form, description: e.target.value })
-								}
-							/>
-							<FormControl fullWidth margin="normal">
-								<InputLabel id="city-label">Ville</InputLabel>
-								<Select
-									labelId="city-label"
-									name="city"
-									value={form.city}
-									onChange={(e) =>
-										setForm({ ...form, city: Number(e.target.value) })
-									}
-									label="Ville"
-								>
-									{cityData.getAllCities.map((city: CityInput) => (
-										<MenuItem key={city.id} value={city.id}>
-											{capitalizeFirstLetter(city.name)}
-										</MenuItem>
-									))}
-								</Select>
-							</FormControl>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Latitude"
-								name="latitude"
-								type="number"
-								value={form.latitude}
-								onChange={(e) =>
-									setForm({ ...form, latitude: Number(e.target.value) })
-								}
-							/>
-							<TextField
-								fullWidth
-								margin="normal"
-								label="Longitude"
-								name="longitude"
-								type="number"
-								value={form.longitude}
-								onChange={(e) =>
-									setForm({ ...form, longitude: Number(e.target.value) })
-								}
-							/>
-							<FormControl fullWidth margin="normal">
-								<InputLabel id="category-label">Catégorie</InputLabel>
-								<Select
-									labelId="category-label"
-									name="category"
-									value={form.category}
-									onChange={(e) =>
-										setForm({ ...form, category: Number(e.target.value) })
-									}
-									label="Catégorie"
-								>
-									{categoryData.getAllCategories.map(
-										(category: CategoryType) => (
-											<MenuItem key={category.id} value={category.id}>
-												{capitalizeFirstLetter(category.name)}
-											</MenuItem>
-										)
-									)}
-								</Select>
-							</FormControl>
-							<Box
-								sx={{
-									display: "flex",
-									flexDirection: "column",
-									marginTop: "1rem",
-								}}
-							>
-								<Typography variant="subtitle1">Images :</Typography>
-								<Grid container spacing={2}>
-									{form.images.map((image, index) => (
-										<Grid item key={index}>
-											<Box sx={{ position: "relative" }}>
-												<img
-													src={image}
-													alt={`Image ${index}`}
-													style={{ maxWidth: "200px", maxHeight: "200px" }}
-												/>
-												<Button
-													variant="contained"
-													color="secondary"
-													size="small"
-													sx={{ position: "absolute", top: 0, right: 0 }}
-													onClick={() => handleImageDelete(index)}
-												>
-													X
-												</Button>
-											</Box>
-										</Grid>
-									))}
+							{cityData?.getAllCities?.map((city: CityType) => (
+								<MenuItem key={city.id} value={city.id}>
+									{city.name ? capitalizeFirstLetter(city.name) : ""}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Latitude"
+						name="latitude"
+						type="number"
+						value={form.latitude}
+						onChange={(e) =>
+							setForm({ ...form, latitude: Number(e.target.value) })
+						}
+						InputProps={{
+							readOnly: true,
+						}}
+					/>
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Longitude"
+						name="longitude"
+						type="number"
+						value={form.longitude}
+						onChange={(e) =>
+							setForm({ ...form, longitude: Number(e.target.value) })
+						}
+						InputProps={{
+							readOnly: true,
+						}}
+					/>
+					<FormControl fullWidth margin="normal">
+						<InputLabel id="category-label">Catégorie</InputLabel>
+						<Select
+							labelId="category-label"
+							name="category"
+							value={form.category}
+							onChange={(e) =>
+								setForm({ ...form, category: Number(e.target.value) })
+							}
+							label="Catégorie"
+						>
+							{categoryData?.getAllCategories?.map((category: CategoryType) => (
+								<MenuItem key={category.id} value={category.id}>
+									{capitalizeFirstLetter(category.name)}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+					<Box display="flex" flexDirection="column" marginTop="1rem" gap={4}>
+						<Typography variant="subtitle1">Images :</Typography>
+						<Grid
+							container
+							gridColumn={5}
+							justifyContent="space-around"
+							gap={4}
+						>
+							{form.images.map((image, index) => (
+								<Grid item key={index}>
+									<Box
+										sx={{
+											width: "300px",
+											height: "200px",
+											position: "relative",
+											backgroundColor: "transparent",
+										}}
+									>
+										<img
+											src={image}
+											alt={`Image ${index}`}
+											style={{
+												width: "100%",
+												height: "100%",
+												objectFit: "cover",
+												borderRadius: "10px",
+											}}
+										/>
+										<IconButton
+											icon={<CloseIcon />}
+											color="secondary"
+											onClick={() => handleImageDelete(index)}
+											sx={{
+												position: "absolute",
+												top: 0,
+												right: 0,
+												borderRadius: "10px",
+											}}
+											rounded={false}
+										/>
+									</Box>
 								</Grid>
-							</Box>
-							<Grid
-								item
-								xs={12}
-								sx={{
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-									marginTop: "1rem",
-								}}
-							>
-								<Button
-									component="label"
-									color="primary"
-									role={undefined}
-									variant="contained"
-									tabIndex={-1}
-									startIcon={<AddPhotoAlternateOutlinedIcon />}
-								>
-									Ajouter des images
-									<input
-										type="file"
-										style={{ display: "none" }}
-										onChange={handleImageUpload}
-										multiple
-									/>
-								</Button>
-							</Grid>
-							<Box
-								sx={{
-									display: "flex",
-									justifyContent: "center",
-									marginTop: "1rem",
-								}}
-							>
-								<Button
-									variant="contained"
-									color="primary"
-									type="submit"
-									disabled={loading}
-								>
-									{loading ? "Mise à jour en cours..." : "Modifier"}
-								</Button>
-							</Box>
-						</form>
-					</Paper>
-				</Grid>
+							))}
+						</Grid>
+					</Box>
+					<Grid
+						item
+						xs={12}
+						display="flex"
+						alignItems="center"
+						justifyContent="center"
+						gap={6}
+						marginTop="1rem"
+					>
+						<Button
+							component="label"
+							color="primary"
+							role={undefined}
+							variant="contained"
+							tabIndex={-1}
+							size="large"
+							startIcon={<AddPhotoAlternateOutlinedIcon />}
+							style={{
+								borderRadius: "24px",
+								cursor: "pointer",
+								margin: "16px",
+							}}
+						>
+							Ajouter des images
+							<input
+								type="file"
+								style={{ display: "none" }}
+								onChange={handleImageUpload}
+								multiple
+							/>
+						</Button>
+						<RoundedButton type="submit" disabled={loading}>
+							{loading ? "Mise à jour en cours..." : "Modifier"}
+						</RoundedButton>
+					</Grid>
+				</Box>
 			</Grid>
-		</Paper>
+		</Grid>
+	) : (
+		<CircularProgress />
 	);
 };
 

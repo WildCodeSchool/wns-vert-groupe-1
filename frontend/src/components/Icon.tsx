@@ -10,6 +10,7 @@ type IconButtonProps = {
 	color?: string;
 	size?: number;
 	sx?: SxProps<Theme>;
+	rounded?: boolean;
 };
 
 export const IconButton = ({
@@ -18,6 +19,7 @@ export const IconButton = ({
 	color = "white",
 	size = 35,
 	sx,
+	rounded = true,
 }: IconButtonProps) => {
 	return (
 		<MuiIconButton
@@ -25,7 +27,7 @@ export const IconButton = ({
 			sx={{
 				color: color,
 				backgroundColor: mainTheme.palette.primary.contrastText,
-				borderRadius: "50%",
+				borderRadius: rounded ? "50%" : "0%",
 				cursor: "pointer",
 				width: size,
 				height: size,

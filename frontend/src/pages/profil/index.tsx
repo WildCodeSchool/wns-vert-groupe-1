@@ -278,7 +278,7 @@ const Profile = () => {
 								{data?.getAllCities.map((city: CityType) => {
 									return (
 										<MenuItem key={city.id} value={city.id}>
-											{city.name ? capitalizeFirstLetter(city.name) : undefined}
+											{city.name ? capitalizeFirstLetter(city.name) : ""}
 										</MenuItem>
 									);
 								})}

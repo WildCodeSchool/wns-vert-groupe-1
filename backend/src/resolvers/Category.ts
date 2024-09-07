@@ -92,7 +92,6 @@ export class CategoryResolver {
 		const category = await Category.findOne({
 			where: { name: name },
 		});
-
 		return !category;
 	}
 }

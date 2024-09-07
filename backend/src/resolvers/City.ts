@@ -133,9 +133,20 @@ export class CityResolver {
 
 			if (!existingCity) {
 				throw new Error(`City with ID ${id} not found`);
+			} else {
+				const formattedName = cityData?.name?.trim().toLocaleLowerCase();
+				if (formattedName && formattedName !== existingCity.name) {
+					const coordinates = await GeoCodingService.getCoordinatesByCity(
+						formattedName
+					);
+					if (coordinates) {
+						existingCity.lat = coordinates.latitude;
+						existingCity.lon = coordinates.longitude;
+					} else {
+						throw new Error(`No coordinates found for city ${formattedName}`);
+					}
+				}
 			}
-
-			//Appel api pour updater lat et lon si différent de la valeur actuelle
 
 			const updatedCity = await City.save({
 				...existingCity,

@@ -151,7 +151,7 @@ export const PoiCard = ({
 					fontWeight: "bold",
 				}}
 			>
-				{capitalizeFirstLetter(category.name)}
+				{category?.name ? capitalizeFirstLetter(category?.name) : ""}
 			</Typography>
 			<Typography
 				color={mainTheme.palette.primary.dark}

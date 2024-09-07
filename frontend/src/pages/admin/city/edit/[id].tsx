@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
 	Box,
-	Button,
 	CircularProgress,
 	Grid,
 	TextField,
@@ -16,7 +15,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 import { capitalizeFirstLetter } from "utils";
-import { BackButton } from "@components";
+import { BackButton, RoundedButton } from "@components";
 
 const commonTextFieldStyles = {
 	"& .MuiOutlinedInput-root": {
@@ -76,7 +75,7 @@ const EditCityByID = () => {
 			})
 			.catch(() => {
 				toast.error(
-					"Une erreur est survenue lors de la modification de la ville"
+					`Une erreur est survenue lors de la modification de la ville ${capitalizeFirstLetter(form.name)}`
 				);
 			});
 	};
@@ -187,17 +186,13 @@ const EditCityByID = () => {
 						onChange={(e) => setForm({ ...form, description: e.target.value })}
 						sx={commonTextFieldStyles}
 					/>
-					<Button
-						aria-label="Enregistrer les modifications"
+					<RoundedButton
+						label="Enregistrer les modifications"
 						disabled={isDisabled}
 						type="submit"
-						variant="contained"
-						color="primary"
-						size="large"
-						style={{ borderRadius: "24px" }}
 					>
 						{!loading ? "Enregistrer " : "Enregistrement en cours ..."}
-					</Button>
+					</RoundedButton>
 				</Box>
 			</Grid>
 		</Grid>
