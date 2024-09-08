@@ -17,7 +17,7 @@ import { useLayoutEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DELETE_USER_BY_ID, UPDATE_USER_ROLE_BY_ID } from "@mutations";
 import { toast } from "react-toastify";
-import { capitalizeFirstLetter } from "utils";
+import { capitalizeFrenchName } from "utils";
 
 const columns: { key: any; name: string }[] = [
 	{
@@ -109,9 +109,12 @@ const UsersList = () => {
 			});
 	};
 
-	const handleUpdateUserRole = (userId: string, role: string) => {
+	const handleUpdateUserRole = (userId: number, role: string) => {
 		updateUserRole({
-			variables: { updateUserByIdId: userId, newUserInput: { role: role } },
+			variables: {
+				updateUserByIdId: userId,
+				newUserInput: { role: role },
+			},
 		})
 			.then(() => {
 				setOpen(false);
@@ -213,7 +216,7 @@ const UsersList = () => {
 				>
 					{users?.getAllUsers?.length > 0 ? (
 						<>
-							{users?.getAllUsers.map((el: UserType, index: number) => {
+							{users?.getAllUsers.map((userItem: UserType, index: number) => {
 								return (
 									<Box
 										key={index}
@@ -229,29 +232,34 @@ const UsersList = () => {
 											width="70%"
 										>
 											<Box width="20%">
-												<Typography>{el.lastName}</Typography>
+												<Typography>
+													{userItem.lastName.toUpperCase()}
+												</Typography>
 											</Box>
 											<Box width="20%">
-												<Typography>{el.firstName}</Typography>
+												<Typography>{userItem.firstName}</Typography>
 											</Box>
 											<Box width="30%">
-												<Typography>{el.email}</Typography>
+												<Typography>{userItem.email}</Typography>
 											</Box>
 											<Box width="20%">
 												<Typography>
-													{el?.city?.name
-														? capitalizeFirstLetter(el.city.name)
+													{userItem?.city?.name
+														? capitalizeFrenchName(userItem.city.name)
 														: ""}
 												</Typography>
 											</Box>
 										</RoundedBox>
 										<Box textAlign="center" width="20%">
 											<Select
-												value={el?.role}
-												onOpen={() => setSelectedUser(el)}
+												value={userItem?.role}
+												onOpen={() => setSelectedUser(userItem)}
 												onChange={(event: SelectChangeEvent) => {
 													if (selectedUser) {
-														handleUpdateUserRole(el.id, event.target.value);
+														handleUpdateUserRole(
+															Number(selectedUser.id),
+															event.target.value
+														);
 													}
 												}}
 											>
@@ -283,7 +291,7 @@ const UsersList = () => {
 											>
 												<IconButton
 													onClick={() => {
-														setSelectedUser(el);
+														setSelectedUser(userItem);
 														setOpen(true);
 													}}
 													icon={<DeleteIcon fontSize="small" />}

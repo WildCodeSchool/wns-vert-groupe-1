@@ -62,8 +62,8 @@ export type POIInput = {
 	name: string;
 	address: string;
 	description: string;
-	city: number | undefined;
-	category: number | undefined;
+	city: number | string;
+	category: number | string;
 	images: string[];
 	postalCode: string;
 	latitude?: number;

@@ -13,7 +13,7 @@ import { POI } from "@types";
 import { mainTheme } from "@theme";
 import PlaceIcon from "@mui/icons-material/Place";
 import { ImagesCarousel } from "@components";
-import { capitalizeFirstLetter } from "utils";
+import { capitalizeFirstLetter, capitalizeFrenchName } from "utils";
 
 const POIDetails = () => {
 	const router = useRouter();
@@ -49,7 +49,8 @@ const POIDetails = () => {
 	};
 
 	const handleCategoryClick = () => {
-		router.push(`/city/search/${POI.city}/category/${POI.category}`);
+		router.push(`/city/search/${POI.city}`);
+		// /category/${POI.category}
 	};
 
 	return loading ? (
@@ -82,7 +83,7 @@ const POIDetails = () => {
 					sx={{ fontSize: mainTheme.typography.h6, fontWeight: "light" }}
 					color={mainTheme.palette.primary.dark}
 				>
-					{POI.name}
+					{POI.name ? capitalizeFrenchName(POI.name) : ""}
 				</Link>
 			</Breadcrumbs>
 			<Grid container spacing={6} sx={{ padding: "1rem" }}>
@@ -99,7 +100,7 @@ const POIDetails = () => {
 						align="center"
 						sx={{ fontSize: mainTheme.typography.h3, fontWeight: "bold" }}
 					>
-						{POI.name}
+						{POI.name ? capitalizeFrenchName(POI.name) : ""}
 					</Typography>
 					<Typography
 						align="justify"

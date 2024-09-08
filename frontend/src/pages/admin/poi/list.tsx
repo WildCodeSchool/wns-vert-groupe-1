@@ -11,7 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PoiType } from "@types";
 import AddIcon from "@mui/icons-material/Add";
-import { capitalizeFirstLetter } from "utils";
+import { capitalizeFirstLetter, capitalizeFrenchName } from "utils";
 import { Modal, RoundedBox, IconButton } from "@components";
 
 const columns: { key: any; name: string }[] = [
@@ -140,7 +140,6 @@ const POIList = () => {
 				<Grid
 					item
 					width="100%"
-					direction="row"
 					flexDirection="row"
 					display="flex"
 					alignItems="center"
@@ -238,7 +237,7 @@ const POIList = () => {
 									>
 										<Box width="15%">
 											<Typography>
-												{poi?.name ? capitalizeFirstLetter(poi.name) : ""}
+												{poi?.name ? capitalizeFrenchName(poi.name) : ""}
 											</Typography>
 										</Box>
 										<Box
@@ -267,7 +266,7 @@ const POIList = () => {
 										<Box width="10%">
 											<Typography>
 												{poi?.city?.name
-													? capitalizeFirstLetter(poi.city.name)
+													? capitalizeFrenchName(poi.city.name)
 													: ""}
 											</Typography>
 										</Box>

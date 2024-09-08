@@ -22,7 +22,7 @@ import React, { useEffect } from "react";
 import { useLayoutEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { capitalizeFirstLetter } from "utils";
+import { capitalizeFrenchName } from "utils";
 
 const commonTextFieldStyles = {
 	"& .MuiOutlinedInput-root": {
@@ -278,7 +278,7 @@ const Profile = () => {
 								{data?.getAllCities.map((city: CityType) => {
 									return (
 										<MenuItem key={city.id} value={city.id}>
-											{city.name ? capitalizeFirstLetter(city.name) : ""}
+											{city.name ? capitalizeFrenchName(city.name) : ""}
 										</MenuItem>
 									);
 								})}

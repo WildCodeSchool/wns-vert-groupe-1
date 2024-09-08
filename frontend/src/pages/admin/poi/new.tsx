@@ -24,7 +24,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { BackButton, ImagesCarousel, RoundedButton } from "@components";
-import { capitalizeFirstLetter } from "utils";
+import { capitalizeFirstLetter, capitalizeFrenchName } from "utils";
 import { useAuth } from "../../../context";
 import React from "react";
 
@@ -279,7 +279,7 @@ const NewPoi = () => {
 								>
 									{cityData?.getAllCities?.map((city: CityType) => (
 										<MenuItem key={city.id} value={city.id}>
-											{city.name ? capitalizeFirstLetter(city.name) : ""}
+											{city.name ? capitalizeFrenchName(city.name) : ""}
 										</MenuItem>
 									))}
 								</Select>

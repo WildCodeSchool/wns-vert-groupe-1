@@ -15,6 +15,9 @@ import * as jwt from "jsonwebtoken";
 import { UserUpdateInput } from "../inputs/UserUpdate";
 import { GraphQLError } from "graphql";
 import { Not } from "typeorm";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 if (!process.env.SECRET_KEY) {
 	throw new Error("SECRET_KEY environment variable is not defined");
@@ -159,7 +162,7 @@ export class UserResolver {
 					role: newUserInput.role ?? oldUser.role,
 				});
 
-				if (newUserInput.city != loggedUser.city?.id) {
+				if (newUserInput.city && newUserInput.city != loggedUser.city?.id) {
 					const city = await City.findOneByOrFail({
 						id: Number(newUserInput.city),
 					});

@@ -8,6 +8,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import { BackButton, RoundedBox } from "@components";
+import { capitalizeFrenchName } from "utils";
 
 const DisplayCityByID = () => {
 	const { isAuthenticated, isLoadingSession, user } = useAuth();
@@ -128,7 +129,11 @@ const DisplayCityByID = () => {
 															justifyContent="space-between"
 														>
 															<Grid item>
-																<Typography variant="h6">{poi.name}</Typography>
+																<Typography variant="h6">
+																	{poi?.name
+																		? capitalizeFrenchName(poi.name)
+																		: ""}
+																</Typography>
 															</Grid>
 															<Grid item>
 																<Typography variant="h6">

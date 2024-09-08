@@ -20,7 +20,7 @@ import { mainTheme } from "@theme";
 import { CategoryType, CityType, POIInput } from "@types";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { capitalizeFirstLetter } from "utils";
+import { capitalizeFirstLetter, capitalizeFrenchName } from "utils";
 import { BackButton, IconButton, RoundedButton } from "@components";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -37,8 +37,9 @@ const EditPoiByID = () => {
 		fetchPolicy: "cache-and-network",
 	});
 
-	const { data: cityData } = useQuery(GET_ALL_CITIES);
-	const { data: categoryData } = useQuery(GET_ALL_CATEGORIES);
+	const { data: cityData, loading: cityLoading } = useQuery(GET_ALL_CITIES);
+	const { data: categoryData, loading: categoryLaoding } =
+		useQuery(GET_ALL_CATEGORIES);
 
 	const [editPoi, { data, error, loading }] = useMutation(EDIT_POI_BY_ID);
 
@@ -47,11 +48,11 @@ const EditPoiByID = () => {
 		address: "",
 		postalCode: "",
 		description: "",
-		city: undefined,
+		city: "",
 		latitude: 0,
 		longitude: 0,
 		images: [],
-		category: undefined,
+		category: "",
 	});
 
 	useEffect(() => {
@@ -95,7 +96,6 @@ const EditPoiByID = () => {
 				}
 			});
 			const filenames = await Promise.all(uploadPromises);
-			console.log("filenames", filenames);
 
 			setForm((prev) => ({
 				...prev,
@@ -135,16 +135,12 @@ const EditPoiByID = () => {
 			);
 		}
 	};
-	useEffect(() => {
-		console.log("cityData", cityData);
-		console.log("categoryData", categoryData);
-	}, [cityData, categoryData]);
 
 	if (poiError) return toast.error(`Une erreur est survenue.${poiError}`);
 
-	return poiLoading || !cityData || !categoryData ? (
+	return poiLoading || cityLoading || categoryLaoding ? (
 		<CircularProgress />
-	) : cityData?.getCityById && categoryData?.getCategoryById ? (
+	) : (
 		<Grid container paddingX={10} paddingY={10}>
 			<BackButton />
 			<Grid item display="flex" flexDirection="column" gap={6} paddingX={6}>
@@ -160,7 +156,7 @@ const EditPoiByID = () => {
 						margin="normal"
 						label="Nom"
 						name="name"
-						value={form.name}
+						value={form?.name ? capitalizeFrenchName(form.name) : ""}
 						onChange={(e) => setForm({ ...form, name: e.target.value })}
 					/>
 					<TextField
@@ -203,7 +199,7 @@ const EditPoiByID = () => {
 						>
 							{cityData?.getAllCities?.map((city: CityType) => (
 								<MenuItem key={city.id} value={city.id}>
-									{city.name ? capitalizeFirstLetter(city.name) : ""}
+									{city.name ? capitalizeFrenchName(city.name) : ""}
 								</MenuItem>
 							))}
 						</Select>
@@ -266,7 +262,7 @@ const EditPoiByID = () => {
 								<Grid item key={index}>
 									<Box
 										sx={{
-											width: "300px",
+											maxWidth: "300px",
 											height: "200px",
 											position: "relative",
 											backgroundColor: "transparent",
@@ -337,8 +333,6 @@ const EditPoiByID = () => {
 				</Box>
 			</Grid>
 		</Grid>
-	) : (
-		<CircularProgress />
 	);
 };
 

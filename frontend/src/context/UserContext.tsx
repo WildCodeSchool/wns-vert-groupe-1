@@ -84,19 +84,15 @@ function UserProvider({ children }: PropsWithChildren) {
 							setUser(res?.data?.getUserByEmail);
 							localStorage.setItem("jwt", data.token);
 							toast.success("Connexion réussie !");
-							switch (res?.data?.getUserByEmail?.role) {
-								case "ADMIN":
-									router.replace("/admin/user/list");
-									break;
-								case "CITYADMIN":
-									router.replace("/admin/city/list");
-									break;
-								case "SUPERUSER":
-									router.replace("/admin/poi/list");
-									break;
-								default:
-									router.replace("/");
-									break;
+							if (
+								res?.data?.getUserByEmail.role === "ADMIN" ||
+								res?.data?.getUserByEmail.role === "CITYADMIN"
+							) {
+								router.replace("/admin/user/list");
+							} else if (res?.data?.getUserByEmail?.role === "SUPERUSER") {
+								router.replace("/admin/poi/list");
+							} else {
+								router.replace("/");
 							}
 						})
 						.catch(() => {

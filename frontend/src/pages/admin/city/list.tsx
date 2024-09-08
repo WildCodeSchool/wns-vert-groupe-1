@@ -13,7 +13,7 @@ import { CityType } from "@types";
 import { IconButton, RoundedBox } from "@components";
 import AddIcon from "@mui/icons-material/Add";
 import { Modal } from "@components";
-import { capitalizeFirstLetter } from "utils";
+import { capitalizeFrenchName } from "utils";
 
 const columns: { key: any; name: string }[] = [
 	{
@@ -100,7 +100,7 @@ const CityList = () => {
 			});
 	};
 
-	return isLoadingSession ? (
+	return isLoadingSession || citiesLoading ? (
 		<CircularProgress />
 	) : !isAuthenticated ? (
 		<Typography>{errors.connected}</Typography>
@@ -235,9 +235,7 @@ const CityList = () => {
 												>
 													<Box width="20%" minWidth={"200px"}>
 														<Typography>
-															{city.name
-																? capitalizeFirstLetter(city.name)
-																: ""}
+															{city.name ? capitalizeFrenchName(city.name) : ""}
 														</Typography>
 													</Box>
 													<Box
@@ -311,7 +309,7 @@ const CityList = () => {
 														variant="h4"
 														component="h2"
 													>
-														{`Voulez-vous vraiment supprimer la ville ${selectedCity?.name ? capitalizeFirstLetter(selectedCity?.name) : ""} ?`}
+														{`Voulez-vous vraiment supprimer la ville ${selectedCity?.name ? capitalizeFrenchName(selectedCity?.name) : ""} ?`}
 													</Typography>
 												</Modal>
 											</Box>

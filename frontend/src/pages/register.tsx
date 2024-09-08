@@ -21,7 +21,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useAuth } from "context";
 import { RoundedButton } from "@components";
-import { capitalizeFirstLetter } from "utils";
+import { capitalizeFrenchName } from "utils";
 
 const Register = () => {
 	const { onRegister, loading } = useAuth();
@@ -229,7 +229,7 @@ const Register = () => {
 							>
 								{cities.map((city: CityType) => (
 									<MenuItem key={city.id} value={city.id}>
-										{city.name ? capitalizeFirstLetter(city.name) : ""}
+										{city.name ? capitalizeFrenchName(city.name) : ""}
 									</MenuItem>
 								))}
 							</Select>

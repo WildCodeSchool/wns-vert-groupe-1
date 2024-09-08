@@ -12,6 +12,7 @@ import {
 	SwipeableDrawer,
 	List,
 	CircularProgress,
+	useMediaQuery,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -42,6 +43,7 @@ const menuItemsData: MenuItem[] = [
 ];
 
 export const Header = () => {
+	const isTabletOrMobile = useMediaQuery(mainTheme.breakpoints.down("lg"));
 	const { onLogout, isAuthenticated, user, isLoadingSession } = useAuth();
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = React.useState<boolean>(false);
@@ -90,17 +92,21 @@ export const Header = () => {
 					) : (
 						<></>
 					)}
-					<Link href="/" passHref>
-						<Typography
-							color="inherit"
-							sx={{
-								letterSpacing: "0.04em",
-								paddingLeft: mainTheme.spacing(3),
-							}}
-						>
-							CITY GUIDE
-						</Typography>
-					</Link>
+					{!isTabletOrMobile ? (
+						<Link href="/" passHref>
+							<Typography
+								color="inherit"
+								sx={{
+									letterSpacing: "0.04em",
+									paddingLeft: mainTheme.spacing(3),
+								}}
+							>
+								CITY GUIDE
+							</Typography>
+						</Link>
+					) : (
+						<></>
+					)}
 				</Box>
 				<Box
 					paddingBottom={mainTheme.spacing(1)}
@@ -169,6 +175,12 @@ export const Header = () => {
 						open={menuOpen}
 						onClose={() => setMenuOpen(false)}
 						onOpen={() => setMenuOpen(true)}
+						PaperProps={{
+							sx: {
+								width: isTabletOrMobile ? "100%" : "20vw",
+								maxWidth: "100vw",
+							},
+						}}
 					>
 						<Box
 							role="presentation"
