@@ -64,6 +64,7 @@ const Register = () => {
 				password: formData.password,
 				city: formData.city,
 			});
+			reset();
 		}
 	};
 
@@ -226,7 +227,10 @@ const Register = () => {
 							>
 								{cities.map((city) => (
 									<MenuItem key={city.id} value={city.id}>
-										{city.name}
+										{city.name
+											? city.name.charAt(0).toUpperCase() +
+												city.name.slice(1).toLowerCase()
+											: undefined}
 									</MenuItem>
 								))}
 							</Select>
@@ -269,7 +273,6 @@ const Register = () => {
 								underline="hover"
 								sx={{ fontSize: "1rem", color: "primary" }}
 							>
-								{" "}
 								Se connecter
 							</Link>
 						</Typography>

@@ -59,8 +59,8 @@ function UserProvider({ children }: PropsWithChildren) {
 		useLazyQuery(CHECK_INFO);
 	const [jwt, setJwt] = React.useState(defaultStore["jwt"]);
 	const [login, { loading: loadingLogin }] = useLazyQuery(LOGIN);
-	const [register] = useMutation(REGISTER);
-	const [getUser, { loading: loadingGetUser }] =
+	const [register, { loading: loadingRegister }] = useMutation(REGISTER);
+	const [getUserByEmail, { loading: loadingGetUser }] =
 		useLazyQuery(GET_USER_BY_EMAIL);
 	const [isLoadingSession, setIsLoadingSession] = React.useState<boolean>(true);
 
@@ -74,14 +74,14 @@ function UserProvider({ children }: PropsWithChildren) {
 			})
 				.then((res) => {
 					const data = JSON.parse(res.data.login);
-					getUser({ variables: { email: payload.email } })
+					getUserByEmail({ variables: { email: payload.email } })
 						.then((res) => {
 							setJwt(data.token);
 							setUser(res?.data?.getUserByEmail);
 							localStorage.setItem("jwt", data.token);
 							setIsLoadingSession(false);
+							toast.success("Connexion réussie !");
 						})
-
 						.catch(() => {
 							setError(errors.getUser);
 							setIsLoadingSession(false);
@@ -94,7 +94,7 @@ function UserProvider({ children }: PropsWithChildren) {
 					toast.error(errors.login);
 				});
 		},
-		[getUser, login]
+		[getUserByEmail, login]
 	);
 
 	const onRegister = React.useCallback(
@@ -118,14 +118,15 @@ function UserProvider({ children }: PropsWithChildren) {
 					toast.error(errors.register);
 				});
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[register]
 	);
 
 	const onLogout = React.useCallback(() => {
-		router.push("/");
 		localStorage.clear();
 		setUser(undefined);
 		setJwt(undefined);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	React.useEffect(() => {
@@ -139,14 +140,17 @@ function UserProvider({ children }: PropsWithChildren) {
 			setIsLoadingSession(true);
 			await checkSession()
 				.then((res) => {
-					if (!res?.data?.checkSession) {
+					if (!res?.data?.checkSession?.isLoggedIn) {
 						onLogout();
-					}
-					getUser({ variables: { email: res?.data?.checkSession.email } })
-						.then((result) => {
-							setUser(result?.data?.getUserByEmail);
+					} else {
+						getUserByEmail({
+							variables: { email: res?.data?.checkSession.email },
 						})
-						.catch(() => onLogout());
+							.then((result) => {
+								setUser(result?.data?.getUserByEmail);
+							})
+							.catch(() => onLogout());
+					}
 				})
 				.catch(() => {
 					onLogout();
@@ -158,12 +162,14 @@ function UserProvider({ children }: PropsWithChildren) {
 		}
 
 		restore();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [checkSession, onLogout]);
 
-	//add register loading
 	const loading: boolean = React.useMemo(() => {
-		return loadingGetUser || loadingLogin || loadingCheckSession;
-	}, [loadingGetUser, loadingLogin, loadingCheckSession]);
+		return (
+			loadingGetUser || loadingLogin || loadingCheckSession || loadingRegister
+		);
+	}, [loadingGetUser, loadingLogin, loadingCheckSession, loadingRegister]);
 
 	const isAuthenticated = !!jwt;
 

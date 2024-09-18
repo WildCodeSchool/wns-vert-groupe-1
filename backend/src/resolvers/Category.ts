@@ -14,8 +14,18 @@ export class CategoryResolver {
 	@Authorized("ADMIN")
 	@Mutation(() => Category)
 	async createNewCategory(@Arg("categoryData") categoryData: CategoryInput) {
+		const categoryName = categoryData.name.trim().toLowerCase();
+		const existingCatgeory = await Category.findOne({
+			where: { name: categoryName },
+		});
+
+		if (existingCatgeory) {
+			throw new Error("Category name already exists.");
+		}
+
 		const category = await Category.create({
 			...categoryData,
+			name: categoryName,
 		});
 
 		const errors = await validate(category);
@@ -53,7 +63,7 @@ export class CategoryResolver {
 		}
 	}
 
-	@Authorized("Administrateur du site")
+	@Authorized("ADMIN")
 	@Mutation(() => String)
 	async deleteCategoryById(@Arg("id") id: number) {
 		const categoryToDelete = await Category.findOneByOrFail({

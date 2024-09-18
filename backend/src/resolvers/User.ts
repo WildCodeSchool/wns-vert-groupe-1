@@ -14,6 +14,9 @@ import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
 import { UserUpdateInput } from "../inputs/UserUpdate";
 import { GraphQLError } from "graphql";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 if (!process.env.SECRET_KEY) {
 	throw new Error("SECRET_KEY environment variable is not defined");
@@ -31,7 +34,7 @@ export class UserResolver {
 				const users = await User.find({
 					where:
 						ctx.role === "CITYADMIN"
-							? { city: { id: user?.cityId } }
+							? { city: { id: user?.city?.id } }
 							: { city: { id: undefined } },
 					relations: { city: true },
 				});
@@ -134,11 +137,11 @@ export class UserResolver {
 		try {
 			const loggedUser = await User.findOneByOrFail({ email: ctx.email });
 			const oldUser = await User.findOneByOrFail({ id: id });
-
+			console.log("loggedUser", loggedUser.city?.id);
 			if (
 				ctx.role === "ADMIN" ||
 				oldUser?.email === ctx.email ||
-				(ctx.role === "CITYADMIN" && oldUser.cityId === loggedUser?.cityId)
+				(ctx.role === "CITYADMIN" && oldUser.city.id === loggedUser?.city.id)
 			) {
 				Object.assign(oldUser, newUserInput);
 				await oldUser.save();
@@ -206,9 +209,13 @@ export class UserResolver {
 		try {
 			const user = await User.findOneByOrFail({ email });
 			if (!user) {
-				throw new Error("Email not found");
+				throw new GraphQLError(`Email not found`, {
+					extensions: {
+						code: "UNAUTHORIZED",
+						http: { status: 401 },
+					},
+				});
 			}
-
 			if (await argon2.verify(user.hashedPassword, password)) {
 				payload = {
 					email: user.email,
@@ -217,11 +224,15 @@ export class UserResolver {
 				const token: string = jwt.sign(payload, SECRET_KEY);
 				return JSON.stringify({ token: token });
 			} else {
-				throw new Error("Invalid password");
+				throw new GraphQLError(`Invalid password`, {
+					extensions: {
+						code: "UNAUTHORIZED",
+						http: { status: 401 },
+					},
+				});
 			}
-		} catch (err) {
-			console.log("Error authenticating user:", err);
-			return "Invalid credentials";
+		} catch (error) {
+			throw new Error(`Error : ${error.message}`);
 		}
 	}
 
